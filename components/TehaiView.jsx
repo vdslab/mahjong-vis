@@ -43,9 +43,9 @@ if(tehai.length < 2) {
 } 
   else {
   return (
-    <div style={{border:"1px solid black",height:"100px"}}>
+    <div style={{width:"500px",height:"200px",border:"1px solid black",float:"left"}}>
     <p>手牌</p>
-    <ul style={{clear:"both"}}>
+    <ul style={{overflow:"hidden"}}>
       {tehai.map(item => {
         return <li style={{float:"left",listStyle:"none",padding:"10px"}} data-id={item.id} data-hai={item.hai} onClick={clickHandler}>{item.hai}</li>
       }
