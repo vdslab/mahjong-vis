@@ -3,8 +3,7 @@ import { haiState, tehaiState, suteHaiListState } from "./atoms";
 import { useEffect } from "react";
 import haiOrder from "./haiOrder";
 import Image from "next/image";
-import { Box } from "@material-ui/core";
-import { Grid, Card } from "@material-ui/core";
+import { Grid, Card, Stack } from "@mui/material";
 export default function TehaiView() {
   const [abandonedHai, setAbandonedHai] = useRecoilState(haiState);
   const [tehai, setTehai] = useRecoilState(tehaiState);
@@ -39,27 +38,35 @@ export default function TehaiView() {
     return <div></div>;
   } else {
     return (
-      <Box>
-        <p>手牌</p>
-        <Grid container>
-          {tehai.map((item, idx) => {
-            return (
-              <Grid item>
+      <Grid container>
+        <Grid item xs={6}>
+          <p>手牌</p>
+          <Stack direction="row">
+            {tehai.map((item, idx) => {
+              return (
                 <Card
                   data-id={item.id}
                   data-hai={item.hai}
                   onClick={clickHandler}
                   key={idx}
+                  style={
+                    (suteHaiList.length > 0) & (idx === 13)
+                      ? { marginLeft: "20px" }
+                      : { marginLeft: "0px" }
+                  }
                 >
                   {/* TODO 画像差し替え */}
-                  <Image src="/test_m1.png" width="50" height="50" alt="m1" />
-                  {item.hai}
+                  <Image
+                    src={chengeHaiName2Path(item.hai)}
+                    width="80%"
+                    height="100%"
+                  />
                 </Card>
-              </Grid>
-            );
-          })}
+              );
+            })}
+          </Stack>
         </Grid>
-      </Box>
+      </Grid>
     );
   }
 }
@@ -91,4 +98,27 @@ function generaTeHai() {
     haiList.push({ hai: hai, id: i });
   }
   return haiList;
+}
+export function chengeHaiName2Path(haiName) {
+  let path = "/images/hai/";
+  switch (haiName[0]) {
+    case "m":
+      path += "man" + haiName[1];
+      break;
+    case "p":
+      path += "pin" + haiName[1];
+      break;
+    case "s":
+      path += "sou" + haiName[1];
+      break;
+    case "w":
+      path += "ji" + haiName[1];
+      break;
+    case "z":
+      const num = parseInt(haiName[1]) + 4;
+      path += "ji" + num;
+      break;
+  }
+  path += ".gif";
+  return path;
 }
