@@ -43,12 +43,11 @@ export default function TehaiView() {
         <Grid container>
           {tehai.map((item, idx) => {
             return (
-              <Grid item>
+              <Grid item key={idx}>
                 <Card
                   data-id={item.id}
                   data-hai={item.hai}
                   onClick={clickHandler}
-                  key={idx}
                 >
                   {/* TODO 画像差し替え */}
                   <Image src="/test_m1.png" width="50" height="50" alt="m1" />
