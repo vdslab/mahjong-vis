@@ -1,5 +1,10 @@
-export default function RadvizChart (){
-  return <div style={{width:"200px",height:"200px",border:"1px solid black",float:"left"}}>
-    <p>Radviz</p>
-  </div>
-  }
+import { Grid, Card } from "@material-ui/core";
+export default function RadvizChart() {
+  return (
+    <Grid item xs={4}>
+      <Card style={{ height: "300px" }}>
+        <p>Radviz</p>
+      </Card>
+    </Grid>
+  );
+}
