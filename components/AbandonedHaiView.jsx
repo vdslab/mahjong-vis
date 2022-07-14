@@ -1,8 +1,8 @@
 import { useRecoilValue } from "recoil";
 import { suteHaiListState } from "./atoms";
 import { Card, Grid, Typography } from "@mui/material";
-import { changeHaiName2Path } from "../components/TehaiView";
 import Image from "next/image";
+import { changeHaiName2Path } from "./TehaiView";
 
 export const AbandonedHaiView = () => {
   const suteHaiList = useRecoilValue(suteHaiListState);
@@ -17,7 +17,7 @@ export const AbandonedHaiView = () => {
           return (
             <Grid item key={idx} xs={2}>
               <Image
-                src={chengeHaiName2Path(item)}
+                src={changeHaiName2Path(item)}
                 width="100%"
                 height="100%"
               />
