@@ -1,75 +1,79 @@
+import { Fragment, useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { haiState, tehaiState, suteHaiListState } from "./atoms";
-import { useEffect } from "react";
 import haiOrder from "./haiOrder";
 import Image from "next/image";
-import { Grid, Card, Stack } from "@mui/material";
-export default function TehaiView() {
+import { Box, Card, Stack, Typography } from "@mui/material";
+
+export const TehaiView = () => {
   const [abandonedHai, setAbandonedHai] = useRecoilState(haiState);
   const [tehai, setTehai] = useRecoilState(tehaiState);
   const [suteHaiList, setSuteHaiList] = useRecoilState(suteHaiListState);
-  const MAX_PLAY_TIMES = 18;
+  const MAX_PLAY_TIMES = 17;
+
   useEffect(() => {
-    const haiList = generaTeHai();
-    setTehai(haiList);
+    const haiList = initHai();
+    const addedHai = generateNewHai();
+    setTehai([...haiList, addedHai]);
   }, []);
-  function clickHandler(e) {
-    if (suteHaiList.length < MAX_PLAY_TIMES) {
-      const clickedHai = e.currentTarget.getAttribute("data-hai");
-      const id = e.currentTarget.getAttribute("data-id");
-      const copiedTehai = JSON.parse(JSON.stringify(tehai));
-      setAbandonedHai(clickedHai);
-      setSuteHaiList([...suteHaiList, clickedHai]);
-      const addedHai = generateNewHai();
-      const newTehai = copiedTehai.filter((item) => item.id != id);
-      newTehai.sort(
-        (x, y) => haiOrder.indexOf(x.hai) - haiOrder.indexOf(y.hai)
-      );
-      newTehai.push({ hai: addedHai, id: 14 + suteHaiList.length });
-      setTehai(newTehai);
-    } else {
+
+  const clickHandler = (clickedHai, idx) => {
+    const copiedTehai = JSON.parse(JSON.stringify(tehai));
+    setAbandonedHai(clickedHai);
+    setSuteHaiList([...suteHaiList, clickedHai]);
+    const addedHai = generateNewHai();
+    const newTehai = copiedTehai.filter((item, id) => idx != id);
+    newTehai.sort((x, y) => haiOrder.indexOf(x) - haiOrder.indexOf(y));
+    newTehai.push(addedHai);
+    setTehai(newTehai);
+    if (suteHaiList.length > MAX_PLAY_TIMES) {
       alert("手牌をリセットします");
       setSuteHaiList([]);
-      const haiList = generaTeHai();
+      const haiList = initHai();
       setTehai(haiList);
     }
-  }
+  };
+
   if (tehai.length < 1) {
-    return <div></div>;
+    return <></>;
   } else {
     return (
-      <Grid container>
-        <Grid item xs={6}>
-          <p>手牌</p>
-          <Stack direction="row">
-            {tehai.map((item, idx) => {
+      <Card sx={{ p: 3 }}>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          手牌
+        </Typography>
+        <Stack direction="row">
+          {tehai.map((item, idx) => {
+            if (idx !== 13) {
               return (
-                <Card
-                  data-id={item.id}
-                  data-hai={item.hai}
-                  onClick={clickHandler}
+                <Image
                   key={idx}
-                  style={
-                    (suteHaiList.length > 0) & (idx === 13)
-                      ? { marginLeft: "20px" }
-                      : { marginLeft: "0px" }
-                  }
-                >
-                  {/* TODO 画像差し替え */}
+                  onClick={() => clickHandler(item, idx)}
+                  src={changeHaiName2Path(item)}
+                  width="80%"
+                  height="100%"
+                />
+              );
+            } else {
+              return (
+                <Fragment key={idx}>
+                  <Box sx={{ p: 1 }} />
                   <Image
-                    src={chengeHaiName2Path(item.hai)}
+                    key={idx}
+                    onClick={() => clickHandler(item, idx)}
+                    src={changeHaiName2Path(item)}
                     width="80%"
                     height="100%"
                   />
-                </Card>
+                </Fragment>
               );
-            })}
-          </Stack>
-        </Grid>
-      </Grid>
+            }
+          })}
+        </Stack>
+      </Card>
     );
   }
-}
+};
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -90,16 +94,17 @@ function generateNewHai() {
   return hai;
 }
 
-function generaTeHai() {
+const initHai = () => {
   const haiList = [];
   // 手牌生成
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < 13; i++) {
     const hai = generateNewHai();
-    haiList.push({ hai: hai, id: i });
+    haiList.push(hai);
   }
-  return haiList;
-}
-export function chengeHaiName2Path(haiName) {
+  return haiList.sort((x, y) => haiOrder.indexOf(x) - haiOrder.indexOf(y));
+};
+
+export const changeHaiName2Path = (haiName) => {
   let path = "/images/hai/";
   switch (haiName[0]) {
     case "m":
@@ -121,4 +126,4 @@ export function chengeHaiName2Path(haiName) {
   }
   path += ".gif";
   return path;
-}
+};
