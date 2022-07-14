@@ -1,4 +1,4 @@
-import { Grid, Card } from "@material-ui/core";
+import { Grid, Card } from "@mui/material";
 export default function RadvizChart() {
   return (
     <Grid item xs={4}>

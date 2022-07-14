@@ -1,6 +1,6 @@
 import { useRecoilValue } from "recoil";
 import { haiState, suteHaiListState } from "./atoms";
-import { Grid, Card } from "@material-ui/core";
+import { Grid, Card } from "@mui/material";
 export default function AbandonedHaiView() {
   const suteHaiList = useRecoilValue(suteHaiListState);
   return (
