@@ -3,8 +3,9 @@ import { haiState, tehaiState, suteHaiListState } from "./atoms";
 import { useEffect } from "react";
 import haiOrder from "./haiOrder";
 import Image from "next/image";
-import { Grid, Card, Stack } from "@mui/material";
-export default function TehaiView() {
+import { Card, Stack, Typography } from "@mui/material";
+
+export const TehaiView = () => {
   const [abandonedHai, setAbandonedHai] = useRecoilState(haiState);
   const [tehai, setTehai] = useRecoilState(tehaiState);
   const [suteHaiList, setSuteHaiList] = useRecoilState(suteHaiListState);
@@ -38,38 +39,27 @@ export default function TehaiView() {
     return <div></div>;
   } else {
     return (
-      <Grid container>
-        <Grid item xs={6}>
-          <p>手牌</p>
-          <Stack direction="row">
-            {tehai.map((item, idx) => {
-              return (
-                <Card
-                  data-id={item.id}
-                  data-hai={item.hai}
-                  onClick={clickHandler}
-                  key={idx}
-                  style={
-                    (suteHaiList.length > 0) & (idx === 13)
-                      ? { marginLeft: "20px" }
-                      : { marginLeft: "0px" }
-                  }
-                >
-                  {/* TODO 画像差し替え */}
-                  <Image
-                    src={chengeHaiName2Path(item.hai)}
-                    width="80%"
-                    height="100%"
-                  />
-                </Card>
-              );
-            })}
-          </Stack>
-        </Grid>
-      </Grid>
+      <Card sx={{ p: 3 }}>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          手牌
+        </Typography>
+        <Stack direction="row">
+          {tehai.map((item, idx) => {
+            return (
+              <Image
+                key={idx}
+                onClick={clickHandler}
+                src={chengeHaiName2Path(item.hai)}
+                width="80%"
+                height="100%"
+              />
+            );
+          })}
+        </Stack>
+      </Card>
     );
   }
-}
+};
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);

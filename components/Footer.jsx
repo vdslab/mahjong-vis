@@ -1,23 +1,22 @@
+import { Box, Typography } from "@mui/material";
+
 export const Footer = () => {
   return (
-    <footer style={styles.footer}>
-      <p className="copylight">&copy; Uramaru Nakaniwa Koizumi Tsukada Tago</p>
-      <p className="hai">
+    <Box
+      sx={{
+        background: "#bdbdbd",
+        textAlign: "center",
+        bottom: 0,
+        p: 3,
+      }}
+    >
+      <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        &copy; Uramaru Nakaniwa Koizumi Tsukada Tago
+      </Typography>
+      <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
         ※ 画像は「<a href="https://mj-dragon.com/rule/">麻雀の雀龍.com</a>
         」の無料麻雀牌画を利用しています。
-      </p>
-    </footer>
+      </Typography>
+    </Box>
   );
-};
-
-const styles = {
-  footer: {
-    width: "100%",
-    height: "100px",
-    padding: "20px 0",
-    background: "#ddd",
-    textAlign: "center",
-    position: "absolute",
-    bottom: 0,
-  },
 };

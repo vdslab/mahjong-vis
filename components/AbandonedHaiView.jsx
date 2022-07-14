@@ -1,28 +1,30 @@
 import { useRecoilValue } from "recoil";
-import { haiState, suteHaiListState } from "./atoms";
-import { Grid, Card } from "@mui/material";
-import { chengeHaiName2Path } from "./TehaiView";
+import { suteHaiListState } from "./atoms";
+import { Card, Grid, Typography } from "@mui/material";
+import { changeHaiName2Path } from "../components/TehaiView";
 import Image from "next/image";
-export default function AbandonedHaiView() {
+
+export const AbandonedHaiView = () => {
   const suteHaiList = useRecoilValue(suteHaiListState);
+
   return (
-    <Grid item xs={2}>
-      <Card style={{ height: "300px" }}>
-        <p>捨て牌</p>
-        <Grid container>
-          {suteHaiList.map((item, idx) => {
-            return (
-              <Grid item key={idx} xs={2}>
-                <Image
-                  src={chengeHaiName2Path(item)}
-                  width="100%"
-                  height="100%"
-                />
-              </Grid>
-            );
-          })}
-        </Grid>
-      </Card>
-    </Grid>
+    <Card sx={{ p: 3, height: "100%" }}>
+      <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        河
+      </Typography>
+      <Grid container>
+        {suteHaiList.map((item, idx) => {
+          return (
+            <Grid item key={idx} xs={2}>
+              <Image
+                src={chengeHaiName2Path(item)}
+                width="100%"
+                height="100%"
+              />
+            </Grid>
+          );
+        })}
+      </Grid>
+    </Card>
   );
-}
+};

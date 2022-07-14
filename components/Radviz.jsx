@@ -1,23 +1,30 @@
 import * as d3 from "d3";
-import { Box } from "@mui/material";
+import { Card, Typography } from "@mui/material";
+
+const calc_dist = (a, b, n) => {
+  let sum = 0;
+  for (let i = 0; i < n; ++i) {
+    sum += (a[i] - b[i]) * (a[i] - b[i]);
+  }
+  return Math.sqrt(sum);
+};
 
 const radviz = (data, dimensions, r) => {
-  const n = dimensions.length;
-  const scales = dimensions.map((property) => {
-    console.log(property);
-    return d3
-      .scaleLinear()
-      .domain(d3.extent(data, (item) => item[property]))
-      .range([0, 1]);
-  });
+  const n = Object.keys(dimensions).length;
+  // const scales = Object.keys(dimensions).map((property) => {
+  //   console.log(property);
+  //   return d3
+  //     .scaleLinear()
+  //     .domain(d3.extent(data, (item) => item[property]))
+  //     .range([0, 1]);
+  // });
   return data.map((item, i) => {
     let a = 0;
     let b = 0;
     let c = 0;
     const dt = (2 * Math.PI) / n;
     for (let j = 0; j < n; ++j) {
-      const v = scales[j](item[dimensions[j]]);
-      console.log(v);
+      const v = calc_dist(item, dimensions[Object.keys(dimensions)[j]], n);
       a += v * Math.cos(dt * j);
       b += v * Math.sin(dt * j);
       c += v;
@@ -77,8 +84,10 @@ export const Radviz = () => {
     ],
   };
   const data = [
-    0, 0, 100, 0, 0, 56.66666667, 0, 48.33333333, 48.88888889, 0, 46, 0, 15, 0,
-    0, 0, 0, 42.85714286, 42.85714286,
+    [
+      0, 0, 100, 0, 0, 56.66666667, 0, 48.33333333, 48.88888889, 0, 46, 0, 15,
+      0, 0, 0, 0, 42.85714286, 42.85714286,
+    ],
   ];
   const r = 300;
   const contentWidth = 2 * r;
@@ -92,16 +101,20 @@ export const Radviz = () => {
   console.log(points);
 
   return (
-    <Box sx={{ height: "1000px", width: "1000px" }}>
-      Radvis
+    <Card sx={{ p: 3, height: "100%" }}>
+      <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        Radvis
+      </Typography>
       <svg viewBox={`0 0 ${width} ${height}`}>
         <g transform={`translate(${margin + r},${margin + r})`}>
           <circle r={r} fill="none" stroke={lineColor} />
-          {dimensions.map((property, i) => {
+          {Object.keys(dimensions).map((property, i) => {
             return (
               <g
                 key={i}
-                transform={`rotate(${(360 / dimensions.length) * i + 90})`}
+                transform={`rotate(${
+                  (360 / Object.keys(dimensions).length) * i + 90
+                })`}
               >
                 <line
                   x1="0"
@@ -125,14 +138,12 @@ export const Radviz = () => {
             const { x, y } = points[i];
             return (
               <g key={i} transform={`translate(${x},${y})`}>
-                <circle r="3" opacity="0.8">
-                  <title>{dimensions.map((p) => item[p]).join(",")}</title>
-                </circle>
+                <circle r="3" opacity="0.8" />
               </g>
             );
           })}
         </g>
       </svg>
-    </Box>
+    </Card>
   );
 };
