@@ -3,8 +3,7 @@ import { haiState, tehaiState, suteHaiListState } from "./atoms";
 import { useEffect } from "react";
 import haiOrder from "./haiOrder";
 import Image from "next/image";
-import { Box } from "@material-ui/core";
-import { Grid, Card } from "@material-ui/core";
+import { Grid, Card, Box } from "@mui/material";
 export default function TehaiView() {
   const [abandonedHai, setAbandonedHai] = useRecoilState(haiState);
   const [tehai, setTehai] = useRecoilState(tehaiState);
