@@ -1,6 +1,10 @@
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { haiState, tehaiState, suteHaiListState } from "./atoms";
 import { useEffect } from "react";
+import haiOrder from "./haiOrder";
+import Image from "next/image";
+import { Box } from "@material-ui/core";
+import { Grid, Card } from "@material-ui/core";
 export default function TehaiView() {
   const [abandonedHai, setAbandonedHai] = useRecoilState(haiState);
   const [tehai, setTehai] = useRecoilState(tehaiState);
@@ -10,7 +14,6 @@ export default function TehaiView() {
     const haiList = generaTeHai();
     setTehai(haiList);
   }, []);
-
   function clickHandler(e) {
     if (suteHaiList.length < MAX_PLAY_TIMES) {
       const clickedHai = e.currentTarget.getAttribute("data-hai");
@@ -20,6 +23,9 @@ export default function TehaiView() {
       setSuteHaiList([...suteHaiList, clickedHai]);
       const addedHai = generateNewHai();
       const newTehai = copiedTehai.filter((item) => item.id != id);
+      newTehai.sort(
+        (x, y) => haiOrder.indexOf(x.hai) - haiOrder.indexOf(y.hai)
+      );
       newTehai.push({ hai: addedHai, id: 14 + suteHaiList.length });
       setTehai(newTehai);
     } else {
@@ -33,30 +39,27 @@ export default function TehaiView() {
     return <div></div>;
   } else {
     return (
-      <div
-        style={{
-          width: "500px",
-          height: "200px",
-          border: "1px solid black",
-          float: "left",
-        }}
-      >
+      <Box>
         <p>手牌</p>
-        <ul style={{ overflow: "hidden" }}>
-          {tehai.map((item) => {
+        <Grid container>
+          {tehai.map((item, idx) => {
             return (
-              <li
-                style={{ float: "left", listStyle: "none", padding: "10px" }}
-                data-id={item.id}
-                data-hai={item.hai}
-                onClick={clickHandler}
-              >
-                {item.hai}
-              </li>
+              <Grid item>
+                <Card
+                  data-id={item.id}
+                  data-hai={item.hai}
+                  onClick={clickHandler}
+                  key={idx}
+                >
+                  {/* TODO 画像差し替え */}
+                  <Image src="/test_m1.png" width="50" height="50" alt="m1" />
+                  {item.hai}
+                </Card>
+              </Grid>
             );
           })}
-        </ul>
-      </div>
+        </Grid>
+      </Box>
     );
   }
 }
@@ -67,12 +70,12 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 function generateNewHai() {
-  const HAITYPE = "mpskz";
+  const HAITYPE = "mpswz";
   let hai = "";
   hai += HAITYPE[getRandomInt(0, HAITYPE.length - 1)];
   if (["m", "p", "s"].includes(hai)) {
     hai += getRandomInt(1, 9);
-  } else if (hai === "k") {
+  } else if (hai === "w") {
     hai += getRandomInt(1, 4);
   } else {
     hai + getRandomInt(1, 3);
@@ -83,7 +86,7 @@ function generateNewHai() {
 function generaTeHai() {
   const haiList = [];
   // 手牌生成
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 14; i++) {
     const hai = generateNewHai();
     haiList.push({ hai: hai, id: i });
   }
