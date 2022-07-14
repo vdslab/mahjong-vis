@@ -1,12 +1,14 @@
+import { CssBaseline } from "@mui/material";
 import { RecoilRoot } from "recoil";
-import "../../styles/global.css";
 
 const MyApp = (props) => {
   const { Component, pageProps } = props;
 
   return (
     <RecoilRoot>
-      <Component style={{ margin: 0 }} {...pageProps} />
+      <CssBaseline>
+        <Component style={{ margin: 0 }} {...pageProps} />
+      </CssBaseline>
     </RecoilRoot>
   );
 };

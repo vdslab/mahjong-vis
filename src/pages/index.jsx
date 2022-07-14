@@ -1,11 +1,11 @@
 import { Box, Grid } from "@mui/material";
 
-import { AbandonedHaiView } from "../../components/AbandonedHaiView";
-import { AssessmentView } from "../../components/AssessmentView";
-import { Header } from "../../components/Header";
-import { Footer } from "../../components/Footer";
-import { Radviz } from "../../components/Radviz";
-import { TehaiView } from "../../components/TehaiView";
+import { AbandonedHaiView } from "../components/AbandonedHaiView";
+import { AssessmentView } from "../components/AssessmentView";
+import { Header } from "../components/Header";
+import { Footer } from "../components/Footer";
+import { Radviz } from "../components/Radviz";
+import { TehaiView } from "../components/TehaiView";
 
 const Home = () => {
   return (
