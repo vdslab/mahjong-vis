@@ -30,7 +30,8 @@ export const TehaiView = () => {
       alert("手牌をリセットします");
       setSuteHaiList([]);
       const haiList = initHai();
-      setTehai(haiList);
+      const addedHai = generateNewHai();
+      setTehai([...haiList, addedHai]);
     }
   };
 
