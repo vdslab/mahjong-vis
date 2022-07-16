@@ -14,3 +14,13 @@ export const suteHaiListState = atom({
   key: "sutehaiList",
   default: [],
 });
+export const haiCheckListState = atom({
+  key: "haiCheckList",
+  default: [
+    Array(9).fill(0),
+    Array(9).fill(0),
+    Array(9).fill(0),
+    Array(4).fill(0),
+    Array(3).fill(0),
+  ],
+});
