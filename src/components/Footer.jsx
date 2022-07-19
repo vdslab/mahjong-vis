@@ -11,7 +11,7 @@ export const Footer = () => {
       }}
     >
       <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-        &copy; Uramaru Nakaniwa Koizumi Tsukada Tago
+        &copy; team2022-namako
       </Typography>
       <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
         ※ 画像は「<a href="https://mj-dragon.com/rule/">麻雀の雀龍.com</a>
