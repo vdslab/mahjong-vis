@@ -1,5 +1,8 @@
 import * as d3 from "d3";
 import { Card, Typography } from "@mui/material";
+import { useRecoilValue } from "recoil";
+import { defineFeature } from "../functions/defineFeature";
+import { tehaiState } from "./atoms";
 
 const calc_dist = (a, b, n) => {
   let sum = 0;
@@ -38,6 +41,8 @@ const radviz = (data, dimensions, r) => {
 };
 
 export const Radviz = () => {
+  const tehai = useRecoilValue(tehaiState);
+  const feature = defineFeature(tehai);
   const dimensions = {
     tanyao: [
       0, 0, 100, 19.62155388, 0, 64.16597048, 0, 48.13074353, 42.67195767,
@@ -98,7 +103,7 @@ export const Radviz = () => {
   const lineColor = "#444";
 
   const points = radviz(data, dimensions, r);
-  console.log(points);
+  // console.log(points);
 
   return (
     <Card sx={{ p: 3, height: "100%" }}>
