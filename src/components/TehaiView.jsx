@@ -8,7 +8,7 @@ import {
 } from "./atoms";
 import haiOrder from "./haiOrder";
 import Image from "next/image";
-import { Box, Card, Stack, Typography } from "@mui/material";
+import { Box, Card, Stack, Typography, Button } from "@mui/material";
 export const TehaiView = () => {
   const [abandonedHai, setAbandonedHai] = useRecoilState(haiState);
   const [tehai, setTehai] = useRecoilState(tehaiState);
@@ -51,11 +51,7 @@ export const TehaiView = () => {
     setTehai(newTehai);
 
     if (suteHaiList.length >= MAX_PLAY_TIMES) {
-      alert("手牌をリセットします");
-      setSuteHaiList([]);
-
-      const haiList = initHai();
-      setTehai(haiList);
+      resetTehai();
     }
   };
 
@@ -85,6 +81,14 @@ export const TehaiView = () => {
     return haiList.sort((x, y) => haiOrder.indexOf(x) - haiOrder.indexOf(y));
   };
 
+  const resetTehai = () => {
+    alert("手牌をリセットします");
+    setSuteHaiList([]);
+
+    const haiList = initHai();
+    setTehai(haiList);
+  };
+
   if (tehai.length < 1) {
     return <></>;
   } else {
@@ -94,21 +98,10 @@ export const TehaiView = () => {
           手牌
         </Typography>
         <Stack direction="row">
-          {tehai.map((item, idx) => {
-            if (idx !== 13) {
-              return (
-                <Image
-                  key={idx}
-                  onClick={() => clickHandler(item, idx)}
-                  src={changeHaiName2Path(item)}
-                  width="80%"
-                  height="100%"
-                />
-              );
-            } else {
-              return (
-                <Fragment key={idx}>
-                  <Box sx={{ p: 1 }} />
+          <Stack direction="row">
+            {tehai.map((item, idx) => {
+              if (idx !== 13) {
+                return (
                   <Image
                     key={idx}
                     onClick={() => clickHandler(item, idx)}
@@ -116,10 +109,32 @@ export const TehaiView = () => {
                     width="80%"
                     height="100%"
                   />
-                </Fragment>
-              );
-            }
-          })}
+                );
+              } else {
+                return (
+                  <Fragment key={idx}>
+                    <Box sx={{ p: 1 }} />
+                    <Image
+                      key={idx}
+                      onClick={() => clickHandler(item, idx)}
+                      src={changeHaiName2Path(item)}
+                      width="80%"
+                      height="100%"
+                    />
+                  </Fragment>
+                );
+              }
+            })}
+          </Stack>
+          <Box sx={{ p: 5 }}></Box>
+          <Button
+            variant="contained"
+            onClick={() => {
+              resetTehai();
+            }}
+          >
+            Contained
+          </Button>
         </Stack>
       </Card>
     );
