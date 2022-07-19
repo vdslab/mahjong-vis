@@ -1,37 +1,103 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { haiState, tehaiState, suteHaiListState } from "./atoms";
+import {
+  haiState,
+  tehaiState,
+  suteHaiListState,
+  haiCheckListState,
+} from "./atoms";
 import haiOrder from "./haiOrder";
 import Image from "next/image";
-import { Box, Card, Stack, Typography } from "@mui/material";
-
+import { Box, Card, Stack, Typography, Button, Dialog } from "@mui/material";
 export const TehaiView = () => {
   const [abandonedHai, setAbandonedHai] = useRecoilState(haiState);
   const [tehai, setTehai] = useRecoilState(tehaiState);
   const [suteHaiList, setSuteHaiList] = useRecoilState(suteHaiListState);
   const MAX_PLAY_TIMES = 17;
-
+  const [haiCheckList, setHaiCheckList] = useRecoilState(haiCheckListState);
   useEffect(() => {
     const haiList = initHai();
-    const addedHai = generateNewHai();
-    setTehai([...haiList, addedHai]);
+    setTehai(haiList);
   }, []);
 
   const clickHandler = (clickedHai, idx) => {
     const copiedTehai = JSON.parse(JSON.stringify(tehai));
     setAbandonedHai(clickedHai);
     setSuteHaiList([...suteHaiList, clickedHai]);
-    const addedHai = generateNewHai();
+    const addedHai = "";
+
+    const tehaiCheckedList = [];
+    for (const item of haiCheckList) {
+      tehaiCheckedList.push(item.slice());
+    }
+    const HAITYPELIST = "mpswz";
+    const isAddedHai = 1;
+    while (isAddedHai) {
+      const hai = generateNewHai();
+      const haiType = HAITYPELIST.indexOf(hai[0]);
+      if (tehaiCheckedList[haiType][parseInt(hai[1])] < 4) {
+        tehaiCheckedList[haiType][parseInt(hai[1])] += 1;
+        addedHai += hai;
+        isAddedHai = 0;
+      }
+    }
+
+    setHaiCheckList(tehaiCheckedList);
+
     const newTehai = copiedTehai.filter((item, id) => idx != id);
     newTehai.sort((x, y) => haiOrder.indexOf(x) - haiOrder.indexOf(y));
     newTehai.push(addedHai);
     setTehai(newTehai);
-    if (suteHaiList.length > MAX_PLAY_TIMES) {
-      alert("手牌をリセットします");
-      setSuteHaiList([]);
-      const haiList = initHai();
-      setTehai(haiList);
+
+    if (suteHaiList.length >= MAX_PLAY_TIMES) {
+      resetTehai(true);
     }
+  };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const initHai = () => {
+    const haiList = [];
+    const tehaiCheckedList = [
+      Array(9).fill(0),
+      Array(9).fill(0),
+      Array(9).fill(0),
+      Array(4).fill(0),
+      Array(3).fill(0),
+    ];
+    const HAITYPELIST = "mpswz";
+    for (let i = 0; i < 14; i++) {
+      const isAddedHai = true;
+      while (isAddedHai) {
+        const hai = generateNewHai();
+        const haiType = HAITYPELIST.indexOf(hai[0]);
+        if (tehaiCheckedList[haiType][parseInt(hai[1])] < 4) {
+          tehaiCheckedList[haiType][parseInt(hai[1])] += 1;
+          haiList.push(hai);
+          isAddedHai = false;
+        }
+      }
+    }
+    setHaiCheckList(tehaiCheckedList);
+    return [
+      ...haiList
+        .slice(0, 13)
+        .sort((x, y) => haiOrder.indexOf(x) - haiOrder.indexOf(y)),
+      haiList[13],
+    ];
+  };
+  const [open, setOpen] = useState(false);
+  const resetTehai = (alertFlg) => {
+    if (alertFlg) {
+      alert("手牌をリセットします");
+    }
+    setSuteHaiList([]);
+
+    const haiList = initHai();
+    setTehai(haiList);
   };
 
   if (tehai.length < 1) {
@@ -43,21 +109,10 @@ export const TehaiView = () => {
           手牌
         </Typography>
         <Stack direction="row">
-          {tehai.map((item, idx) => {
-            if (idx !== 13) {
-              return (
-                <Image
-                  key={idx}
-                  onClick={() => clickHandler(item, idx)}
-                  src={changeHaiName2Path(item)}
-                  width="80%"
-                  height="100%"
-                />
-              );
-            } else {
-              return (
-                <Fragment key={idx}>
-                  <Box sx={{ p: 1 }} />
+          <Stack direction="row">
+            {tehai.map((item, idx) => {
+              if (idx !== 13) {
+                return (
                   <Image
                     key={idx}
                     onClick={() => clickHandler(item, idx)}
@@ -65,10 +120,58 @@ export const TehaiView = () => {
                     width="80%"
                     height="100%"
                   />
-                </Fragment>
-              );
-            }
-          })}
+                );
+              } else {
+                return (
+                  <Fragment key={idx}>
+                    <Box sx={{ p: 1 }} />
+                    <Image
+                      key={idx}
+                      onClick={() => clickHandler(item, idx)}
+                      src={changeHaiName2Path(item)}
+                      width="80%"
+                      height="100%"
+                    />
+                  </Fragment>
+                );
+              }
+            })}
+          </Stack>
+          <div style={{ flexGrow: "1" }}></div>
+          <Button variant="contained" onClick={handleClickOpen}>
+            リセット
+          </Button>
+          <Dialog open={open} onClose={handleClose}>
+            <Card sx={{ p: 3 }}>
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ flexGrow: 1 }}
+                style={{ padding: "25px 0" }}
+              >
+                手牌をリセットしますか？
+              </Typography>
+              <Stack
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                spacing={2}
+              >
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    resetTehai(false);
+                    handleClose();
+                  }}
+                >
+                  リセットする
+                </Button>{" "}
+                <Button variant="outlined" onClick={handleClose}>
+                  キャンセル
+                </Button>
+              </Stack>
+            </Card>
+          </Dialog>
         </Stack>
       </Card>
     );
@@ -93,16 +196,6 @@ function generateNewHai() {
   }
   return hai;
 }
-
-const initHai = () => {
-  const haiList = [];
-  // 手牌生成
-  for (let i = 0; i < 13; i++) {
-    const hai = generateNewHai();
-    haiList.push(hai);
-  }
-  return haiList.sort((x, y) => haiOrder.indexOf(x) - haiOrder.indexOf(y));
-};
 
 export const changeHaiName2Path = (haiName) => {
   let path = "/images/hai/";
