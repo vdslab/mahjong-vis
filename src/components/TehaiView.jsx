@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import {
   haiState,
@@ -8,7 +8,7 @@ import {
 } from "./atoms";
 import haiOrder from "./haiOrder";
 import Image from "next/image";
-import { Box, Card, Stack, Typography, Button } from "@mui/material";
+import { Box, Card, Stack, Typography, Button, Dialog } from "@mui/material";
 export const TehaiView = () => {
   const [abandonedHai, setAbandonedHai] = useRecoilState(haiState);
   const [tehai, setTehai] = useRecoilState(tehaiState);
@@ -30,7 +30,6 @@ export const TehaiView = () => {
     for (const item of haiCheckList) {
       tehaiCheckedList.push(item.slice());
     }
-    console.log(tehaiCheckedList);
     const HAITYPELIST = "mpswz";
     const isAddedHai = 1;
     while (isAddedHai) {
@@ -51,10 +50,15 @@ export const TehaiView = () => {
     setTehai(newTehai);
 
     if (suteHaiList.length >= MAX_PLAY_TIMES) {
-      resetTehai();
+      resetTehai(true);
     }
   };
-
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
   const initHai = () => {
     const haiList = [];
     const tehaiCheckedList = [
@@ -66,23 +70,30 @@ export const TehaiView = () => {
     ];
     const HAITYPELIST = "mpswz";
     for (let i = 0; i < 14; i++) {
-      const isAddedHai = 1;
+      const isAddedHai = true;
       while (isAddedHai) {
         const hai = generateNewHai();
         const haiType = HAITYPELIST.indexOf(hai[0]);
         if (tehaiCheckedList[haiType][parseInt(hai[1])] < 4) {
           tehaiCheckedList[haiType][parseInt(hai[1])] += 1;
           haiList.push(hai);
-          isAddedHai = 0;
+          isAddedHai = false;
         }
       }
     }
     setHaiCheckList(tehaiCheckedList);
-    return haiList.sort((x, y) => haiOrder.indexOf(x) - haiOrder.indexOf(y));
+    return [
+      ...haiList
+        .slice(0, 13)
+        .sort((x, y) => haiOrder.indexOf(x) - haiOrder.indexOf(y)),
+      haiList[13],
+    ];
   };
-
-  const resetTehai = () => {
-    alert("手牌をリセットします");
+  const [open, setOpen] = useState(false);
+  const resetTehai = (alertFlg) => {
+    if (alertFlg) {
+      alert("手牌をリセットします");
+    }
     setSuteHaiList([]);
 
     const haiList = initHai();
@@ -126,15 +137,41 @@ export const TehaiView = () => {
               }
             })}
           </Stack>
-          <Box sx={{ p: 5 }}></Box>
-          <Button
-            variant="contained"
-            onClick={() => {
-              resetTehai();
-            }}
-          >
-            Contained
+          <div style={{ flexGrow: "1" }}></div>
+          <Button variant="contained" onClick={handleClickOpen}>
+            リセット
           </Button>
+          <Dialog open={open} onClose={handleClose}>
+            <Card sx={{ p: 3 }}>
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ flexGrow: 1 }}
+                style={{ padding: "25px 0" }}
+              >
+                手牌をリセットしますか？
+              </Typography>
+              <Stack
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                spacing={2}
+              >
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    resetTehai(false);
+                    handleClose();
+                  }}
+                >
+                  リセットする
+                </Button>{" "}
+                <Button variant="outlined" onClick={handleClose}>
+                  キャンセル
+                </Button>
+              </Stack>
+            </Card>
+          </Dialog>
         </Stack>
       </Card>
     );
