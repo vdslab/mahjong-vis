@@ -7,7 +7,7 @@ export const haiState = atom({
 });
 export const tehaiState = atom({
   key: "tehai",
-  default: [{ hai: "", id: 0 }],
+  default: [],
   // effects_UNSTABLE: [persistAtom]
 });
 export const suteHaiListState = atom({
