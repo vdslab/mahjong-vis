@@ -37,6 +37,7 @@ export const FEATURE_LIST = [
   "sanshoku_mentu",
   "chitoitu_cnt",
   "toitoi_sananko_cnt",
+  "kokushi_cnt",
 ];
 
 export const YAKU_LIST = [
@@ -60,37 +61,6 @@ export const YAKU_LIST = [
   "honitu",
   "chinitu",
 ];
-
-export const YAKU_ID_LIST = {
-  10: "zikaze_bakaze",
-  11: "zikaze_bakaze",
-  12: "zikaze_bakaze",
-  13: "zikaze_bakaze",
-  14: "zikaze_bakaze",
-  15: "zikaze_bakaze",
-  16: "zikaze_bakaze",
-  17: "zikaze_bakaze",
-  18: "sangenhai",
-  19: "sangenhai",
-  20: "sangenhai",
-  8: "tanyao",
-  7: "pinfu",
-  9: "ipeko",
-  25: "sanshoku_dojun",
-  26: "sanshoku_doko",
-  29: "sananko",
-  24: "ittu",
-  22: "chitoitu",
-  28: "toitoiho",
-  23: "chanta",
-  27: "sankantu",
-  30: "shosangen",
-  31: "honroto",
-  32: "ryanpeko",
-  33: "junchan",
-  34: "honitu",
-  35: "chinitu",
-};
 
 export const TYPE_LIST = {
   m: 0,
