@@ -1,10 +1,11 @@
 import * as d3 from "d3";
 import { Card, Typography } from "@mui/material";
-import { useRecoilValue } from "recoil";
+import { useSetRecoilState, useRecoilValue } from "recoil";
+import { shantenState, tehaiState } from "./atoms";
 import { defineFeature } from "../functions/defineFeature";
-import { tehaiState } from "./atoms";
 import { DIMENSIONS } from "../const/clusterValue";
 import { defineYaku } from "../functions/defineYaku";
+import { useEffect } from "react";
 
 const calc_dist = (a, b, n) => {
   let sum = 0;
@@ -43,6 +44,14 @@ const radviz = (data, r) => {
 
 export const Radviz = () => {
   const tehai = useRecoilValue(tehaiState);
+  // 手牌の特徴量を計算
+  const { featureList, shanten } = defineFeature(tehai);
+  const setShanten = useSetRecoilState(shantenState);
+
+  useEffect(() => {
+    setShanten(shanten);
+  }, [shanten]);
+  if (tehai.length === 0) return <></>;
 
   // 図の大きさ
   const r = 300;
@@ -53,10 +62,8 @@ export const Radviz = () => {
   const height = contentHeight + margin * 2;
   const lineColor = "#444";
 
-  // 手牌の特徴を計算
-  const feature = defineFeature(tehai);
   // 役を推定
-  const data = defineYaku(feature, 14, 0);
+  const data = defineYaku(featureList, 14, 0);
   // 点の座標
   const point = radviz(data, r);
   // 点の大きさ

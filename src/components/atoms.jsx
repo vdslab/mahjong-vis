@@ -1,19 +1,20 @@
 import { atom } from "recoil";
-import { recoilPersist } from "recoil-persist";
-const { persistAtom } = recoilPersist();
+
 export const haiState = atom({
   key: "abandonedHai",
   default: "hoge",
 });
+
 export const tehaiState = atom({
   key: "tehai",
   default: [],
-  // effects_UNSTABLE: [persistAtom]
 });
+
 export const suteHaiListState = atom({
   key: "sutehaiList",
   default: [],
 });
+
 export const haiCheckListState = atom({
   key: "haiCheckList",
   default: [
@@ -23,4 +24,13 @@ export const haiCheckListState = atom({
     Array(4).fill(0),
     Array(3).fill(0),
   ],
+});
+
+export const shantenState = atom({
+  key: "shanten",
+  default: {
+    other: 8,
+    chitoitu: 6,
+    kokushi: 13,
+  },
 });

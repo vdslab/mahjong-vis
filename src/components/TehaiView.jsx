@@ -1,10 +1,11 @@
 import { Fragment, useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   haiState,
   tehaiState,
   suteHaiListState,
   haiCheckListState,
+  shantenState,
 } from "./atoms";
 import haiOrder from "./haiOrder";
 import Image from "next/image";
@@ -13,11 +14,12 @@ import { Box, Card, Stack, Typography, Button, Dialog } from "@mui/material";
 export const TehaiView = () => {
   const HAITYPELIST = "mpswz";
   const MAX_PLAY_TIMES = 18;
-  const [abandonedHai, setAbandonedHai] = useRecoilState(haiState);
+  const setAbandonedHai = useSetRecoilState(haiState);
   const [tehai, setTehai] = useRecoilState(tehaiState);
   const [suteHaiList, setSuteHaiList] = useRecoilState(suteHaiListState);
   const [open, setOpen] = useState([false, 0]);
   const [haiCheckList, setHaiCheckList] = useRecoilState(haiCheckListState);
+  const shanten = useRecoilValue(shantenState);
   const suteHaiCount = suteHaiList.length;
 
   useEffect(() => {
@@ -101,9 +103,28 @@ export const TehaiView = () => {
   } else {
     return (
       <Card sx={{ p: 3 }}>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          手牌
-        </Typography>
+        <Stack direction="row">
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            手牌
+          </Typography>
+          <Box sx={{ p: 1 }} />
+          <Typography variant="h6" component="div" sx={{ pl: 3 }}>
+            向聴数
+          </Typography>
+          <Typography variant="h6" component="div" sx={{ pl: 5 }}>
+            {`通常手：${shanten["other"] > 0 ? shanten["other"] : "聴牌"}`}
+          </Typography>
+          <Typography variant="h6" component="div" sx={{ pl: 5 }}>
+            {`七対子：${
+              shanten["chitoitu"] > 0 ? shanten["chitoitu"] : "聴牌"
+            }`}
+          </Typography>
+          <Typography variant="h6" component="div" sx={{ pl: 5 }}>
+            {`国士無双：${
+              shanten["kokushi"] > 0 ? shanten["kokushi"] : "聴牌"
+            }`}
+          </Typography>
+        </Stack>
         <Stack direction="row">
           {tehai.map((item, idx) => {
             if (idx !== 13) {
@@ -183,11 +204,20 @@ export const TehaiView = () => {
   }
 };
 
-const getRandomInt = (min, max) => {
+const getRandomInt = (min = 0, max = 34) => {
   return Math.floor(Math.random() * (max - min) + min);
 };
-const generateNewHai = (lower = 0, upper = 34) => {
-  const intHai = getRandomInt(lower, upper);
+const generateNewHai = () => {
+  // 全て
+  // const test = [...Array(34)].map((_, i) => i);
+  // 混一色
+  // const test = [0, 1, 2, 3, 4, 5, 6, 7, 8, 27, 28, 29, 30, 31, 32, 33];
+  // 清一色
+  const test = [...Array(9)].map((_, i) => i);
+  // 国士
+  // const test = [0, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33];
+  const intHai = test[getRandomInt()];
+
   let hai = "";
   if (intHai <= 8) {
     hai += "m" + (intHai + 1);
