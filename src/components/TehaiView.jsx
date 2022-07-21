@@ -10,11 +10,14 @@ import haiOrder from "./haiOrder";
 import Image from "next/image";
 import { Box, Card, Stack, Typography, Button, Dialog } from "@mui/material";
 export const TehaiView = () => {
+  const HAITYPELIST = "mpswz";
+  const MAX_PLAY_TIMES = 18;
   const [abandonedHai, setAbandonedHai] = useRecoilState(haiState);
   const [tehai, setTehai] = useRecoilState(tehaiState);
   const [suteHaiList, setSuteHaiList] = useRecoilState(suteHaiListState);
-  const MAX_PLAY_TIMES = 17;
+  const [open, setOpen] = useState([false, 0]);
   const [haiCheckList, setHaiCheckList] = useRecoilState(haiCheckListState);
+  const suteHaiCount = suteHaiList.length;
   useEffect(() => {
     const haiList = initHai();
     setTehai(haiList);
@@ -22,42 +25,34 @@ export const TehaiView = () => {
 
   const clickHandler = (clickedHai, idx) => {
     const copiedTehai = JSON.parse(JSON.stringify(tehai));
-    setAbandonedHai(clickedHai);
-    setSuteHaiList([...suteHaiList, clickedHai]);
     const addedHai = "";
-
     const tehaiCheckedList = [];
     for (const item of haiCheckList) {
       tehaiCheckedList.push(item.slice());
     }
-    const HAITYPELIST = "mpswz";
-    const isAddedHai = 1;
+    let isAddedHai = 1;
     while (isAddedHai) {
       const hai = generateNewHai();
       const haiType = HAITYPELIST.indexOf(hai[0]);
-      if (tehaiCheckedList[haiType][parseInt(hai[1])] < 4) {
-        tehaiCheckedList[haiType][parseInt(hai[1])] += 1;
+      if (tehaiCheckedList[haiType][parseInt(hai[1]) - 1] < 4) {
+        tehaiCheckedList[haiType][parseInt(hai[1]) - 1] += 1;
         addedHai += hai;
         isAddedHai = 0;
       }
     }
-
     setHaiCheckList(tehaiCheckedList);
-
     const newTehai = copiedTehai.filter((item, id) => idx != id);
     newTehai.sort((x, y) => haiOrder.indexOf(x) - haiOrder.indexOf(y));
     newTehai.push(addedHai);
     setTehai(newTehai);
-
-    if (suteHaiList.length >= MAX_PLAY_TIMES) {
-      resetTehai(true);
-    }
+    setAbandonedHai(clickedHai);
+    setSuteHaiList([...suteHaiList, clickedHai]);
   };
   const handleClickOpen = () => {
-    setOpen(true);
+    setOpen([true, 0]);
   };
-  const handleClose = () => {
-    setOpen(false);
+  const handleClose = (mode) => {
+    setOpen([false, mode === 0 ? 0 : 1]);
   };
   const initHai = () => {
     const haiList = [];
@@ -68,14 +63,14 @@ export const TehaiView = () => {
       Array(4).fill(0),
       Array(3).fill(0),
     ];
-    const HAITYPELIST = "mpswz";
+
     for (let i = 0; i < 14; i++) {
       const isAddedHai = true;
       while (isAddedHai) {
         const hai = generateNewHai();
         const haiType = HAITYPELIST.indexOf(hai[0]);
-        if (tehaiCheckedList[haiType][parseInt(hai[1])] < 4) {
-          tehaiCheckedList[haiType][parseInt(hai[1])] += 1;
+        if (tehaiCheckedList[haiType][parseInt(hai[1]) - 1] < 4) {
+          tehaiCheckedList[haiType][parseInt(hai[1]) - 1] += 1;
           haiList.push(hai);
           isAddedHai = false;
         }
@@ -89,17 +84,15 @@ export const TehaiView = () => {
       haiList[13],
     ];
   };
-  const [open, setOpen] = useState(false);
-  const resetTehai = (alertFlg) => {
-    if (alertFlg) {
-      alert("手牌をリセットします");
-    }
+  const resetTehai = () => {
     setSuteHaiList([]);
 
     const haiList = initHai();
     setTehai(haiList);
   };
-
+  if (suteHaiCount >= MAX_PLAY_TIMES && open[0] === false) {
+    setOpen([true, 1]);
+  }
   if (tehai.length < 1) {
     return <></>;
   } else {
@@ -141,7 +134,7 @@ export const TehaiView = () => {
           <Button variant="contained" onClick={handleClickOpen}>
             リセット
           </Button>
-          <Dialog open={open} onClose={handleClose}>
+          <Dialog open={open[0]} onClose={handleClose}>
             <Card sx={{ p: 3 }}>
               <Typography
                 variant="h6"
@@ -149,7 +142,9 @@ export const TehaiView = () => {
                 sx={{ flexGrow: 1 }}
                 style={{ padding: "25px 0" }}
               >
-                手牌をリセットしますか？
+                {open[1] === 0
+                  ? "手牌をリセットしますか？"
+                  : "手牌をリセットします"}
               </Typography>
               <Stack
                 direction="row"
@@ -160,15 +155,24 @@ export const TehaiView = () => {
                 <Button
                   variant="contained"
                   onClick={() => {
-                    resetTehai(false);
-                    handleClose();
+                    resetTehai();
+                    handleClose(open[1] === 0 ? 0 : 1);
                   }}
                 >
-                  リセットする
+                  {open[1] === 0 ? "リセットする" : "OK"}
                 </Button>{" "}
-                <Button variant="outlined" onClick={handleClose}>
-                  キャンセル
-                </Button>
+                {open[1] === 0 ? (
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      handleClose(0);
+                    }}
+                  >
+                    キャンセル
+                  </Button>
+                ) : (
+                  ""
+                )}
               </Stack>
             </Card>
           </Dialog>
@@ -178,24 +182,27 @@ export const TehaiView = () => {
   }
 };
 
-function getRandomInt(min, max) {
+const getRandomInt = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min) + min);
-}
-function generateNewHai() {
-  const HAITYPE = "mpswz";
+};
+const generateNewHai = () => {
+  const intHai = getRandomInt(0, 34);
   let hai = "";
-  hai += HAITYPE[getRandomInt(0, HAITYPE.length - 1)];
-  if (["m", "p", "s"].includes(hai)) {
-    hai += getRandomInt(1, 9);
-  } else if (hai === "w") {
-    hai += getRandomInt(1, 4);
+  if (intHai <= 8) {
+    hai += "m" + (intHai + 1);
+  } else if (intHai <= 17) {
+    hai += "p" + ((intHai % 9) + 1);
+  } else if (intHai <= 26) {
+    hai += "s" + ((intHai % 9) + 1);
+  } else if (intHai <= 30) {
+    hai += "w" + ((intHai % 9) + 1);
   } else {
-    hai + getRandomInt(1, 3);
+    hai += "z" + ((intHai % 9) - 3);
   }
   return hai;
-}
+};
 
 export const changeHaiName2Path = (haiName) => {
   let path = "/images/hai/";
