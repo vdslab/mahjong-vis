@@ -184,12 +184,10 @@ export const TehaiView = () => {
 };
 
 const getRandomInt = (min, max) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
   return Math.floor(Math.random() * (max - min) + min);
 };
-const generateNewHai = () => {
-  const intHai = getRandomInt(0, 34);
+const generateNewHai = (lower = 0, upper = 34) => {
+  const intHai = getRandomInt(lower, upper);
   let hai = "";
   if (intHai <= 8) {
     hai += "m" + (intHai + 1);
