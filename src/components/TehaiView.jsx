@@ -9,6 +9,7 @@ import {
 import haiOrder from "./haiOrder";
 import Image from "next/image";
 import { Box, Card, Stack, Typography, Button, Dialog } from "@mui/material";
+
 export const TehaiView = () => {
   const HAITYPELIST = "mpswz";
   const MAX_PLAY_TIMES = 18;
@@ -18,6 +19,7 @@ export const TehaiView = () => {
   const [open, setOpen] = useState([false, 0]);
   const [haiCheckList, setHaiCheckList] = useRecoilState(haiCheckListState);
   const suteHaiCount = suteHaiList.length;
+
   useEffect(() => {
     const haiList = initHai();
     setTehai(haiList);
@@ -93,6 +95,7 @@ export const TehaiView = () => {
   if (suteHaiCount >= MAX_PLAY_TIMES && open[0] === false) {
     setOpen([true, 1]);
   }
+
   if (tehai.length < 1) {
     return <></>;
   } else {
@@ -102,10 +105,21 @@ export const TehaiView = () => {
           手牌
         </Typography>
         <Stack direction="row">
-          <Stack direction="row">
-            {tehai.map((item, idx) => {
-              if (idx !== 13) {
-                return (
+          {tehai.map((item, idx) => {
+            if (idx !== 13) {
+              return (
+                <Image
+                  key={idx}
+                  onClick={() => clickHandler(item, idx)}
+                  src={changeHaiName2Path(item)}
+                  width="80%"
+                  height="100%"
+                />
+              );
+            } else {
+              return (
+                <Fragment key={idx}>
+                  <Box sx={{ p: 1 }} />
                   <Image
                     key={idx}
                     onClick={() => clickHandler(item, idx)}
@@ -113,70 +127,57 @@ export const TehaiView = () => {
                     width="80%"
                     height="100%"
                   />
-                );
-              } else {
-                return (
-                  <Fragment key={idx}>
-                    <Box sx={{ p: 1 }} />
-                    <Image
-                      key={idx}
-                      onClick={() => clickHandler(item, idx)}
-                      src={changeHaiName2Path(item)}
-                      width="80%"
-                      height="100%"
-                    />
-                  </Fragment>
-                );
-              }
-            })}
-          </Stack>
-          <div style={{ flexGrow: "1" }}></div>
+                </Fragment>
+              );
+            }
+          })}
+          <Box sx={{ p: 1 }} />
           <Button variant="contained" onClick={handleClickOpen}>
             リセット
           </Button>
-          <Dialog open={open[0]} onClose={handleClose}>
-            <Card sx={{ p: 3 }}>
-              <Typography
-                variant="h6"
-                component="div"
-                sx={{ flexGrow: 1 }}
-                style={{ padding: "25px 0" }}
+        </Stack>
+        <Dialog open={open[0]} onClose={handleClose}>
+          <Card sx={{ p: 3 }}>
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ flexGrow: 1 }}
+              style={{ padding: "25px 0" }}
+            >
+              {open[1] === 0
+                ? "手牌をリセットしますか？"
+                : "手牌をリセットします"}
+            </Typography>
+            <Stack
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+              spacing={2}
+            >
+              <Button
+                variant="contained"
+                onClick={() => {
+                  resetTehai();
+                  handleClose(open[1] === 0 ? 0 : 1);
+                }}
               >
-                {open[1] === 0
-                  ? "手牌をリセットしますか？"
-                  : "手牌をリセットします"}
-              </Typography>
-              <Stack
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-                spacing={2}
-              >
+                {open[1] === 0 ? "リセットする" : "OK"}
+              </Button>{" "}
+              {open[1] === 0 ? (
                 <Button
-                  variant="contained"
+                  variant="outlined"
                   onClick={() => {
-                    resetTehai();
-                    handleClose(open[1] === 0 ? 0 : 1);
+                    handleClose(0);
                   }}
                 >
-                  {open[1] === 0 ? "リセットする" : "OK"}
-                </Button>{" "}
-                {open[1] === 0 ? (
-                  <Button
-                    variant="outlined"
-                    onClick={() => {
-                      handleClose(0);
-                    }}
-                  >
-                    キャンセル
-                  </Button>
-                ) : (
-                  ""
-                )}
-              </Stack>
-            </Card>
-          </Dialog>
-        </Stack>
+                  キャンセル
+                </Button>
+              ) : (
+                ""
+              )}
+            </Stack>
+          </Card>
+        </Dialog>
       </Card>
     );
   }

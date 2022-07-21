@@ -305,6 +305,7 @@ const cntFeature = (counter, featureList, roundWind, playerWind) => {
     featureList["sanshoku_cnt"] = Math.max(tmp, featureList["sanshoku_cnt"]);
   }
   return Object.values(rleList);
+};
 
 // 配列の中身をkeyとしたobjectを返す
 const makeObject = (array, init = 0) => {
