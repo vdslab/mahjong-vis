@@ -18,7 +18,6 @@ export const TehaiView = () => {
   const [open, setOpen] = useState([false, 0]);
   const [haiCheckList, setHaiCheckList] = useRecoilState(haiCheckListState);
   const suteHaiCount = suteHaiList.length;
-
   useEffect(() => {
     const haiList = initHai();
     setTehai(haiList);
@@ -26,7 +25,6 @@ export const TehaiView = () => {
 
   const clickHandler = (clickedHai, idx) => {
     const copiedTehai = JSON.parse(JSON.stringify(tehai));
-
     const addedHai = "";
     const tehaiCheckedList = [];
     for (const item of haiCheckList) {
@@ -36,8 +34,8 @@ export const TehaiView = () => {
     while (isAddedHai) {
       const hai = generateNewHai();
       const haiType = HAITYPELIST.indexOf(hai[0]);
-      if (tehaiCheckedList[haiType][parseInt(hai[1])] < 4) {
-        tehaiCheckedList[haiType][parseInt(hai[1])] += 1;
+      if (tehaiCheckedList[haiType][parseInt(hai[1]) - 1] < 4) {
+        tehaiCheckedList[haiType][parseInt(hai[1]) - 1] += 1;
         addedHai += hai;
         isAddedHai = 0;
       }
@@ -65,13 +63,14 @@ export const TehaiView = () => {
       Array(4).fill(0),
       Array(3).fill(0),
     ];
+
     for (let i = 0; i < 14; i++) {
       const isAddedHai = true;
       while (isAddedHai) {
         const hai = generateNewHai();
         const haiType = HAITYPELIST.indexOf(hai[0]);
-        if (tehaiCheckedList[haiType][parseInt(hai[1])] < 4) {
-          tehaiCheckedList[haiType][parseInt(hai[1])] += 1;
+        if (tehaiCheckedList[haiType][parseInt(hai[1]) - 1] < 4) {
+          tehaiCheckedList[haiType][parseInt(hai[1]) - 1] += 1;
           haiList.push(hai);
           isAddedHai = false;
         }
@@ -85,7 +84,6 @@ export const TehaiView = () => {
       haiList[13],
     ];
   };
-
   const resetTehai = () => {
     setSuteHaiList([]);
 
@@ -190,15 +188,18 @@ const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min) + min);
 };
 const generateNewHai = () => {
-  const HAITYPE = "mpswz";
+  const intHai = getRandomInt(0, 34);
   let hai = "";
-  hai += HAITYPE[getRandomInt(0, HAITYPE.length - 1)];
-  if (["m", "p", "s"].includes(hai)) {
-    hai += getRandomInt(1, 9);
-  } else if (hai === "w") {
-    hai += getRandomInt(1, 4);
+  if (intHai <= 8) {
+    hai += "m" + (intHai + 1);
+  } else if (intHai <= 17) {
+    hai += "p" + ((intHai % 9) + 1);
+  } else if (intHai <= 26) {
+    hai += "s" + ((intHai % 9) + 1);
+  } else if (intHai <= 30) {
+    hai += "w" + ((intHai % 9) + 1);
   } else {
-    hai + getRandomInt(1, 3);
+    hai += "z" + ((intHai % 9) - 3);
   }
   return hai;
 };
