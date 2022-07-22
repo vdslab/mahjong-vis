@@ -2,10 +2,6 @@ import { FEATURE_LIST, TYPE_LIST } from "../const/const";
 import { SHANTEN_TABLE } from "../const/shantenTable";
 
 export const defineFeature = (tehai) => {
-  if (tehai.length === 0) {
-    return [];
-  }
-
   // 面子と面子候補と浮き牌のリスト
   // 萬子筒子索子風三元の5種類
   const mentuList = [...Array(5)].map((_) => [...Array(3)].map((_) => []));
@@ -21,20 +17,50 @@ export const defineFeature = (tehai) => {
     }),
     {}
   );
-
+  console.log(counter);
   // 七対子,対々和,三暗刻は面子分解に寄らない
   featureList["chitoitu_cnt"] = arrayFilterLength(Object.values(counter), 2);
   featureList["toitoi_sananko_cnt"] = arrayFilterLength(
     Object.values(counter),
     3
   );
-
+  const kokushiSet = new Set([
+    "m1",
+    "m9",
+    "p1",
+    "p9",
+    "s1",
+    "s9",
+    "w1",
+    "w2",
+    "w3",
+    "w4",
+    "z1",
+    "z2",
+    "z3",
+  ]);
+  let flag = false;
+  for (const [key, value] of Object.entries(counter)) {
+    if (kokushiSet.has(key)) {
+      if (value >= 2) flag = true;
+      featureList["kokushi_cnt"] += 1;
+    }
+  }
+  featureList["kokushi_cnt"] += Number(flag);
   // 面子構成を列挙
   mentuFeature(mentuList, counter);
   // 数系特徴量
   const [md, pd, sd] = cntFeature(counter, featureList, 1, 1);
-
+  const shanten = {
+    other: 8,
+    chitoitu:
+      6 -
+      featureList["chitoitu_cnt"] +
+      Math.max(0, 7 - Object.keys(counter).length),
+    kokushi: 13 - featureList["kokushi_cnt"],
+  };
   const res = [];
+
   [md, pd, sd].map((data, idx) => {
     const buf = String(
       Number(Object.values(data).reduce((prev, cur) => prev + cur, ""))
@@ -183,8 +209,7 @@ export const defineFeature = (tehai) => {
       tmp
     );
   }
-
-  return featureList;
+  return { featureList, shanten };
 };
 
 // 面子構成を列挙
