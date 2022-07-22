@@ -19,7 +19,6 @@ export const TehaiView = () => {
   const [open, setOpen] = useState([false, 0]);
   const [haiCheckList, setHaiCheckList] = useRecoilState(haiCheckListState);
   const suteHaiCount = suteHaiList.length;
-
   useEffect(() => {
     const haiList = initHai();
     setTehai(haiList);
