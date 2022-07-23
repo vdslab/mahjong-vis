@@ -17,7 +17,6 @@ export const defineFeature = (tehai) => {
     }),
     {}
   );
-  console.log(counter);
   // 七対子,対々和,三暗刻は面子分解に寄らない
   featureList["chitoitu_cnt"] = arrayFilterLength(Object.values(counter), 2);
   featureList["toitoi_sananko_cnt"] = arrayFilterLength(
@@ -51,15 +50,9 @@ export const defineFeature = (tehai) => {
   mentuFeature(mentuList, counter);
   // 数系特徴量
   const [md, pd, sd] = cntFeature(counter, featureList, 1, 1);
-  const shanten = {
-    other: 8,
-    chitoitu:
-      6 -
-      featureList["chitoitu_cnt"] +
-      Math.max(0, 7 - Object.keys(counter).length),
-    kokushi: 13 - featureList["kokushi_cnt"],
-  };
   const res = [];
+  let tmpThree = 0;
+  let tmpTwo = 0;
 
   [md, pd, sd].map((data, idx) => {
     const buf = String(
@@ -74,9 +67,12 @@ export const defineFeature = (tehai) => {
     const a = tmp[2] * 2 + tmp[3];
     const b = tmp[0] * 2 + tmp[1];
     const [three, two] = a > b ? [tmp[2], tmp[3]] : [tmp[0], tmp[1]];
-    if (a === 0 && b === 0) {
-      return;
+    if (a === 0 && b === 0) return;
+    else {
+      tmpThree += three;
+      tmpTwo += two;
     }
+
     const threeMentu = mentuList[idx][0];
     const twoMentu = mentuList[idx][1];
 
@@ -209,6 +205,14 @@ export const defineFeature = (tehai) => {
       tmp
     );
   }
+  const shanten = {
+    other: 8 - tmpThree * 2 - tmpTwo,
+    chitoitu:
+      6 -
+      featureList["chitoitu_cnt"] +
+      Math.max(0, 7 - Object.keys(counter).length),
+    kokushi: 13 - featureList["kokushi_cnt"],
+  };
   return { featureList, shanten };
 };
 
@@ -304,8 +308,8 @@ const cntFeature = (counter, featureList, roundWind, playerWind) => {
           }
         }
         featureList[`zi_${name}`] += 1;
-        featureList["zi_cnt"] += cnt;
       }
+      featureList["zi_cnt"] += cnt;
     }
   }
 
