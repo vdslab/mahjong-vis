@@ -17,20 +17,15 @@ const calc_dist = (a, b, n) => {
 
 const radviz = (data, r) => {
   const n = Object.keys(DIMENSIONS).length;
-  // const scales = Object.keys(DIMENSIONS).map((property) => {
-  //   console.log(property);
-  //   return d3
-  //     .scaleLinear()
-  //     .domain(d3.extent(data, (item) => item[property]))
-  //     .range([0, 1]);
-  // });
+  const power = Object.values(DIMENSIONS).map((dim) => calc_dist(data, dim, n));
+  const scale = d3.scaleLinear().domain(d3.extent(power)).range([0, 1]);
+
   let a = 0;
   let b = 0;
   let c = 0;
   const dt = (2 * Math.PI) / n;
   for (let j = 0; j < n; ++j) {
-    const v = calc_dist(data, Object.values(DIMENSIONS)[j], n);
-    console.log(v);
+    const v = 1 - scale(power[j]);
     a += v * Math.cos(dt * j);
     b += v * Math.sin(dt * j);
     c += v;
@@ -68,7 +63,6 @@ export const Radviz = () => {
   const point = radviz(data, r);
   // 点の大きさ
   const pointSize = 10;
-  console.log(data);
 
   return (
     <Card sx={{ p: 3, height: "100%" }}>
@@ -106,7 +100,7 @@ export const Radviz = () => {
             );
           })}
           {point.x && point.y ? (
-            <g transform={`translate(${point.x},${point.y})`}>
+            <g transform={`translate(${-point.x},${-point.y})`}>
               <circle r={pointSize} opacity="0.8" />
             </g>
           ) : (
