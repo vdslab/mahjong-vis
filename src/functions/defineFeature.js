@@ -17,7 +17,7 @@ export const defineFeature = (tehai) => {
     }),
     {}
   );
-  console.log(counter);
+  // console.log(counter);
   // 七対子,対々和,三暗刻は面子分解に寄らない
   featureList["chitoitu_cnt"] = arrayFilterLength(Object.values(counter), 2);
   featureList["toitoi_sananko_cnt"] = arrayFilterLength(

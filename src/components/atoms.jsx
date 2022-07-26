@@ -7,7 +7,22 @@ export const haiState = atom({
 
 export const tehaiState = atom({
   key: "tehai",
-  default: [],
+  default: [
+    "m4",
+    "m5",
+    "m5",
+    "m6",
+    "m6",
+    "m7",
+    "p3",
+    "p4",
+    "p5",
+    "s6",
+    "s6",
+    "z2",
+    "z2",
+    "z2",
+  ],
 });
 
 export const suteHaiListState = atom({
