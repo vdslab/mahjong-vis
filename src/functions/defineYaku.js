@@ -171,7 +171,10 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
   // TODO:段階的にすべきかどうか
   yakuList["chinitu"] = (featureList["same_color_cnt"] * 100) / haiLen;
 
-  return Object.values(yakuList).map((data, _) => Math.min(100, data));
+  for (const [key, value] of Object.entries(yakuList)) {
+    yakuList[key] = Math.min(100, value);
+  }
+  return yakuList;
 };
 
 // 配列の中身をkeyとしたobjectを返す

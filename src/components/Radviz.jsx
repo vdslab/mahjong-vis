@@ -4,41 +4,22 @@ import { useSetRecoilState, useRecoilValue } from "recoil";
 import { shantenState, tehaiState } from "./atoms";
 import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
-// import { DIMENSIONS } from "../const/clusterStructureValue";
-import { DIMENSIONS } from "../const/clusterYakuValue";
+import { DIMENSIONS } from "../const/test";
 import { useEffect } from "react";
 import { aaa } from "../../public/data/tehai_yaku";
 
-const calc_dist = (a, b, n) => {
-  let sum = 0;
-  for (let i = 0; i < n; ++i) {
-    sum += (a[i] - b[i]) * (a[i] - b[i]);
-  }
-  return Math.sqrt(sum);
-};
-
 const radviz = (data, r) => {
-  // console.log(`input:${data}`);
-  const n = Object.keys(DIMENSIONS).length;
+  const n = DIMENSIONS.length;
 
   return data.slice(0, 100).map((item) => {
-    const power = Object.keys(DIMENSIONS).map((dim) => {
-      const res = calc_dist(
-        // Object.values(defineFeature(item.tehai).featureList),
-        defineYaku(defineFeature(item.tehai).featureList, 14, 0),
-        DIMENSIONS[dim],
-        n
-      );
-      return res;
-    });
-    const scale = d3.scaleLinear().domain(d3.extent(power)).range([0, 1]);
+    const yaku = defineYaku(defineFeature(item.tehai).featureList, 14, 0);
 
     let a = 0;
     let b = 0;
     let c = 0;
     const dt = (2 * Math.PI) / n;
     for (let j = 0; j < n; ++j) {
-      const v = 1 - scale(power[j]);
+      const v = yaku[DIMENSIONS[j]];
       a += v * Math.cos(dt * j);
       b += v * Math.sin(dt * j);
       c += v;
@@ -92,13 +73,11 @@ export const Radviz = () => {
       <svg viewBox={`0 0 ${width} ${height}`}>
         <g transform={`translate(${margin + r},${margin + r})`}>
           <circle r={r} fill="none" stroke={lineColor} />
-          {Object.keys(DIMENSIONS).map((property, i) => {
+          {DIMENSIONS.map((property, i) => {
             return (
               <g
                 key={i}
-                transform={`rotate(${
-                  (360 / Object.keys(DIMENSIONS).length) * i + 90
-                })`}
+                transform={`rotate(${(360 / DIMENSIONS.length) * i + 90})`}
               >
                 <line
                   x1="0"
@@ -122,11 +101,12 @@ export const Radviz = () => {
           {aaa.slice(0, 100).map((item, i) => {
             if (item.yaku === null) return <></>;
             const { x, y } = points[i];
+            // console.log(x, y);
             return (
               <g
                 key={i}
                 transform={`translate(${x},${y})`}
-                onMouseEnter={() => console.log(item.yaku)}
+                onMouseEnter={() => console.log(item.tehai)}
               >
                 <circle r={pointSize} fill={color(item.yaku)} opacity="0.8" />
                 <text>{item.yaku}</text>
