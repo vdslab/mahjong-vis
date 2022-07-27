@@ -10,14 +10,14 @@ import { TehaiView } from "../components/TehaiView";
 const Home = () => {
   return (
     <Box sx={{ bgcolor: "#f5f5f5" }}>
-      <Header />
+      {/* <Header />
       <Grid container sx={{ p: 3 }} columnSpacing={2} rowSpacing={2}>
         <Grid item xs={3}>
           <AbandonedHaiView />
         </Grid>
-        <Grid item xs={6}>
-          <Radviz />
-        </Grid>
+        <Grid item xs={6}> */}
+      <Radviz />
+      {/* </Grid>
         <Grid item xs={3}>
           <AssessmentView />
         </Grid>
@@ -25,7 +25,7 @@ const Home = () => {
           <TehaiView />
         </Grid>
       </Grid>
-      <Footer />
+      <Footer /> */}
     </Box>
   );
 };

@@ -3,9 +3,11 @@ import { Card, Typography } from "@mui/material";
 import { useSetRecoilState, useRecoilValue } from "recoil";
 import { shantenState, tehaiState } from "./atoms";
 import { defineFeature } from "../functions/defineFeature";
-import { DIMENSIONS } from "../const/clusterValue";
 import { defineYaku } from "../functions/defineYaku";
+// import { DIMENSIONS } from "../const/clusterStructureValue";
+import { DIMENSIONS } from "../const/clusterYakuValue";
 import { useEffect } from "react";
+import { aaa } from "../../public/data/tehai_yaku";
 
 const calc_dist = (a, b, n) => {
   let sum = 0;
@@ -16,25 +18,37 @@ const calc_dist = (a, b, n) => {
 };
 
 const radviz = (data, r) => {
+  // console.log(`input:${data}`);
   const n = Object.keys(DIMENSIONS).length;
-  const power = Object.values(DIMENSIONS).map((dim) => calc_dist(data, dim, n));
-  const scale = d3.scaleLinear().domain(d3.extent(power)).range([0, 1]);
 
-  let a = 0;
-  let b = 0;
-  let c = 0;
-  const dt = (2 * Math.PI) / n;
-  for (let j = 0; j < n; ++j) {
-    const v = 1 - scale(power[j]);
-    a += v * Math.cos(dt * j);
-    b += v * Math.sin(dt * j);
-    c += v;
-  }
-  a *= r / c;
-  b *= r / c;
-  const d = Math.sqrt(a * a + b * b);
-  const t = Math.atan2(b, a);
-  return { x: d * Math.cos(t), y: d * Math.sin(t) };
+  return data.slice(0, 100).map((item) => {
+    const power = Object.keys(DIMENSIONS).map((dim) => {
+      const res = calc_dist(
+        // Object.values(defineFeature(item.tehai).featureList),
+        defineYaku(defineFeature(item.tehai).featureList, 14, 0),
+        DIMENSIONS[dim],
+        n
+      );
+      return res;
+    });
+    const scale = d3.scaleLinear().domain(d3.extent(power)).range([0, 1]);
+
+    let a = 0;
+    let b = 0;
+    let c = 0;
+    const dt = (2 * Math.PI) / n;
+    for (let j = 0; j < n; ++j) {
+      const v = 1 - scale(power[j]);
+      a += v * Math.cos(dt * j);
+      b += v * Math.sin(dt * j);
+      c += v;
+    }
+    a *= r / c;
+    b *= r / c;
+    const d = (Math.sqrt(a * a + b * b) * 3) / 2;
+    const t = Math.atan2(b, a);
+    return { x: d * Math.cos(t), y: d * Math.sin(t) };
+  });
 };
 
 export const Radviz = () => {
@@ -46,10 +60,11 @@ export const Radviz = () => {
   useEffect(() => {
     setShanten(shanten);
   }, [shanten]);
-  if (tehai.length === 0) return <></>;
+
+  // if (tehai.length === 0) return <></>;
 
   // 図の大きさ
-  const r = 300;
+  const r = 500;
   const contentWidth = 2 * r;
   const contentHeight = 2 * r;
   const margin = 50;
@@ -58,9 +73,14 @@ export const Radviz = () => {
   const lineColor = "#444";
 
   // 役を推定
-  const data = defineYaku(featureList, 14, 0);
+  // const data = defineYaku(featureList, 14, 0);
   // 点の座標
-  const point = radviz(data, r);
+  const points = radviz(aaa, r);
+  //点の色
+  const color = d3.scaleOrdinal(d3.schemeCategory10);
+  for (const item of aaa) {
+    if (item.yaku) color(item.yaku);
+  }
   // 点の大きさ
   const pointSize = 10;
 
@@ -99,13 +119,20 @@ export const Radviz = () => {
               </g>
             );
           })}
-          {point.x && point.y ? (
-            <g transform={`translate(${-point.x},${-point.y})`}>
-              <circle r={pointSize} opacity="0.8" />
-            </g>
-          ) : (
-            <></>
-          )}
+          {aaa.slice(0, 100).map((item, i) => {
+            if (item.yaku === null) return <></>;
+            const { x, y } = points[i];
+            return (
+              <g
+                key={i}
+                transform={`translate(${x},${y})`}
+                onMouseEnter={() => console.log(item.yaku)}
+              >
+                <circle r={pointSize} fill={color(item.yaku)} opacity="0.8" />
+                <text>{item.yaku}</text>
+              </g>
+            );
+          })}
         </g>
       </svg>
     </Card>

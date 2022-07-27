@@ -1,4 +1,4 @@
-[
+export const aaa = [
   {
     "tehai": [
       "m3",

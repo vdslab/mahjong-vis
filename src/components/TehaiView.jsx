@@ -209,11 +209,11 @@ const getRandomInt = (min = 0, max = 34) => {
 };
 const generateNewHai = () => {
   // 全て
-  // const test = [...Array(34)].map((_, i) => i);
+  const test = [...Array(34)].map((_, i) => i);
   // 混一色
   // const test = [0, 1, 2, 3, 4, 5, 6, 7, 8, 27, 28, 29, 30, 31, 32, 33];
   // 清一色
-  const test = [...Array(9)].map((_, i) => i);
+  // const test = [...Array(9)].map((_, i) => i);
   // 国士
   // const test = [0, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33];
   const intHai = test[getRandomInt()];
