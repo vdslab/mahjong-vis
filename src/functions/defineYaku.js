@@ -9,7 +9,7 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
     featureList["zikaze_bakaze_kotu"] || featureList["zikaze_bakaze_kantu"]
       ? 100
       : featureList["zikaze_bakaze_toitu"]
-      ? 60
+      ? 70
       : 0;
 
   // 三元
@@ -18,41 +18,46 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
     featureList["sangen_kotu"] || featureList["sangen_kantu"]
       ? 100
       : featureList["sangen_toitu"]
-      ? 60
+      ? 70
       : 0;
 
   // タンヤオ
-  yakuList["tanyao"] = (featureList["chunchan_cnt"] * 100) / haiLen;
+  yakuList["tanyao"] =
+    ((featureValue(
+      featureList["chunchan_shuntu"] + featureList["chunchan_kotu"],
+      {
+        4: 90,
+        3: 70,
+        2: 30,
+        1: 10,
+      }
+    ) +
+      (featureList["chunchan_toitu"] ? 10 : 0)) *
+      60 +
+      (Math.max(
+        featureList["chunchan_cnt"] -
+          featureList["ichikyu_cnt"] -
+          featureList["zi_cnt"],
+        0
+      ) /
+        haiLen) *
+        40) /
+    100;
 
   // 鳴いてないときに付く役
   if (naki_cnt === 0) {
     // 平和
     // TODO:七対子の一盃口ぽいやつ対策？
     // TODO:数値に段階を持たせる
-    yakuList["pinfu"] =
-      featureList["chitoitu_cnt"] - featureList["toitoi_sananko_cnt"] >= 1
-        ? 1
-        : 0;
-    let tmp_cnt = 4;
-    let sum_cnt =
-      featureList["ichikyu_shuntu"] + featureList["chunchan_shuntu"];
-    let coe = Math.min(tmp_cnt, sum_cnt);
-    yakuList["pinfu"] += coe * 23;
-
-    tmp_cnt -= coe;
-    sum_cnt = featureList["3-7_ryanmen"] + featureList["23_78_ryanmen"];
-    coe = Math.min(tmp_cnt, sum_cnt);
-    yakuList["pinfu"] += coe * 15;
-
-    tmp_cnt -= coe;
-    sum_cnt = featureList["13_79_kanchan"] + featureList["2-8_kanchan"];
-    coe = Math.min(tmp_cnt, sum_cnt);
-    yakuList["pinfu"] += coe * 10;
-
-    tmp_cnt -= coe;
-    sum_cnt = featureList["penchan"];
-    coe = Math.min(tmp_cnt, sum_cnt);
-    yakuList["pinfu"] += coe * 4;
+    yakuList["pinfu"] = pinfu(
+      featureList["chitoitu_cnt"] - featureList["toitoi_sananko_cnt"],
+      featureList["ichikyu_shuntu"] + featureList["chunchan_shuntu"],
+      featureList["3-7_ryanmen"] + featureList["23_78_ryanmen"],
+      featureList["13_79_kanchan"] + featureList["2-8_kanchan"],
+      featureList["penchan"],
+      featureList["sangen_cnt"] + featureList["zikaze_bakaze_cnt"],
+      0
+    );
 
     // 一盃口
     yakuList["ipeko"] = 0;
@@ -171,7 +176,12 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
   // TODO:段階的にすべきかどうか
   yakuList["chinitu"] = (featureList["same_color_cnt"] * 100) / haiLen;
 
-  return Object.values(yakuList).map((data, _) => Math.min(100, data));
+  // 保険
+  // 必要ないかも
+  for (const [key, value] of Object.entries(yakuList)) {
+    yakuList[key] = Math.min(100, value);
+  }
+  return yakuList;
 };
 
 // 配列の中身をkeyとしたobjectを返す
@@ -181,4 +191,31 @@ const makeObject = (array, init = 0) => {
 
 const featureValue = (cnt, d) => {
   return d[cnt] ? d[cnt] : 0;
+};
+
+// 平和
+// ziYakuCnt:役の付く字牌
+const pinfu = (head, shuntu, ryanmen, kanchan, penchan, ziYakuCnt, ukiCnt) => {
+  // 12枚
+  if (shuntu === 4) {
+    if (ziYakuCnt === 2) return 50;
+    if (ziYakuCnt === 1 || penchan === 1 || kanchan === 1) return 60;
+    return 70;
+  }
+  // 9枚
+  if (shuntu === 3) {
+    if (head === 1) {
+      if (ryanmen === 1) return 100;
+      if (kanchan === 1 || penchan === 1) return 80;
+      return 60;
+    } else {
+      if (ryanmen === 2) return 80;
+      if (ryanmen === 1 && (kanchan === 1 || penchan === 1)) return 70;
+      return 60;
+    }
+  }
+  // 6枚
+  if (shuntu === 2) {
+  }
+  return 0;
 };

@@ -15,10 +15,10 @@ const Home = () => {
         <Grid item xs={3}>
           <AbandonedHaiView />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <Radviz />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={5}>
           <AssessmentView />
         </Grid>
         <Grid item xs={12}>

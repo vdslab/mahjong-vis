@@ -1,43 +1,25 @@
-import * as d3 from "d3";
-import { Card, Typography } from "@mui/material";
-import { useSetRecoilState, useRecoilValue } from "recoil";
-import { shantenState, tehaiState } from "./atoms";
+import { Card } from "@mui/material";
+import { useSetRecoilState, useRecoilValue, useRecoilState } from "recoil";
+import { shantenState, tehaiState, yakuValueState } from "./atoms";
 import { defineFeature } from "../functions/defineFeature";
-import { DIMENSIONS } from "../const/clusterValue";
 import { defineYaku } from "../functions/defineYaku";
+import { DIMENSIONS } from "../const/upper";
 import { useEffect } from "react";
 
-const calc_dist = (a, b, n) => {
-  let sum = 0;
-  for (let i = 0; i < n; ++i) {
-    sum += (a[i] - b[i]) * (a[i] - b[i]);
-  }
-  return Math.sqrt(sum);
-};
-
-const radviz = (data, r) => {
-  const n = Object.keys(DIMENSIONS).length;
-  // const scales = Object.keys(DIMENSIONS).map((property) => {
-  //   console.log(property);
-  //   return d3
-  //     .scaleLinear()
-  //     .domain(d3.extent(data, (item) => item[property]))
-  //     .range([0, 1]);
-  // });
+const radviz = (data, r, n) => {
   let a = 0;
   let b = 0;
   let c = 0;
   const dt = (2 * Math.PI) / n;
   for (let j = 0; j < n; ++j) {
-    const v = calc_dist(data, Object.values(DIMENSIONS)[j], n);
-    console.log(v);
+    const v = data[DIMENSIONS[j]];
     a += v * Math.cos(dt * j);
     b += v * Math.sin(dt * j);
     c += v;
   }
   a *= r / c;
   b *= r / c;
-  const d = Math.sqrt(a * a + b * b);
+  const d = (Math.sqrt(a * a + b * b) * 4) / 3;
   const t = Math.atan2(b, a);
   return { x: d * Math.cos(t), y: d * Math.sin(t) };
 };
@@ -47,10 +29,26 @@ export const Radviz = () => {
   // 手牌の特徴量を計算
   const { featureList, shanten } = defineFeature(tehai);
   const setShanten = useSetRecoilState(shantenState);
+  const setYakuValue = useSetRecoilState(yakuValueState);
+
+  // 役を推定
+  const data = defineYaku(featureList, 14, 0);
+  const test = deleteElement(tehai).map((i, _) => {
+    const { featureList, shanten } = defineFeature(i);
+    const yaku = defineYaku(featureList, 13, 0);
+    return DIMENSIONS.reduce(
+      (obj, x) => Object.assign(obj, { [x]: yaku[x] - data[x] }),
+      {}
+    );
+  });
 
   useEffect(() => {
     setShanten(shanten);
   }, [shanten]);
+  useEffect(() => {
+    setYakuValue(test);
+  }, [test]);
+
   if (tehai.length === 0) return <></>;
 
   // 図の大きさ
@@ -61,31 +59,21 @@ export const Radviz = () => {
   const width = contentWidth + margin * 2;
   const height = contentHeight + margin * 2;
   const lineColor = "#444";
+  const n = DIMENSIONS.length;
 
-  // 役を推定
-  const data = defineYaku(featureList, 14, 0);
   // 点の座標
-  const point = radviz(data, r);
+  const { x, y } = radviz(data, r, n);
   // 点の大きさ
   const pointSize = 10;
-  console.log(data);
 
   return (
-    <Card sx={{ p: 3, height: "100%" }}>
-      <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-        Radvis
-      </Typography>
+    <Card sx={{ p: 1, height: "100%" }}>
       <svg viewBox={`0 0 ${width} ${height}`}>
         <g transform={`translate(${margin + r},${margin + r})`}>
           <circle r={r} fill="none" stroke={lineColor} />
-          {Object.keys(DIMENSIONS).map((property, i) => {
+          {DIMENSIONS.map((property, i) => {
             return (
-              <g
-                key={i}
-                transform={`rotate(${
-                  (360 / Object.keys(DIMENSIONS).length) * i + 90
-                })`}
-              >
+              <g key={i} transform={`rotate(${(360 / n) * i + 90})`}>
                 <line
                   x1="0"
                   y1="0"
@@ -105,15 +93,18 @@ export const Radviz = () => {
               </g>
             );
           })}
-          {point.x && point.y ? (
-            <g transform={`translate(${point.x},${point.y})`}>
-              <circle r={pointSize} opacity="0.8" />
-            </g>
-          ) : (
-            <></>
-          )}
+          <g transform={`translate(${x},${y})`}>
+            <circle r={pointSize} opacity="0.8" />
+          </g>
         </g>
       </svg>
     </Card>
+  );
+};
+
+// 配列から1つの要素のみを取り除く
+const deleteElement = (array) => {
+  return [...Array(array.length)].map((_, idx) =>
+    array.slice(0, idx).concat(array.slice(idx + 1))
   );
 };

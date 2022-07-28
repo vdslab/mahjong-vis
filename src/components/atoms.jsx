@@ -1,10 +1,5 @@
 import { atom } from "recoil";
 
-export const haiState = atom({
-  key: "abandonedHai",
-  default: "hoge",
-});
-
 export const tehaiState = atom({
   key: "tehai",
   default: [],
@@ -33,4 +28,9 @@ export const shantenState = atom({
     chitoitu: 6,
     kokushi: 13,
   },
+});
+
+export const yakuValueState = atom({
+  key: "yakuValue",
+  default: [],
 });

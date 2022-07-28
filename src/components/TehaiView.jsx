@@ -1,7 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
-  haiState,
   tehaiState,
   suteHaiListState,
   haiCheckListState,
@@ -9,12 +8,19 @@ import {
 } from "./atoms";
 import haiOrder from "./haiOrder";
 import Image from "next/image";
-import { Box, Card, Stack, Typography, Button, Dialog } from "@mui/material";
+import {
+  Box,
+  Card,
+  Stack,
+  Typography,
+  Button,
+  Dialog,
+  Grid,
+} from "@mui/material";
 
 export const TehaiView = () => {
   const HAITYPELIST = "mpswz";
   const MAX_PLAY_TIMES = 18;
-  const setAbandonedHai = useSetRecoilState(haiState);
   const [tehai, setTehai] = useRecoilState(tehaiState);
   const [suteHaiList, setSuteHaiList] = useRecoilState(suteHaiListState);
   const [open, setOpen] = useState([false, 0]);
@@ -49,7 +55,6 @@ export const TehaiView = () => {
     newTehai.sort((x, y) => haiOrder.indexOf(x) - haiOrder.indexOf(y));
     newTehai.push(addedHai);
     setTehai(newTehai);
-    setAbandonedHai(clickedHai);
     setSuteHaiList([...suteHaiList, clickedHai]);
   };
   const handleClickOpen = () => {
@@ -103,28 +108,37 @@ export const TehaiView = () => {
   } else {
     return (
       <Card sx={{ p: 3 }}>
-        <Stack direction="row">
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            手牌
-          </Typography>
-          <Box sx={{ p: 1 }} />
-          <Typography variant="h6" component="div" sx={{ pl: 3 }}>
-            向聴数
-          </Typography>
-          <Typography variant="h6" component="div" sx={{ pl: 5 }}>
-            {`通常手：${shanten["other"] > 0 ? shanten["other"] : "聴牌"}`}
-          </Typography>
-          <Typography variant="h6" component="div" sx={{ pl: 5 }}>
-            {`七対子：${
-              shanten["chitoitu"] > 0 ? shanten["chitoitu"] : "聴牌"
-            }`}
-          </Typography>
-          <Typography variant="h6" component="div" sx={{ pl: 5 }}>
-            {`国士無双：${
-              shanten["kokushi"] > 0 ? shanten["kokushi"] : "聴牌"
-            }`}
-          </Typography>
-        </Stack>
+        <Grid container>
+          <Grid item xs={5}>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              手牌
+            </Typography>
+          </Grid>
+          <Grid item xs={1}>
+            <Typography variant="h6" component="div" sx={{ pl: 3 }}>
+              向聴数
+            </Typography>
+          </Grid>
+          <Grid item xs={2}>
+            <Typography variant="h6" component="div" sx={{ pl: 5 }}>
+              {`通常手：${shanten["other"] > 0 ? shanten["other"] : "聴牌"}`}
+            </Typography>
+          </Grid>
+          <Grid item xs={2}>
+            <Typography variant="h6" component="div" sx={{ pl: 5 }}>
+              {`七対子：${
+                shanten["chitoitu"] > 0 ? shanten["chitoitu"] : "聴牌"
+              }`}
+            </Typography>
+          </Grid>
+          <Grid item xs={2}>
+            <Typography variant="h6" component="div" sx={{ pl: 5 }}>
+              {`国士無双：${
+                shanten["kokushi"] > 0 ? shanten["kokushi"] : "聴牌"
+              }`}
+            </Typography>
+          </Grid>
+        </Grid>
         <Stack direction="row">
           {tehai.map((item, idx) => {
             if (idx !== 13) {
@@ -133,8 +147,8 @@ export const TehaiView = () => {
                   key={idx}
                   onClick={() => clickHandler(item, idx)}
                   src={changeHaiName2Path(item)}
-                  width="80%"
-                  height="100%"
+                  width="60%"
+                  height="80%"
                 />
               );
             } else {
@@ -145,8 +159,8 @@ export const TehaiView = () => {
                     key={idx}
                     onClick={() => clickHandler(item, idx)}
                     src={changeHaiName2Path(item)}
-                    width="80%"
-                    height="100%"
+                    width="60%"
+                    height="80%"
                   />
                 </Fragment>
               );
@@ -209,11 +223,11 @@ const getRandomInt = (min = 0, max = 34) => {
 };
 const generateNewHai = () => {
   // 全て
-  // const test = [...Array(34)].map((_, i) => i);
+  const test = [...Array(34)].map((_, i) => i);
   // 混一色
   // const test = [0, 1, 2, 3, 4, 5, 6, 7, 8, 27, 28, 29, 30, 31, 32, 33];
   // 清一色
-  const test = [...Array(9)].map((_, i) => i);
+  // const test = [...Array(9)].map((_, i) => i);
   // 国士
   // const test = [0, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33];
   const intHai = test[getRandomInt()];
