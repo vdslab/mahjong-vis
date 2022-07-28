@@ -205,19 +205,26 @@ export const defineFeature = (tehai) => {
       tmp
     );
   }
-
+  let f = false;
+  for (const i of res) {
+    for (const j of i[1]) {
+      if (new Set(j).size === 1) {
+        f = true;
+        break;
+      }
+    }
+    if (f) break;
+  }
   const shanten = {
-    other:
-      8 -
-      tmpThree * 2 -
-      tmpTwo +
-      (featureList["chitoitu_cnt"] - featureList["toitoi_sananko_cnt"] ? 0 : 1),
+    other: 8 - tmpThree * 2 - tmpTwo + (f ? 0 : 1),
     chitoitu:
       6 -
       featureList["chitoitu_cnt"] +
       Math.max(0, 7 - Object.keys(counter).length),
     kokushi: 13 - featureList["kokushi_cnt"],
   };
+  console.log(res);
+  console.log(shanten);
   return { featureList, shanten };
 };
 
