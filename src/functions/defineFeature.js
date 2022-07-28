@@ -205,8 +205,13 @@ export const defineFeature = (tehai) => {
       tmp
     );
   }
+
   const shanten = {
-    other: 8 - tmpThree * 2 - tmpTwo,
+    other:
+      8 -
+      tmpThree * 2 -
+      tmpTwo +
+      (featureList["chitoitu_cnt"] - featureList["toitoi_sananko_cnt"] ? 0 : 1),
     chitoitu:
       6 -
       featureList["chitoitu_cnt"] +
