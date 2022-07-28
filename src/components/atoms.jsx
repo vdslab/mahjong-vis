@@ -29,3 +29,8 @@ export const shantenState = atom({
     kokushi: 13,
   },
 });
+
+export const yakuValueState = atom({
+  key: "yakuValue",
+  default: [],
+});
