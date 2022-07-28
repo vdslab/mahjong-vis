@@ -9,7 +9,15 @@ import {
 } from "./atoms";
 import haiOrder from "./haiOrder";
 import Image from "next/image";
-import { Box, Card, Stack, Typography, Button, Dialog } from "@mui/material";
+import {
+  Box,
+  Card,
+  Stack,
+  Typography,
+  Button,
+  Dialog,
+  Grid,
+} from "@mui/material";
 
 export const TehaiView = () => {
   const HAITYPELIST = "mpswz";
@@ -103,28 +111,37 @@ export const TehaiView = () => {
   } else {
     return (
       <Card sx={{ p: 3 }}>
-        <Stack direction="row">
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            手牌
-          </Typography>
-          <Box sx={{ p: 1 }} />
-          <Typography variant="h6" component="div" sx={{ pl: 3 }}>
-            向聴数
-          </Typography>
-          <Typography variant="h6" component="div" sx={{ pl: 5 }}>
-            {`通常手：${shanten["other"] > 0 ? shanten["other"] : "聴牌"}`}
-          </Typography>
-          <Typography variant="h6" component="div" sx={{ pl: 5 }}>
-            {`七対子：${
-              shanten["chitoitu"] > 0 ? shanten["chitoitu"] : "聴牌"
-            }`}
-          </Typography>
-          <Typography variant="h6" component="div" sx={{ pl: 5 }}>
-            {`国士無双：${
-              shanten["kokushi"] > 0 ? shanten["kokushi"] : "聴牌"
-            }`}
-          </Typography>
-        </Stack>
+        <Grid container>
+          <Grid item xs={5}>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              手牌
+            </Typography>
+          </Grid>
+          <Grid item xs={1}>
+            <Typography variant="h6" component="div" sx={{ pl: 3 }}>
+              向聴数
+            </Typography>
+          </Grid>
+          <Grid item xs={2}>
+            <Typography variant="h6" component="div" sx={{ pl: 5 }}>
+              {`通常手：${shanten["other"] > 0 ? shanten["other"] : "聴牌"}`}
+            </Typography>
+          </Grid>
+          <Grid item xs={2}>
+            <Typography variant="h6" component="div" sx={{ pl: 5 }}>
+              {`七対子：${
+                shanten["chitoitu"] > 0 ? shanten["chitoitu"] : "聴牌"
+              }`}
+            </Typography>
+          </Grid>
+          <Grid item xs={2}>
+            <Typography variant="h6" component="div" sx={{ pl: 5 }}>
+              {`国士無双：${
+                shanten["kokushi"] > 0 ? shanten["kokushi"] : "聴牌"
+              }`}
+            </Typography>
+          </Grid>
+        </Grid>
         <Stack direction="row">
           {tehai.map((item, idx) => {
             if (idx !== 13) {
