@@ -1,15 +1,17 @@
-import { Card, Box, Stack, Typography } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { tehaiState, yakuValueState } from "./atoms";
 import { changeHaiName2Path } from "./TehaiView";
 import Image from "next/image";
 import { DIMENSIONS } from "../const/upper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
+import {
+  Card,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 
 const list = {
   zikaze_bakaze: "自風場風",
@@ -82,38 +84,4 @@ export const AssessmentView = () => {
       </Table>
     </TableContainer>
   );
-  // return (
-  //   <Card sx={{ p: 3, height: "100%" }}>
-  //     <Stack direction="column">
-  //       <Stack direction="row">
-  //         {tehai.map((item, idx) => {
-  //           return (
-  //             <Image
-  //               key={idx}
-  //               src={changeHaiName2Path(item)}
-  //               width="30%"
-  //               height="40%"
-  //             />
-  //           );
-  //         })}
-  //       </Stack>
-  //       {DIMENSIONS.map((item, idx) => {
-  //         return (
-  //           <Stack direction="row">
-  //             <Typography
-  //               variant="h6"
-  //               component="div"
-  //               key={idx}
-  //             >
-  //               {list[item]}
-  //             </Typography>
-  //             {["unko", "unko", "unko", "unko", "unko"].map((a, b) => {
-  //               return <div>{a}</div>;
-  //             })}
-  //           </Stack>
-  //         );
-  //       })}
-  //     </Stack>
-  //   </Card>
-  // );
 };
