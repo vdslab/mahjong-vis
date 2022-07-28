@@ -44,8 +44,11 @@ export const AssessmentView = () => {
   ]);
 
   return (
-    <TableContainer component={Card} sx={{ p: 1 }}>
-      <Table sx={{ minWidth: 650 }}>
+    <TableContainer
+      component={Card}
+      sx={{ p: 1, height: "100%", minHeight: "100%", overflowY: "scroll" }}
+    >
+      <Table>
         <TableHead>
           <TableRow>
             <TableCell>役\牌</TableCell>
