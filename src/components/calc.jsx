@@ -1,7 +1,7 @@
 import { Card, Typography } from "@mui/material";
 import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
-import { DIMENSIONS } from "../const/test";
+import { UDIMENSIONS } from "../const/upper";
 import { aaa } from "../../public/data/tehai_yaku";
 import { useEffect, useState } from "react";
 
@@ -25,7 +25,7 @@ const variance = (data) => {
 };
 
 const radviz = (data, r, dim) => {
-  const n = DIMENSIONS.length;
+  const n = UDIMENSIONS.length;
   return data.slice(0, 10).map((item) => {
     const yaku = defineYaku(defineFeature(item.tehai).featureList, 14, 0);
     let a = 0;
@@ -66,7 +66,7 @@ const radviz = (data, r, dim) => {
 
 export const Calc = () => {
   const res = {};
-  const per = permutation(DIMENSIONS);
+  const per = permutation(UDIMENSIONS);
   let max_variance = 0;
   let max_ali = [];
   let min_variance = 1000000000;
