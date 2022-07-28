@@ -17,6 +17,7 @@ import {
   Dialog,
   Grid,
 } from "@mui/material";
+import { DisplayInfo } from "./displayInfo";
 
 export const TehaiView = () => {
   const HAITYPELIST = "mpswz";
@@ -24,6 +25,7 @@ export const TehaiView = () => {
   const [tehai, setTehai] = useRecoilState(tehaiState);
   const [suteHaiList, setSuteHaiList] = useRecoilState(suteHaiListState);
   const [open, setOpen] = useState([false, 0]);
+  const [tumoOpen, setTumoOpen] = useState(false);
   const [haiCheckList, setHaiCheckList] = useRecoilState(haiCheckListState);
   const shanten = useRecoilValue(shantenState);
   const suteHaiCount = suteHaiList.length;
@@ -51,11 +53,20 @@ export const TehaiView = () => {
       }
     }
     setHaiCheckList(tehaiCheckedList);
-    const newTehai = copiedTehai.filter((item, id) => idx != id);
+    const newTehai = copiedTehai.filter((_, id) => idx != id);
     newTehai.sort((x, y) => haiOrder.indexOf(x) - haiOrder.indexOf(y));
     newTehai.push(addedHai);
     setTehai(newTehai);
     setSuteHaiList([...suteHaiList, clickedHai]);
+  };
+
+  const handleTumo = () => {
+    setTumoOpen(true);
+    console.log("ツモ");
+  };
+  const handleTumoClose = () => {
+    setTumoOpen(false);
+    resetTehai();
   };
   const handleClickOpen = () => {
     setOpen([true, 0]);
@@ -167,8 +178,18 @@ export const TehaiView = () => {
             }
           })}
           <Box sx={{ p: 1 }} />
-          <Button variant="contained" onClick={handleClickOpen}>
+          <Button variant="contained" color="error" onClick={handleClickOpen}>
             リセット
+          </Button>
+          <Box sx={{ p: 1 }} />
+          <Button
+            variant="contained"
+            disabled={
+              Object.values(shanten).filter((val) => val === -1).length === 0
+            }
+            onClick={handleTumo}
+          >
+            ツモ
           </Button>
         </Stack>
         <Dialog open={open[0]} onClose={handleClose}>
@@ -213,6 +234,7 @@ export const TehaiView = () => {
             </Stack>
           </Card>
         </Dialog>
+        <DisplayInfo onClose={handleTumoClose} open={tumoOpen} />
       </Card>
     );
   }
@@ -223,9 +245,9 @@ const getRandomInt = (min = 0, max = 34) => {
 };
 const generateNewHai = () => {
   // 全て
-  const test = [...Array(34)].map((_, i) => i);
+  // const test = [...Array(34)].map((_, i) => i);
   // 混一色
-  // const test = [0, 1, 2, 3, 4, 5, 6, 7, 8, 27, 28, 29, 30, 31, 32, 33];
+  const test = [0, 1, 2, 3, 4, 5, 6, 7, 8, 27, 28, 29, 30, 31, 32, 33];
   // 清一色
   // const test = [...Array(9)].map((_, i) => i);
   // 国士

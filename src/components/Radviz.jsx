@@ -1,9 +1,10 @@
 import { Card } from "@mui/material";
-import { useSetRecoilState, useRecoilValue, useRecoilState } from "recoil";
+import { useSetRecoilState, useRecoilValue } from "recoil";
 import { shantenState, tehaiState, yakuValueState } from "./atoms";
 import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
 import { DIMENSIONS } from "../const/upper";
+import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 import { useEffect } from "react";
 
 const radviz = (data, r, n) => {
@@ -34,7 +35,7 @@ export const Radviz = () => {
   // 役を推定
   const data = defineYaku(featureList, 14, 0);
   const test = deleteElement(tehai).map((i, _) => {
-    const { featureList, shanten } = defineFeature(i);
+    const { featureList } = defineFeature(i);
     const yaku = defineYaku(featureList, 13, 0);
     return DIMENSIONS.reduce(
       (obj, x) => Object.assign(obj, { [x]: yaku[x] - data[x] }),
@@ -45,6 +46,7 @@ export const Radviz = () => {
   useEffect(() => {
     setShanten(shanten);
   }, [shanten]);
+
   useEffect(() => {
     setYakuValue(test);
   }, [test]);
@@ -88,7 +90,7 @@ export const Radviz = () => {
                   dominantBaseline="text-after-edge"
                   fontSize={20}
                 >
-                  {property}
+                  {YAKU_DESCRIPTION[property]["name"]}
                 </text>
               </g>
             );
