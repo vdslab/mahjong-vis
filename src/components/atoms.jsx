@@ -1,10 +1,5 @@
 import { atom } from "recoil";
 
-export const haiState = atom({
-  key: "abandonedHai",
-  default: "hoge",
-});
-
 export const tehaiState = atom({
   key: "tehai",
   default: [],
