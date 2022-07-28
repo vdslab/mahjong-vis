@@ -1,7 +1,7 @@
-import { YAKU_LIST } from "../const/const";
+import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 
 export const defineYaku = (featureList, haiLen, naki_cnt) => {
-  const yakuList = makeObject(YAKU_LIST);
+  const yakuList = makeObject(Object.keys(YAKU_DESCRIPTION));
 
   // 自風場風
   // TODO:浮き

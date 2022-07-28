@@ -40,28 +40,6 @@ export const FEATURE_LIST = [
   "kokushi_cnt",
 ];
 
-export const YAKU_LIST = [
-  "zikaze_bakaze",
-  "sangenhai",
-  "tanyao",
-  "pinfu",
-  "ipeko",
-  "sanshoku_dojun",
-  "sanshoku_doko",
-  "sananko",
-  "ittu",
-  "chitoitu",
-  "toitoiho",
-  "chanta",
-  "sankantu",
-  "shosangen",
-  "honroto",
-  "ryanpeko",
-  "junchan",
-  "honitu",
-  "chinitu",
-];
-
 export const TYPE_LIST = {
   m: 0,
   p: 1,
