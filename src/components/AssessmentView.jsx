@@ -73,7 +73,7 @@ export const AssessmentView = () => {
               </TableCell>
               {row[1].map((a, b) => {
                 return (
-                  <TableCell key={b} align="right">
+                  <TableCell key={b} align="center" sx={{ p: 0 }}>
                     {Math.ceil(a)}
                   </TableCell>
                 );
