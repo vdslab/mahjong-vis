@@ -1,12 +1,10 @@
-import * as d3 from "d3";
-import { Card, Grid } from "@mui/material";
-import { useSetRecoilState, useRecoilValue } from "recoil";
-import { shantenState, tehaiState } from "./atoms";
+import { Card } from "@mui/material";
+import { useSetRecoilState, useRecoilValue, useRecoilState } from "recoil";
+import { shantenState, tehaiState, yakuValueState } from "./atoms";
 import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
 import { DIMENSIONS } from "../const/upper";
 import { useEffect } from "react";
-import { aaa } from "../../public/data/tehai_yaku";
 
 const radviz = (data, r, n) => {
   let a = 0;
@@ -31,10 +29,25 @@ export const Radviz = () => {
   // 手牌の特徴量を計算
   const { featureList, shanten } = defineFeature(tehai);
   const setShanten = useSetRecoilState(shantenState);
+  const setYakuValue = useSetRecoilState(yakuValueState);
+
+  // 役を推定
+  const data = defineYaku(featureList, 14, 0);
+  const test = deleteElement(tehai).map((i, _) => {
+    const { featureList, shanten } = defineFeature(i);
+    const yaku = defineYaku(featureList, 13, 0);
+    return DIMENSIONS.reduce(
+      (obj, x) => Object.assign(obj, { [x]: yaku[x] - data[x] }),
+      {}
+    );
+  });
 
   useEffect(() => {
     setShanten(shanten);
   }, [shanten]);
+  useEffect(() => {
+    setYakuValue(test);
+  }, [test]);
 
   if (tehai.length === 0) return <></>;
 
@@ -48,15 +61,13 @@ export const Radviz = () => {
   const lineColor = "#444";
   const n = DIMENSIONS.length;
 
-  // 役を推定
-  const data = defineYaku(featureList, 14, 0);
   // 点の座標
   const { x, y } = radviz(data, r, n);
   // 点の大きさ
   const pointSize = 10;
 
   return (
-    <Card sx={{ p: 1 }}>
+    <Card sx={{ p: 1, height: "100%" }}>
       <svg viewBox={`0 0 ${width} ${height}`}>
         <g transform={`translate(${margin + r},${margin + r})`}>
           <circle r={r} fill="none" stroke={lineColor} />
@@ -88,5 +99,12 @@ export const Radviz = () => {
         </g>
       </svg>
     </Card>
+  );
+};
+
+// 配列から1つの要素のみを取り除く
+const deleteElement = (array) => {
+  return [...Array(array.length)].map((_, idx) =>
+    array.slice(0, idx).concat(array.slice(idx + 1))
   );
 };

@@ -1,7 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
-  haiState,
   tehaiState,
   suteHaiListState,
   haiCheckListState,
@@ -22,7 +21,6 @@ import {
 export const TehaiView = () => {
   const HAITYPELIST = "mpswz";
   const MAX_PLAY_TIMES = 18;
-  const setAbandonedHai = useSetRecoilState(haiState);
   const [tehai, setTehai] = useRecoilState(tehaiState);
   const [suteHaiList, setSuteHaiList] = useRecoilState(suteHaiListState);
   const [open, setOpen] = useState([false, 0]);
@@ -57,7 +55,6 @@ export const TehaiView = () => {
     newTehai.sort((x, y) => haiOrder.indexOf(x) - haiOrder.indexOf(y));
     newTehai.push(addedHai);
     setTehai(newTehai);
-    setAbandonedHai(clickedHai);
     setSuteHaiList([...suteHaiList, clickedHai]);
   };
   const handleClickOpen = () => {
