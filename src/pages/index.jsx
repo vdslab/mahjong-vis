@@ -4,8 +4,9 @@ import { AbandonedHaiView } from "../components/AbandonedHaiView";
 import { AssessmentView } from "../components/AssessmentView";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
-import { Radviz } from "../components/Radviz";
+import { Radvis } from "../components/Radvis";
 import { TehaiView } from "../components/TehaiView";
+import { Calc } from "../components/calc";
 
 const Home = () => {
   return (
@@ -16,7 +17,8 @@ const Home = () => {
           <AbandonedHaiView />
         </Grid>
         <Grid item xs={6}> */}
-      <Radviz />
+      <Radvis />
+      {/* <Calc /> */}
       {/* </Grid>
         <Grid item xs={3}>
           <AssessmentView />
