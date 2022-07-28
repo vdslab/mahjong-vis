@@ -6,28 +6,26 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Radviz } from "../components/Radviz";
 import { TehaiView } from "../components/TehaiView";
-import { Calc } from "../components/calc";
 
 const Home = () => {
   return (
     <Box sx={{ bgcolor: "#f5f5f5" }}>
-      {/* <Header />
+      <Header />
       <Grid container sx={{ p: 3 }} columnSpacing={2} rowSpacing={2}>
         <Grid item xs={3}>
           <AbandonedHaiView />
         </Grid>
-        <Grid item xs={6}> */}
-      <Radviz />
-      {/* <Calc /> */}
-      {/* </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
+          <Radviz />
+        </Grid>
+        <Grid item xs={5}>
           <AssessmentView />
         </Grid>
         <Grid item xs={12}>
           <TehaiView />
         </Grid>
       </Grid>
-      <Footer /> */}
+      <Footer />
     </Box>
   );
 };

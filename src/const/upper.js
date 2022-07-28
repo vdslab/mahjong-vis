@@ -1,4 +1,4 @@
-export const UDIMENSIONS = [
+export const DIMENSIONS = [
   "tanyao",
   "pinfu",
   "honitu",

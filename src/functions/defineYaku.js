@@ -9,7 +9,7 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
     featureList["zikaze_bakaze_kotu"] || featureList["zikaze_bakaze_kantu"]
       ? 100
       : featureList["zikaze_bakaze_toitu"]
-      ? 60
+      ? 70
       : 0;
 
   // 三元
@@ -18,7 +18,7 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
     featureList["sangen_kotu"] || featureList["sangen_kantu"]
       ? 100
       : featureList["sangen_toitu"]
-      ? 60
+      ? 70
       : 0;
 
   // タンヤオ
@@ -34,7 +34,14 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
     ) +
       (featureList["chunchan_toitu"] ? 10 : 0)) *
       60 +
-      (featureList["chunchan_cnt"] / haiLen) * 40) /
+      (Math.max(
+        featureList["chunchan_cnt"] -
+          featureList["ichikyu_cnt"] -
+          featureList["zi_cnt"],
+        0
+      ) /
+        haiLen) *
+        40) /
     100;
 
   // 鳴いてないときに付く役
