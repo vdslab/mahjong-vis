@@ -150,8 +150,8 @@ export const TehaiView = () => {
                   key={idx}
                   onClick={() => clickHandler(item, idx)}
                   src={changeHaiName2Path(item)}
-                  width="80%"
-                  height="100%"
+                  width="60%"
+                  height="80%"
                 />
               );
             } else {
@@ -162,8 +162,8 @@ export const TehaiView = () => {
                     key={idx}
                     onClick={() => clickHandler(item, idx)}
                     src={changeHaiName2Path(item)}
-                    width="80%"
-                    height="100%"
+                    width="60%"
+                    height="80%"
                   />
                 </Fragment>
               );
