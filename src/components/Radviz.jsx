@@ -36,7 +36,7 @@ export const Radviz = () => {
   const data = defineYaku(featureList, 14, 0);
   const diffAssessment = {};
   for (const [key, value] of Object.entries(deleteElement(tehai))) {
-    const { featureList } = defineFeature(value);
+    const { featureList, shanten } = defineFeature(value);
     const yaku = defineYaku(featureList, value.length, 0);
     diffAssessment[key] = DIMENSIONS.reduce(
       (obj, x) => Object.assign(obj, { [x]: yaku[x] - data[x] }),
