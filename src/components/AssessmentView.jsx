@@ -1,5 +1,5 @@
 import { useRecoilValue } from "recoil";
-import { tehaiState, yakuValueState } from "./atoms";
+import { yakuValueState } from "./atoms";
 import { changeHaiName2Path } from "./TehaiView";
 import Image from "next/image";
 import { DIMENSIONS } from "../const/upper";
@@ -15,11 +15,10 @@ import {
 } from "@mui/material";
 
 export const AssessmentView = () => {
-  const tehai = useRecoilValue(tehaiState);
   const yakuValue = useRecoilValue(yakuValueState);
   const rows = DIMENSIONS.map((dim, _) => [
     YAKU_DESCRIPTION[dim]["name"],
-    yakuValue.map((item, _) => item[dim]),
+    Object.values(yakuValue).map((value, _) => value[dim]),
   ]);
 
   return (
@@ -31,11 +30,11 @@ export const AssessmentView = () => {
         <TableHead>
           <TableRow>
             <TableCell>役\牌</TableCell>
-            {tehai.map((item, idx) => {
+            {Object.keys(yakuValue).map((hai, idx) => {
               return (
                 <TableCell key={idx} align="center" sx={{ p: 0 }}>
                   <Image
-                    src={changeHaiName2Path(item)}
+                    src={changeHaiName2Path(hai)}
                     width="30%"
                     height="40%"
                   />
