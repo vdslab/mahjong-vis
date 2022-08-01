@@ -51,8 +51,9 @@ export const defineFeature = (tehai) => {
   // 数系特徴量
   const [md, pd, sd] = cntFeature(counter, featureList, 1, 1);
   const res = [];
-  let tmpThree = 0;
-  let tmpTwo = 0;
+  // 字牌の刻子を先にカウントしておく
+  let tmpThree = featureList["zi_kotu"] + featureList["zi_kantu"];
+  let tmpTwo = featureList["zi_toitu"];
 
   [md, pd, sd].map((data, idx) => {
     const buf = String(
@@ -205,26 +206,31 @@ export const defineFeature = (tehai) => {
       tmp
     );
   }
-  let f = false;
+
+  // 雀頭候補の数
+  let f = featureList["zi_toitu"];
   for (const i of res) {
     for (const j of i[1]) {
       if (new Set(j).size === 1) {
-        f = true;
-        break;
+        f += 1;
       }
     }
-    if (f) break;
   }
+
+  // 面子過多をチェック
+  const isOver = tmpThree + tmpTwo >= 5;
   const shanten = {
-    other: 8 - tmpThree * 2 - tmpTwo + (f ? 0 : 1),
+    other:
+      8 -
+      tmpThree * 2 -
+      (isOver ? 4 - tmpThree : tmpTwo) -
+      (isOver && f >= 1 ? 1 : 0),
     chitoitu:
       6 -
       featureList["chitoitu_cnt"] +
       Math.max(0, 7 - Object.keys(counter).length),
     kokushi: 13 - featureList["kokushi_cnt"],
   };
-  console.log(res);
-  console.log(shanten);
   return { featureList, shanten };
 };
 

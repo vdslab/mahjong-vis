@@ -34,22 +34,23 @@ export const Radviz = () => {
 
   // 役を推定
   const data = defineYaku(featureList, 14, 0);
-  const test = deleteElement(tehai).map((i, _) => {
-    const { featureList } = defineFeature(i);
-    const yaku = defineYaku(featureList, 13, 0);
-    return DIMENSIONS.reduce(
+  const diffAssessment = {};
+  for (const [key, value] of Object.entries(deleteElement(tehai))) {
+    const { featureList, shanten } = defineFeature(value);
+    const yaku = defineYaku(featureList, value.length, 0);
+    diffAssessment[key] = DIMENSIONS.reduce(
       (obj, x) => Object.assign(obj, { [x]: yaku[x] - data[x] }),
       {}
     );
-  });
+  }
 
   useEffect(() => {
     setShanten(shanten);
   }, [shanten]);
 
   useEffect(() => {
-    setYakuValue(test);
-  }, [test]);
+    setYakuValue(diffAssessment);
+  }, [diffAssessment]);
 
   if (tehai.length === 0) return <></>;
 
@@ -104,9 +105,11 @@ export const Radviz = () => {
   );
 };
 
-// 配列から1つの要素のみを取り除く
+// 配列から取り除いた要素とそれ以外の要素のオブジェクトを返す
 const deleteElement = (array) => {
-  return [...Array(array.length)].map((_, idx) =>
-    array.slice(0, idx).concat(array.slice(idx + 1))
-  );
+  const res = {};
+  for (let i = 0; i < array.length; ++i) {
+    res[array[i]] = array.slice(0, i).concat(array.slice(i + 1));
+  }
+  return res;
 };
