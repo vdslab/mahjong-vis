@@ -17,7 +17,7 @@ import {
   Dialog,
   Grid,
 } from "@mui/material";
-import { DisplayInfo } from "./displayInfo";
+import { DisplayInfo } from "./DisplayInfo";
 
 export const TehaiView = () => {
   const HAITYPELIST = "mpswz";
