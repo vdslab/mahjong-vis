@@ -20,8 +20,11 @@ export const AssessmentView = () => {
   const strokeColor = "#888";
   const svgWidth = margin.left + margin.right + contentWidth;
   const svgHeight = margin.top + margin.bottom + contentHeight;
-  const colorScale = d3.interpolateRdYlBu();
 
+  const colorScale = d3
+    .scaleLinear()
+    .domain([100, 0, -100])
+    .range(["red", "yellow", "blue"]);
   const xScale = d3
     .scaleLinear()
     .domain([0, Object.keys(yakuValue).length])
@@ -35,39 +38,32 @@ export const AssessmentView = () => {
 
   return (
     <Card sx={{ p: 1, height: "100%" }}>
-      <svg viewBox={`${-margin.left} ${-margin.top} ${svgWidth} ${svgHeight}`}>
-        <VerticalAxis
-          names={DIMENSIONS}
-          scale={yScale}
-          strokeColor={strokeColor}
-          height={contentHeight}
-        />
-        <HorizontalAxis
-          tiles={Object.keys(yakuValue)}
-          scale={xScale}
-          strokeColor={strokeColor}
-          width={svgWidth}
-        />
-
-        {/* <g>
-          {data.map((item, i) => {
-            return (
-              <circle
-                key={i}
-                cx={xScale(item[xProperty])}
-                cy={yScale(item[yProperty])}
-                r="5"
-                fill={colorScale(item.species)}
-                style={{
-                  transitionDuration: "1s",
-                  transitionProperty: "all",
-                  transitionDelay: "0.2s",
-                }}
-              />
-            );
-          })}
-        </g> */}
-      </svg>
+      {Object.keys(yakuValue).length === 0 ? (
+        <div>loading...</div>
+      ) : (
+        <svg
+          viewBox={`${-margin.left} ${-margin.top} ${svgWidth} ${svgHeight}`}
+        >
+          <VerticalAxis
+            names={DIMENSIONS}
+            scale={yScale}
+            strokeColor={strokeColor}
+            height={contentHeight}
+          />
+          <HorizontalAxis
+            tiles={Object.keys(yakuValue)}
+            scale={xScale}
+            strokeColor={strokeColor}
+            width={svgWidth}
+          />
+          <Contents
+            data={yakuValue}
+            xScale={xScale}
+            yScale={yScale}
+            colorScale={colorScale}
+          />
+        </svg>
+      )}
     </Card>
   );
 };
@@ -111,4 +107,38 @@ const HorizontalAxis = ({ tiles, scale, strokeColor, width }) => {
       })}
     </g>
   );
+};
+
+const Contents = ({ data, xScale, yScale, colorScale }) => {
+  const viewData = transpose(Object.values(data).map((i) => Object.values(i)));
+
+  return (
+    <g transform={`translate(80, 115)`}>
+      {viewData.map((rows, i) => {
+        return rows.map((item, j) => {
+          return (
+            <rect
+              key={i * viewData.length + j}
+              x={xScale(j)}
+              y={yScale(i)}
+              width={57}
+              height={57}
+              fill={colorScale(item)}
+            />
+          );
+        });
+      })}
+    </g>
+  );
+};
+
+// style={{
+//   transitionDuration: "1s",
+//   transitionProperty: "all",
+//   transitionDelay: "0.2s",
+// }}
+
+// 転置
+const transpose = (a) => {
+  return a[0].map((_, c) => a.map((r) => r[c]));
 };
