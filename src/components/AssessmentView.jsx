@@ -1,68 +1,114 @@
+import * as d3 from "d3";
 import { useRecoilValue } from "recoil";
 import { yakuValueState } from "./atoms";
 import { changeHaiName2Path } from "./TehaiView";
-import Image from "next/image";
 import { DIMENSIONS } from "../const/upper";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
-import {
-  Card,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
+import { Card } from "@mui/material";
 
 export const AssessmentView = () => {
   const yakuValue = useRecoilValue(yakuValueState);
-  const rows = DIMENSIONS.map((dim, _) => [
-    YAKU_DESCRIPTION[dim]["name"],
-    Object.values(yakuValue).map((value, _) => value[dim]),
-  ]);
+
+  const margin = {
+    top: 10,
+    bottom: 45,
+    left: 100,
+    right: 90,
+  };
+  const contentWidth = 800;
+  const contentHeight = 1200;
+  const strokeColor = "#888";
+  const svgWidth = margin.left + margin.right + contentWidth;
+  const svgHeight = margin.top + margin.bottom + contentHeight;
+  const colorScale = d3.interpolateRdYlBu();
+
+  const xScale = d3
+    .scaleLinear()
+    .domain([0, Object.keys(yakuValue).length])
+    .range([0, contentWidth])
+    .nice();
+  const yScale = d3
+    .scaleLinear()
+    .domain([DIMENSIONS.length, 0])
+    .range([contentHeight, 0])
+    .nice();
 
   return (
-    <TableContainer
-      component={Card}
-      sx={{ p: 1, height: "100%", minHeight: "100%", overflowY: "scroll" }}
-    >
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>役\牌</TableCell>
-            {Object.keys(yakuValue).map((hai, idx) => {
-              return (
-                <TableCell key={idx} align="center" sx={{ p: 0 }}>
-                  <Image
-                    src={changeHaiName2Path(hai)}
-                    width="30%"
-                    height="40%"
-                  />
-                </TableCell>
-              );
-            })}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row, i) => (
-            <TableRow
-              key={i}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+    <Card sx={{ p: 1, height: "100%" }}>
+      <svg viewBox={`${-margin.left} ${-margin.top} ${svgWidth} ${svgHeight}`}>
+        <VerticalAxis
+          names={DIMENSIONS}
+          scale={yScale}
+          strokeColor={strokeColor}
+          height={contentHeight}
+        />
+        <HorizontalAxis
+          tiles={Object.keys(yakuValue)}
+          scale={xScale}
+          strokeColor={strokeColor}
+          width={svgWidth}
+        />
+
+        {/* <g>
+          {data.map((item, i) => {
+            return (
+              <circle
+                key={i}
+                cx={xScale(item[xProperty])}
+                cy={yScale(item[yProperty])}
+                r="5"
+                fill={colorScale(item.species)}
+                style={{
+                  transitionDuration: "1s",
+                  transitionProperty: "all",
+                  transitionDelay: "0.2s",
+                }}
+              />
+            );
+          })}
+        </g> */}
+      </svg>
+    </Card>
+  );
+};
+
+const VerticalAxis = ({ names, scale, strokeColor, height }) => {
+  const x = 70;
+  const [y1, y2] = [-20, height + 50];
+  return (
+    <g>
+      <line x1={x} y1={y1} x2={x} y2={y2} stroke={strokeColor} />
+      {names.map((name, idx) => {
+        return (
+          <g key={idx} transform={`translate(${x}, ${140 + scale(idx)})`}>
+            <text
+              x="-20"
+              textAnchor="end"
+              dominantBaseline="central"
+              fontSize="30"
             >
-              <TableCell component="th" scope="row">
-                {row[0]}
-              </TableCell>
-              {row[1].map((a, b) => {
-                return (
-                  <TableCell key={b} align="center" sx={{ p: 0 }}>
-                    {Math.ceil(a)}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+              {YAKU_DESCRIPTION[name]["name"]}
+            </text>
+          </g>
+        );
+      })}
+    </g>
+  );
+};
+
+const HorizontalAxis = ({ tiles, scale, strokeColor, width }) => {
+  const y = 85;
+  const [x1, x2] = [-60, width];
+  return (
+    <g>
+      <line x1={x1} y1={y} x2={x2} y2={y} stroke={strokeColor} />
+      {tiles.map((tile, idx) => {
+        return (
+          <g key={idx} transform={`translate(${80 + scale(idx)}, 0)`}>
+            <image href={changeHaiName2Path(tile)} width="57" height="76" />
+          </g>
+        );
+      })}
+    </g>
   );
 };
