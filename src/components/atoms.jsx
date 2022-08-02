@@ -32,5 +32,5 @@ export const shantenState = atom({
 
 export const yakuValueState = atom({
   key: "yakuValue",
-  default: [],
+  default: {},
 });
