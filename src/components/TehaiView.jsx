@@ -5,8 +5,9 @@ import {
   suteHaiListState,
   haiCheckListState,
   shantenState,
+  diffShantenState,
 } from "./atoms";
-import { HAI_ORDER } from "../const/HaiOrder.js";
+import { HAI_ORDER } from "../const/HaiOrder";
 import Image from "next/image";
 import {
   Box,
@@ -17,6 +18,9 @@ import {
   Dialog,
   Grid,
 } from "@mui/material";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import TrendingDownIcon from "@mui/icons-material/TrendingDown";
+import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import { DisplayInfo } from "./DisplayInfo";
 
 export const TehaiView = () => {
@@ -27,8 +31,9 @@ export const TehaiView = () => {
   const [open, setOpen] = useState([false, 0]);
   const [tumoOpen, setTumoOpen] = useState(false);
   const [haiCheckList, setHaiCheckList] = useRecoilState(haiCheckListState);
-  const shanten = useRecoilValue(shantenState);
   const suteHaiCount = suteHaiList.length;
+  const shanten = useRecoilValue(shantenState);
+  const diffShanten = useRecoilValue(diffShantenState);
 
   useEffect(() => {
     const haiList = initHai();
@@ -114,130 +119,150 @@ export const TehaiView = () => {
     setOpen([true, 1]);
   }
 
-  if (tehai.length < 1) {
-    return <></>;
-  } else {
-    return (
-      <Card sx={{ p: 3 }}>
-        <Grid container>
-          <Grid item xs={5}>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              手牌
-            </Typography>
+  return (
+    <Card sx={{ p: 3 }}>
+      {tehai.length < 1 || Object.keys(diffShanten).length === 0 ? (
+        <div>loading...</div>
+      ) : (
+        <>
+          <Grid container>
+            <Grid item xs={5}>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                手牌
+              </Typography>
+            </Grid>
+            <Grid item xs={1}>
+              <Typography variant="h6" component="div" sx={{ pl: 3 }}>
+                向聴数
+              </Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography variant="h6" component="div" sx={{ pl: 5 }}>
+                {`通常手：${shanten["other"] > 0 ? shanten["other"] : "聴牌"}`}
+              </Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography variant="h6" component="div" sx={{ pl: 5 }}>
+                {`七対子：${
+                  shanten["chitoitu"] > 0 ? shanten["chitoitu"] : "聴牌"
+                }`}
+              </Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography variant="h6" component="div" sx={{ pl: 5 }}>
+                {`国士無双：${
+                  shanten["kokushi"] > 0 ? shanten["kokushi"] : "聴牌"
+                }`}
+              </Typography>
+            </Grid>
           </Grid>
-          <Grid item xs={1}>
-            <Typography variant="h6" component="div" sx={{ pl: 3 }}>
-              向聴数
-            </Typography>
-          </Grid>
-          <Grid item xs={2}>
-            <Typography variant="h6" component="div" sx={{ pl: 5 }}>
-              {`通常手：${shanten["other"] > 0 ? shanten["other"] : "聴牌"}`}
-            </Typography>
-          </Grid>
-          <Grid item xs={2}>
-            <Typography variant="h6" component="div" sx={{ pl: 5 }}>
-              {`七対子：${
-                shanten["chitoitu"] > 0 ? shanten["chitoitu"] : "聴牌"
-              }`}
-            </Typography>
-          </Grid>
-          <Grid item xs={2}>
-            <Typography variant="h6" component="div" sx={{ pl: 5 }}>
-              {`国士無双：${
-                shanten["kokushi"] > 0 ? shanten["kokushi"] : "聴牌"
-              }`}
-            </Typography>
-          </Grid>
-        </Grid>
-        <Stack direction="row">
-          {tehai.map((item, idx) => {
-            if (idx !== 13) {
-              return (
-                <Image
-                  key={idx}
-                  onClick={() => clickHandler(item, idx)}
-                  src={changeHaiName2Path(item)}
-                  width="60%"
-                  height="80%"
-                />
-              );
-            } else {
-              return (
-                <Fragment key={idx}>
-                  <Box sx={{ p: 1 }} />
-                  <Image
-                    key={idx}
-                    onClick={() => clickHandler(item, idx)}
-                    src={changeHaiName2Path(item)}
-                    width="60%"
-                    height="80%"
-                  />
-                </Fragment>
-              );
-            }
-          })}
-          <Box sx={{ p: 1 }} />
-          <Button variant="contained" color="error" onClick={handleClickOpen}>
-            リセット
-          </Button>
-          <Box sx={{ p: 1 }} />
-          <Button
-            variant="contained"
-            disabled={
-              Object.values(shanten).filter((val) => val === -1).length === 0
-            }
-            onClick={handleTumo}
-          >
-            ツモ
-          </Button>
-        </Stack>
-        <Dialog open={open[0]} onClose={() => handleClose(0)}>
-          <Card sx={{ p: 3 }}>
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1 }}
-              style={{ padding: "25px 0" }}
+          <Stack direction="row">
+            {tehai.map((item, idx) => {
+              // 現在の最小向聴数の形を求める
+              const names = (function () {
+                const min = Math.min(...Object.values(shanten));
+                return Object.keys(shanten).filter(
+                  (key) => shanten[key] === min
+                );
+              })();
+              const icon = (function () {
+                for (const name of names) {
+                  if (diffShanten[item]?.name > 0)
+                    return <TrendingUpIcon color="error" sx={{ m: "auto" }} />;
+                }
+                return <TrendingDownIcon color="info" sx={{ m: "auto" }} />;
+              })();
+              if (idx !== 13) {
+                return (
+                  <Stack key={idx}>
+                    <Image
+                      onClick={() => clickHandler(item, idx)}
+                      src={changeHaiName2Path(item)}
+                      width="60%"
+                      height="80%"
+                    />
+                    {icon}
+                  </Stack>
+                );
+              } else {
+                return (
+                  <Fragment key={idx}>
+                    <Box sx={{ p: 1 }} />
+                    <Stack key={idx}>
+                      <Image
+                        onClick={() => clickHandler(item, idx)}
+                        src={changeHaiName2Path(item)}
+                        width="60%"
+                        height="80%"
+                      />
+                      {icon}
+                    </Stack>
+                  </Fragment>
+                );
+              }
+            })}
+            <Box sx={{ p: 1 }} />
+            <Button variant="contained" color="error" onClick={handleClickOpen}>
+              リセット
+            </Button>
+            <Box sx={{ p: 1 }} />
+            <Button
+              variant="contained"
+              disabled={
+                Object.values(shanten).filter((val) => val === -1).length === 0
+              }
+              onClick={handleTumo}
             >
-              {open[1] === 0
-                ? "手牌をリセットしますか？"
-                : "手牌をリセットします"}
-            </Typography>
-            <Stack
-              direction="row"
-              justifyContent="center"
-              alignItems="center"
-              spacing={2}
-            >
-              <Button
-                variant="contained"
-                onClick={() => {
-                  resetTehai();
-                  handleClose(open[1] === 0 ? 0 : 1);
-                }}
+              ツモ
+            </Button>
+          </Stack>
+          <Dialog open={open[0]} onClose={() => handleClose(0)}>
+            <Card sx={{ p: 3 }}>
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ flexGrow: 1 }}
+                style={{ padding: "25px 0" }}
               >
-                {open[1] === 0 ? "リセットする" : "OK"}
-              </Button>{" "}
-              {open[1] === 0 ? (
+                {open[1] === 0
+                  ? "手牌をリセットしますか？"
+                  : "手牌をリセットします"}
+              </Typography>
+              <Stack
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                spacing={2}
+              >
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   onClick={() => {
-                    handleClose(0);
+                    resetTehai();
+                    handleClose(open[1] === 0 ? 0 : 1);
                   }}
                 >
-                  キャンセル
-                </Button>
-              ) : (
-                ""
-              )}
-            </Stack>
-          </Card>
-        </Dialog>
-        <DisplayInfo onClose={handleTumoClose} open={tumoOpen} />
-      </Card>
-    );
-  }
+                  {open[1] === 0 ? "リセットする" : "OK"}
+                </Button>{" "}
+                {open[1] === 0 ? (
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      handleClose(0);
+                    }}
+                  >
+                    キャンセル
+                  </Button>
+                ) : (
+                  ""
+                )}
+              </Stack>
+            </Card>
+          </Dialog>
+          <DisplayInfo onClose={handleTumoClose} open={tumoOpen} />
+        </>
+      )}
+    </Card>
+  );
 };
 
 const getRandomInt = (min = 0, max = 34) => {
