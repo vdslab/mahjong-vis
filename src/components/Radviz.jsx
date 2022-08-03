@@ -1,13 +1,19 @@
 import { Card } from "@mui/material";
 import { useSetRecoilState, useRecoilValue } from "recoil";
-import { shantenState, tehaiState, yakuValueState } from "./atoms";
+import {
+  shantenState,
+  tehaiState,
+  yakuValueState,
+  diffShantenState,
+} from "./atoms";
 import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
 import { DIMENSIONS } from "../const/upper";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 import { useEffect } from "react";
 
-const radviz = (data, r, n) => {
+const radviz = (data, r) => {
+  const n = DIMENSIONS.length;
   let a = 0;
   let b = 0;
   let c = 0;
@@ -27,19 +33,44 @@ const radviz = (data, r, n) => {
 
 export const Radviz = () => {
   const tehai = useRecoilValue(tehaiState);
-  // 手牌の特徴量を計算
+  // 14枚の手牌の特徴量と向聴数を計算
   const { featureList, shanten } = defineFeature(tehai);
   const setShanten = useSetRecoilState(shantenState);
   const setYakuValue = useSetRecoilState(yakuValueState);
+  const setDiffShanten = useSetRecoilState(diffShantenState);
+
+  // 図の大きさ
+  const r = 300;
+  const contentWidth = 2 * r;
+  const contentHeight = 2 * r;
+  const margin = 50;
+  const width = contentWidth + margin * 2;
+  const height = contentHeight + margin * 2;
+  const lineColor = "#444";
 
   // 役を推定
   const data = defineYaku(featureList, 14, 0);
+  // 点の座標
+  const { x, y } = radviz(data, r);
+  // 点の大きさ
+  const pointSize = 10;
+
+  const points = [];
+
+  // 14枚の手牌の特徴量と、13枚の手牌の特徴量の差
   const diffAssessment = {};
+  // 14枚の手牌の向聴数と、13枚の手牌の向聴数の差
+  const diffShanten = {};
   for (const [key, value] of Object.entries(deleteElement(tehai))) {
-    const { featureList, shanten } = defineFeature(value);
-    const yaku = defineYaku(featureList, value.length, 0);
+    const tmp = defineFeature(value);
+    const yaku = defineYaku(tmp["featureList"], value.length, 0);
+    points.push(radviz(yaku, r));
     diffAssessment[key] = DIMENSIONS.reduce(
       (obj, x) => Object.assign(obj, { [x]: yaku[x] - data[x] }),
+      {}
+    );
+    diffShanten[key] = Object.keys(shanten).reduce(
+      (obj, x) => Object.assign(obj, { [x]: shanten[x] - tmp["shanten"][x] }),
       {}
     );
   }
@@ -52,22 +83,11 @@ export const Radviz = () => {
     setYakuValue(diffAssessment);
   }, [diffAssessment]);
 
+  useEffect(() => {
+    setDiffShanten(diffShanten);
+  }, [diffShanten]);
+
   if (tehai.length === 0) return <></>;
-
-  // 図の大きさ
-  const r = 300;
-  const contentWidth = 2 * r;
-  const contentHeight = 2 * r;
-  const margin = 50;
-  const width = contentWidth + margin * 2;
-  const height = contentHeight + margin * 2;
-  const lineColor = "#444";
-  const n = DIMENSIONS.length;
-
-  // 点の座標
-  const { x, y } = radviz(data, r, n);
-  // 点の大きさ
-  const pointSize = 10;
 
   return (
     <Card sx={{ p: 1, height: "100%" }}>
@@ -76,7 +96,10 @@ export const Radviz = () => {
           <circle r={r} fill="none" stroke={lineColor} />
           {DIMENSIONS.map((property, i) => {
             return (
-              <g key={i} transform={`rotate(${(360 / n) * i + 90})`}>
+              <g
+                key={i}
+                transform={`rotate(${(360 / DIMENSIONS.length) * i + 90})`}
+              >
                 <line
                   x1="0"
                   y1="0"
@@ -96,8 +119,15 @@ export const Radviz = () => {
               </g>
             );
           })}
+          {points.map(({ x, y }, i) => {
+            return (
+              <g key={i} transform={`translate(${x},${y})`}>
+                <circle r={pointSize} fill="green" />
+              </g>
+            );
+          })}
           <g transform={`translate(${x},${y})`}>
-            <circle r={pointSize} opacity="0.8" />
+            <circle r={pointSize} fill="red" />
           </g>
         </g>
       </svg>

@@ -30,6 +30,11 @@ export const shantenState = atom({
   },
 });
 
+export const diffShantenState = atom({
+  key: "diffShanten",
+  default: {},
+});
+
 export const yakuValueState = atom({
   key: "yakuValue",
   default: {},
