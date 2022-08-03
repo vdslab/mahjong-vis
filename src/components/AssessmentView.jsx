@@ -82,6 +82,7 @@ const VerticalAxis = ({ names, scale, strokeColor, height }) => {
               textAnchor="end"
               dominantBaseline="central"
               fontSize="30"
+              style={{ userSelect: "none" }}
             >
               {YAKU_DESCRIPTION[name]["name"]}
             </text>
