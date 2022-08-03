@@ -6,7 +6,7 @@ import {
   haiCheckListState,
   shantenState,
 } from "./atoms";
-import haiOrder from "./haiOrder";
+import { HAI_ORDER } from "../const/HaiOrder.js";
 import Image from "next/image";
 import {
   Box,
@@ -54,7 +54,7 @@ export const TehaiView = () => {
     }
     setHaiCheckList(tehaiCheckedList);
     const newTehai = copiedTehai.filter((_, id) => idx != id);
-    newTehai.sort((x, y) => haiOrder.indexOf(x) - haiOrder.indexOf(y));
+    newTehai.sort((x, y) => HAI_ORDER.indexOf(x) - HAI_ORDER.indexOf(y));
     newTehai.push(addedHai);
     setTehai(newTehai);
     setSuteHaiList([...suteHaiList, clickedHai]);
@@ -100,7 +100,7 @@ export const TehaiView = () => {
     return [
       ...haiList
         .slice(0, 13)
-        .sort((x, y) => haiOrder.indexOf(x) - haiOrder.indexOf(y)),
+        .sort((x, y) => HAI_ORDER.indexOf(x) - HAI_ORDER.indexOf(y)),
       haiList[13],
     ];
   };

@@ -1,4 +1,4 @@
-const haiOrder = [
+export const HAI_ORDER = [
   "m1",
   "m2",
   "m3",
@@ -34,4 +34,3 @@ const haiOrder = [
   "z2",
   "z3",
 ];
-export default haiOrder;
