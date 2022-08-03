@@ -12,7 +12,8 @@ import { DIMENSIONS } from "../const/upper";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 import { useEffect } from "react";
 
-const radviz = (data, r, n) => {
+const radviz = (data, r) => {
+  const n = DIMENSIONS.length;
   let a = 0;
   let b = 0;
   let c = 0;
@@ -38,8 +39,23 @@ export const Radviz = () => {
   const setYakuValue = useSetRecoilState(yakuValueState);
   const setDiffShanten = useSetRecoilState(diffShantenState);
 
+  // 図の大きさ
+  const r = 300;
+  const contentWidth = 2 * r;
+  const contentHeight = 2 * r;
+  const margin = 50;
+  const width = contentWidth + margin * 2;
+  const height = contentHeight + margin * 2;
+  const lineColor = "#444";
+
   // 役を推定
   const data = defineYaku(featureList, 14, 0);
+  // 点の座標
+  const { x, y } = radviz(data, r);
+  // 点の大きさ
+  const pointSize = 10;
+
+  const points = [];
 
   // 14枚の手牌の特徴量と、13枚の手牌の特徴量の差
   const diffAssessment = {};
@@ -48,6 +64,7 @@ export const Radviz = () => {
   for (const [key, value] of Object.entries(deleteElement(tehai))) {
     const tmp = defineFeature(value);
     const yaku = defineYaku(tmp["featureList"], value.length, 0);
+    points.push(radviz(yaku, r));
     diffAssessment[key] = DIMENSIONS.reduce(
       (obj, x) => Object.assign(obj, { [x]: yaku[x] - data[x] }),
       {}
@@ -72,21 +89,6 @@ export const Radviz = () => {
 
   if (tehai.length === 0) return <></>;
 
-  // 図の大きさ
-  const r = 300;
-  const contentWidth = 2 * r;
-  const contentHeight = 2 * r;
-  const margin = 50;
-  const width = contentWidth + margin * 2;
-  const height = contentHeight + margin * 2;
-  const lineColor = "#444";
-  const n = DIMENSIONS.length;
-
-  // 点の座標
-  const { x, y } = radviz(data, r, n);
-  // 点の大きさ
-  const pointSize = 10;
-
   return (
     <Card sx={{ p: 1, height: "100%" }}>
       <svg viewBox={`0 0 ${width} ${height}`}>
@@ -94,7 +96,10 @@ export const Radviz = () => {
           <circle r={r} fill="none" stroke={lineColor} />
           {DIMENSIONS.map((property, i) => {
             return (
-              <g key={i} transform={`rotate(${(360 / n) * i + 90})`}>
+              <g
+                key={i}
+                transform={`rotate(${(360 / DIMENSIONS.length) * i + 90})`}
+              >
                 <line
                   x1="0"
                   y1="0"
@@ -114,8 +119,15 @@ export const Radviz = () => {
               </g>
             );
           })}
+          {points.map(({ x, y }, i) => {
+            return (
+              <g key={i} transform={`translate(${x},${y})`}>
+                <circle r={pointSize} fill="green" />
+              </g>
+            );
+          })}
           <g transform={`translate(${x},${y})`}>
-            <circle r={pointSize} opacity="0.8" />
+            <circle r={pointSize} fill="red" />
           </g>
         </g>
       </svg>
