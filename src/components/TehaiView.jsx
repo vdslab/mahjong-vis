@@ -192,7 +192,7 @@ export const TehaiView = () => {
             ツモ
           </Button>
         </Stack>
-        <Dialog open={open[0]} onClose={handleClose}>
+        <Dialog open={open[0]} onClose={() => handleClose(0)}>
           <Card sx={{ p: 3 }}>
             <Typography
               variant="h6"
