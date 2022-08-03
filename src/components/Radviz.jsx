@@ -1,6 +1,11 @@
 import { Card } from "@mui/material";
 import { useSetRecoilState, useRecoilValue } from "recoil";
-import { shantenState, tehaiState, yakuValueState } from "./atoms";
+import {
+  shantenState,
+  tehaiState,
+  yakuValueState,
+  diffShantenState,
+} from "./atoms";
 import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
 import { DIMENSIONS } from "../const/upper";
@@ -27,19 +32,28 @@ const radviz = (data, r, n) => {
 
 export const Radviz = () => {
   const tehai = useRecoilValue(tehaiState);
-  // 手牌の特徴量を計算
+  // 14枚の手牌の特徴量と向聴数を計算
   const { featureList, shanten } = defineFeature(tehai);
   const setShanten = useSetRecoilState(shantenState);
   const setYakuValue = useSetRecoilState(yakuValueState);
+  const setDiffShanten = useSetRecoilState(diffShantenState);
 
   // 役を推定
   const data = defineYaku(featureList, 14, 0);
+
+  // 14枚の手牌の特徴量と、13枚の手牌の特徴量の差
   const diffAssessment = {};
+  // 14枚の手牌の向聴数と、13枚の手牌の向聴数の差
+  const diffShanten = {};
   for (const [key, value] of Object.entries(deleteElement(tehai))) {
-    const { featureList, shanten } = defineFeature(value);
-    const yaku = defineYaku(featureList, value.length, 0);
+    const tmp = defineFeature(value);
+    const yaku = defineYaku(tmp["featureList"], value.length, 0);
     diffAssessment[key] = DIMENSIONS.reduce(
       (obj, x) => Object.assign(obj, { [x]: yaku[x] - data[x] }),
+      {}
+    );
+    diffShanten[key] = Object.keys(shanten).reduce(
+      (obj, x) => Object.assign(obj, { [x]: shanten[x] - tmp["shanten"][x] }),
       {}
     );
   }
@@ -51,6 +65,10 @@ export const Radviz = () => {
   useEffect(() => {
     setYakuValue(diffAssessment);
   }, [diffAssessment]);
+
+  useEffect(() => {
+    setDiffShanten(diffShanten);
+  }, [diffShanten]);
 
   if (tehai.length === 0) return <></>;
 
