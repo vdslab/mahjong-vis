@@ -15,8 +15,13 @@ export const AbandonedHaiView = () => {
       <Grid container>
         {suteHaiList.map((item, idx) => {
           return (
-            <Grid item key={idx} xs={2}>
-              <Image src={changeHaiName2Path(item)} width="60%" height="80%" />
+            <Grid item key={idx} xs={2} style={{ marginBottom: "1.8%" }}>
+              <Image
+                src={changeHaiName2Path(item)}
+                width="80"
+                height="110"
+                layout="responsive"
+              />
             </Grid>
           );
         })}
