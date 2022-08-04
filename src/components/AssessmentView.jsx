@@ -76,7 +76,7 @@ const VerticalAxis = ({ names, scale, strokeColor, height }) => {
       <line x1={x} y1={y1} x2={x} y2={y2} stroke={strokeColor} />
       {names.map((name, idx) => {
         return (
-          <g key={idx} transform={`translate(${x}, ${140 + scale(idx)})`}>
+          <g key={idx} transform={`translate(${x}, ${120 + scale(idx)})`}>
             <text
               x="-20"
               textAnchor="end"
@@ -94,7 +94,7 @@ const VerticalAxis = ({ names, scale, strokeColor, height }) => {
 };
 
 const HorizontalAxis = ({ tiles, scale, strokeColor, width }) => {
-  const y = 85;
+  const y = 80;
   const [x1, x2] = [-60, width];
   return (
     <g>
@@ -102,7 +102,7 @@ const HorizontalAxis = ({ tiles, scale, strokeColor, width }) => {
       {tiles.map((tile, idx) => {
         return (
           <g key={idx} transform={`translate(${80 + scale(idx)}, 0)`}>
-            <image href={changeHaiName2Path(tile)} width="57" height="76" />
+            <image href={changeHaiName2Path(tile)} width="51" height="68" />
           </g>
         );
       })}
@@ -114,7 +114,7 @@ const Contents = ({ data, xScale, yScale, colorScale }) => {
   const viewData = transpose(Object.values(data).map((i) => Object.values(i)));
 
   return (
-    <g transform={`translate(80, 110)`}>
+    <g transform={`translate(80, 90)`}>
       {viewData.map((rows, i) => {
         return rows.map((item, j) => {
           return (
@@ -122,8 +122,8 @@ const Contents = ({ data, xScale, yScale, colorScale }) => {
               key={i * viewData.length + j}
               x={xScale(j)}
               y={yScale(i)}
-              width={65}
-              height={65}
+              width={52}
+              height={58}
               fill={colorScale(item)}
             />
           );
