@@ -24,7 +24,7 @@ export const AssessmentView = () => {
   const colorScale = d3
     .scaleLinear()
     .domain([100, 0, -100])
-    .range(["red", "yellow", "blue"]);
+    .range(["orangered", "whitesmoke", "dodgerblue"]);
   const xScale = d3
     .scaleLinear()
     .domain([0, Object.keys(yakuValue).length])
@@ -32,8 +32,8 @@ export const AssessmentView = () => {
     .nice();
   const yScale = d3
     .scaleLinear()
-    .domain([DIMENSIONS.length, 0])
-    .range([contentHeight, 0])
+    .domain([0, DIMENSIONS.length])
+    .range([0, contentHeight - 80])
     .nice();
 
   return (
