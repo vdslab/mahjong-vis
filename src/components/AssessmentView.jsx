@@ -1,6 +1,6 @@
 import * as d3 from "d3";
-import { useRecoilValue } from "recoil";
-import { yakuValueState } from "./atoms";
+import { useRecoilValue, useRecoilState } from "recoil";
+import { yakuValueState, selectedTileState } from "./atoms";
 import { changeHaiName2Path } from "./TehaiView";
 import { DIMENSIONS } from "../const/upper";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
@@ -8,6 +8,7 @@ import { Card } from "@mui/material";
 
 export const AssessmentView = () => {
   const yakuValue = useRecoilValue(yakuValueState);
+  const [selectedTile, setSelectedTile] = useRecoilState(selectedTileState);
 
   const margin = {
     top: 10,
@@ -55,6 +56,8 @@ export const AssessmentView = () => {
             scale={xScale}
             strokeColor={strokeColor}
             width={svgWidth}
+            selectedTile={selectedTile}
+            setSelectedTile={setSelectedTile}
           />
           <Contents
             data={yakuValue}
@@ -93,16 +96,39 @@ const VerticalAxis = ({ names, scale, strokeColor, height }) => {
   );
 };
 
-const HorizontalAxis = ({ tiles, scale, strokeColor, width }) => {
+const HorizontalAxis = ({
+  tiles,
+  scale,
+  strokeColor,
+  width,
+  selectedTile,
+  setSelectedTile,
+}) => {
   const y = 80;
   const [x1, x2] = [-60, width];
+  const [tileWidth, tileHeight] = [51, 68];
+
   return (
     <g>
       <line x1={x1} y1={y} x2={x2} y2={y} stroke={strokeColor} />
       {tiles.map((tile, idx) => {
         return (
           <g key={idx} transform={`translate(${80 + scale(idx)}, 0)`}>
-            <image href={changeHaiName2Path(tile)} width="51" height="68" />
+            <image
+              href={changeHaiName2Path(tile)}
+              width={tileWidth}
+              height={tileHeight}
+              onClick={() => setSelectedTile(tile)}
+            />
+            {selectedTile === tile && (
+              <rect
+                fill="none"
+                stroke="red"
+                strokeWidth="4px"
+                width={tileWidth}
+                height={tileHeight}
+              />
+            )}
           </g>
         );
       })}
@@ -132,12 +158,6 @@ const Contents = ({ data, xScale, yScale, colorScale }) => {
     </g>
   );
 };
-
-// style={{
-//   transitionDuration: "1s",
-//   transitionProperty: "all",
-//   transitionDelay: "0.2s",
-// }}
 
 // 転置
 const transpose = (a) => {

@@ -5,6 +5,7 @@ import {
   tehaiState,
   yakuValueState,
   diffShantenState,
+  selectedTileState,
 } from "./atoms";
 import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
@@ -33,6 +34,7 @@ const radviz = (data, r) => {
 
 export const Radviz = () => {
   const tehai = useRecoilValue(tehaiState);
+  const selectedTile = useRecoilValue(selectedTileState);
   // 14枚の手牌の特徴量と向聴数を計算
   const { featureList, shanten } = defineFeature(tehai);
   const setShanten = useSetRecoilState(shantenState);
@@ -64,7 +66,7 @@ export const Radviz = () => {
   for (const [key, value] of Object.entries(deleteElement(tehai))) {
     const tmp = defineFeature(value);
     const yaku = defineYaku(tmp["featureList"], value.length, 0);
-    points.push(radviz(yaku, r));
+    points.push([key, radviz(yaku, r)]);
     diffAssessment[key] = DIMENSIONS.reduce(
       (obj, x) => Object.assign(obj, { [x]: yaku[x] - data[x] }),
       {}
@@ -77,17 +79,9 @@ export const Radviz = () => {
 
   useEffect(() => {
     setShanten(shanten);
-  }, [shanten]);
-
-  useEffect(() => {
     setYakuValue(diffAssessment);
-  }, [diffAssessment]);
-
-  useEffect(() => {
     setDiffShanten(diffShanten);
-  }, [diffShanten]);
-
-  if (tehai.length === 0) return <></>;
+  }, [tehai]);
 
   return (
     <Card sx={{ p: 1, height: "100%" }}>
@@ -122,10 +116,24 @@ export const Radviz = () => {
                 </g>
               );
             })}
-            {points.map(({ x, y }, i) => {
+            {points.map(([tile, { x, y }], i) => {
               return (
                 <g key={i} transform={`translate(${x},${y})`}>
-                  <circle r={pointSize} fill="green" />
+                  <circle
+                    r={pointSize}
+                    fill="green"
+                    fillOpacity={
+                      selectedTile === "" || selectedTile === tile ? 1 : 0.1
+                    }
+                  />
+                  {/* {selectedTile === tile && (
+                    <circle
+                      fill="none"
+                      stroke="red"
+                      strokeWidth="4px"
+                      r={pointSize}
+                    />
+                  )} */}
                 </g>
               );
             })}

@@ -39,3 +39,8 @@ export const yakuValueState = atom({
   key: "yakuValue",
   default: {},
 });
+
+export const selectedTileState = atom({
+  key: "selectedTile",
+  default: "",
+});
