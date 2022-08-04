@@ -4,7 +4,7 @@ import { yakuValueState, selectedTileState } from "./atoms";
 import { changeHaiName2Path } from "./TehaiView";
 import { DIMENSIONS } from "../const/upper";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
-import { Card } from "@mui/material";
+import { Card, Tooltip } from "@mui/material";
 
 export const AssessmentView = () => {
   const yakuValue = useRecoilValue(yakuValueState);
@@ -80,15 +80,22 @@ const VerticalAxis = ({ names, scale, strokeColor, height }) => {
       {names.map((name, idx) => {
         return (
           <g key={idx} transform={`translate(${x}, ${120 + scale(idx)})`}>
-            <text
-              x="-20"
-              textAnchor="end"
-              dominantBaseline="central"
-              fontSize="30"
-              style={{ userSelect: "none" }}
+            <Tooltip
+              title={YAKU_DESCRIPTION[name]["description"]}
+              placement="top-start"
+              arrow
+              disableInteractive
             >
-              {YAKU_DESCRIPTION[name]["name"]}
-            </text>
+              <text
+                x="-20"
+                textAnchor="end"
+                dominantBaseline="central"
+                fontSize="30"
+                style={{ userSelect: "none" }}
+              >
+                {YAKU_DESCRIPTION[name]["name"]}
+              </text>
+            </Tooltip>
           </g>
         );
       })}
