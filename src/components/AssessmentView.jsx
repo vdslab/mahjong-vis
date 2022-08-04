@@ -12,7 +12,7 @@ export const AssessmentView = () => {
 
   const margin = {
     top: 10,
-    bottom: 45,
+    bottom: 50,
     left: 100,
     right: 90,
   };
@@ -34,7 +34,7 @@ export const AssessmentView = () => {
   const yScale = d3
     .scaleLinear()
     .domain([0, DIMENSIONS.length])
-    .range([0, contentHeight - 80])
+    .range([0, contentHeight - 200])
     .nice();
 
   return (
@@ -65,6 +65,12 @@ export const AssessmentView = () => {
             yScale={yScale}
             colorScale={colorScale}
           />
+          <Legends
+            x={80}
+            y={svgHeight - 160}
+            width={svgWidth - 200}
+            colorScale={colorScale}
+          />
         </svg>
       )}
     </Card>
@@ -73,7 +79,7 @@ export const AssessmentView = () => {
 
 const VerticalAxis = ({ names, scale, strokeColor, height }) => {
   const x = 70;
-  const [y1, y2] = [-20, height + 50];
+  const [y1, y2] = [-20, height - 180];
   return (
     <g>
       <line x1={x} y1={y1} x2={x} y2={y2} stroke={strokeColor} />
@@ -162,6 +168,43 @@ const Contents = ({ data, xScale, yScale, colorScale }) => {
           );
         });
       })}
+    </g>
+  );
+};
+
+const Legends = ({ x, y, width, colorScale }) => {
+  return (
+    <g transform={`translate(${x}, ${y})`}>
+      <linearGradient id="gradient">
+        {[...Array(41)].map((_, idx) => {
+          return (
+            <stop
+              key={idx}
+              offset={`${(idx * 5) / 2}%`}
+              stopColor={colorScale(100 - idx * 5)}
+            />
+          );
+        })}
+      </linearGradient>
+      <rect width={width} height="50" fill="url('#gradient')" />
+      <text
+        dominantBaseline="text-after-edge"
+        fontSize={30}
+        y="100"
+        style={{ userSelect: "none" }}
+      >
+        {`<---- その役になる`}
+      </text>
+      <text
+        textAnchor="end"
+        dominantBaseline="text-after-edge"
+        fontSize={30}
+        x={width}
+        y="100"
+        style={{ userSelect: "none" }}
+      >
+        {`その役にならない ---->`}
+      </text>
     </g>
   );
 };
