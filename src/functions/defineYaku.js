@@ -60,7 +60,7 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
     );
 
     // 一盃口
-    yakuList["ipeko"] = 0;
+    yakuList["ipeko"] = featureList["ipeko_cnt"];
 
     // 七対子
     yakuList["chitoitu"] = featureValue(featureList["chitoitu_cnt"], {
@@ -216,6 +216,15 @@ const pinfu = (head, shuntu, ryanmen, kanchan, penchan, ziYakuCnt, ukiCnt) => {
   }
   // 6枚
   if (shuntu === 2) {
+    if (head === 1) {
+      if (ryanmen === 2) return 80;
+      if (kanchan === 1 || penchan === 1) return 60;
+      return 40;
+    } else {
+      if (ryanmen === 2) return 60;
+      if (ryanmen === 1 && (kanchan === 1 || penchan === 1)) return 50;
+      return 40;
+    }
   }
   return 0;
 };

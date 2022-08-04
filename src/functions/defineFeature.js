@@ -56,9 +56,14 @@ export const defineFeature = (tehai) => {
   let tmpTwo = featureList["zi_toitu"];
 
   [md, pd, sd].map((data, idx) => {
-    const buf = String(
-      Number(Object.values(data).reduce((prev, cur) => prev + cur, ""))
-    ).split(/00+/);
+    // Numberを噛ませて先頭の0を消す
+    // toString()で末尾の0を消す
+    const tileArrangement = Object.values(data)
+      .reduce((prev, cur) => prev + cur, "")
+      .replaceAll("0", " ")
+      .trim()
+      .replaceAll(" ", "0");
+    const buf = tileArrangement.split(/00+/);
     let tmp = [0, 0, 0, 0];
     for (const i of buf) {
       if ([...i].reduce((prev, cur) => prev + Number(cur), 0) >= 2) {
@@ -139,6 +144,12 @@ export const defineFeature = (tehai) => {
       }
     }
     res.push(tmp_res);
+
+    // 一盃口特徴量計算
+    featureList["ipeko_cnt"] = Math.max(
+      featureList["ipeko_cnt"],
+      checkIpeko(tileArrangement)
+    );
   });
 
   for (const i of res) {
@@ -208,13 +219,14 @@ export const defineFeature = (tehai) => {
   }
 
   // 雀頭候補の数
+  // TODO:分解結果が複数ある
   let f = featureList["zi_toitu"];
   for (const i of res) {
-    for (const j of i[1]) {
-      if (new Set(j).size === 1) {
+    i.map((j, idx) => {
+      if (idx % 2 && new Set(j).size === 1) {
         f += 1;
       }
-    }
+    });
   }
 
   // 面子過多をチェック
@@ -392,4 +404,33 @@ const searchArray = (array, tar) => {
     array.findIndex((item) => JSON.stringify(item) === JSON.stringify(tar)) !==
     -1
   );
+};
+
+// 一盃口の特徴量計算
+const checkIpeko = (buf) => {
+  const newBuf = buf.replaceAll("3", "2").replaceAll("4", "2");
+  const d = [
+    ["222", 100],
+    ["1221", 90],
+    ["212", 85],
+    ["221", 80],
+    ["122", 80],
+    ["11211", 70],
+    ["1121", 65],
+    ["1211", 65],
+    ["211", 60],
+    ["112", 60],
+    ["202", 50],
+    ["121", 40],
+    ["111", 20],
+    ["102", 20],
+    ["201", 20],
+    ["21", 20],
+    ["12", 20],
+  ];
+
+  for (const [key, value] of d) {
+    if (newBuf.indexOf(key) !== -1) return value;
+  }
+  return 0;
 };

@@ -91,46 +91,50 @@ export const Radviz = () => {
 
   return (
     <Card sx={{ p: 1, height: "100%" }}>
-      <svg viewBox={`0 0 ${width} ${height}`}>
-        <g transform={`translate(${margin + r},${margin + r})`}>
-          <circle r={r} fill="none" stroke={lineColor} />
-          {DIMENSIONS.map((property, i) => {
-            return (
-              <g
-                key={i}
-                transform={`rotate(${(360 / DIMENSIONS.length) * i + 90})`}
-              >
-                <line
-                  x1="0"
-                  y1="0"
-                  x2="0"
-                  y2={-r}
-                  stroke={lineColor}
-                  opacity={0.3}
-                />
-                <text
-                  y={-r}
-                  textAnchor="middle"
-                  dominantBaseline="text-after-edge"
-                  fontSize={20}
+      {tehai.length === 0 ? (
+        <div>loading...</div>
+      ) : (
+        <svg viewBox={`0 0 ${width} ${height}`}>
+          <g transform={`translate(${margin + r},${margin + r})`}>
+            <circle r={r} fill="none" stroke={lineColor} />
+            {DIMENSIONS.map((property, i) => {
+              return (
+                <g
+                  key={i}
+                  transform={`rotate(${(360 / DIMENSIONS.length) * i + 90})`}
                 >
-                  {YAKU_DESCRIPTION[property]["name"]}
-                </text>
-              </g>
-            );
-          })}
-          {points.map(({ x, y }, i) => {
-            return (
-              <g key={i} transform={`translate(${x},${y})`}>
-                <circle r={pointSize} fill="green" />
-              </g>
-            );
-          })}
-          <g transform={`translate(${x},${y})`}>
-            <circle r={pointSize} fill="red" />
+                  <line
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2={-r}
+                    stroke={lineColor}
+                    opacity={0.3}
+                  />
+                  <text
+                    y={-r}
+                    textAnchor="middle"
+                    dominantBaseline="text-after-edge"
+                    fontSize={20}
+                  >
+                    {YAKU_DESCRIPTION[property]["name"]}
+                  </text>
+                </g>
+              );
+            })}
+            {points.map(({ x, y }, i) => {
+              return (
+                <g key={i} transform={`translate(${x},${y})`}>
+                  <circle r={pointSize} fill="green" />
+                </g>
+              );
+            })}
+            <g transform={`translate(${x},${y})`}>
+              <circle r={pointSize} fill="red" />
+            </g>
           </g>
-        </g>
-      </svg>
+        </svg>
+      )}
     </Card>
   );
 };

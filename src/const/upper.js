@@ -1,5 +1,6 @@
 export const DIMENSIONS = [
   "tanyao",
+  "ipeko",
   "pinfu",
   "ittu",
   "honitu",

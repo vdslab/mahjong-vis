@@ -37,6 +37,7 @@ export const FEATURE_LIST = [
   "sanshoku_mentu",
   "chitoitu_cnt",
   "toitoi_sananko_cnt",
+  "ipeko_cnt",
   "kokushi_cnt",
 ];
 
