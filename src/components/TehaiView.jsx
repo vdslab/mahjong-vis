@@ -17,6 +17,9 @@ import {
   Button,
   Dialog,
   Grid,
+  NativeSelect,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
@@ -28,13 +31,13 @@ export const TehaiView = () => {
   const MAX_PLAY_TIMES = 18;
   const [tehai, setTehai] = useRecoilState(tehaiState);
   const [suteHaiList, setSuteHaiList] = useRecoilState(suteHaiListState);
+  const [haiCheckList, setHaiCheckList] = useRecoilState(haiCheckListState);
   const [open, setOpen] = useState([false, 0]);
   const [tumoOpen, setTumoOpen] = useState(false);
-  const [haiCheckList, setHaiCheckList] = useRecoilState(haiCheckListState);
+  const [haiMode, setHaiMode] = useState(0);
   const suteHaiCount = suteHaiList.length;
   const shanten = useRecoilValue(shantenState);
   const diffShanten = useRecoilValue(diffShantenState);
-
   useEffect(() => {
     const haiList = initHai();
     setTehai(haiList);
@@ -49,7 +52,7 @@ export const TehaiView = () => {
     }
     let isAddedHai = 1;
     while (isAddedHai) {
-      const hai = generateNewHai();
+      const hai = generateNewHai(haiMode);
       const haiType = HAITYPELIST.indexOf(hai[0]);
       if (tehaiCheckedList[haiType][parseInt(hai[1]) - 1] < 4) {
         tehaiCheckedList[haiType][parseInt(hai[1]) - 1] += 1;
@@ -92,7 +95,7 @@ export const TehaiView = () => {
     for (let i = 0; i < 14; i++) {
       const isAddedHai = true;
       while (isAddedHai) {
-        const hai = generateNewHai();
+        const hai = generateNewHai(haiMode);
         const haiType = HAITYPELIST.indexOf(hai[0]);
         if (tehaiCheckedList[haiType][parseInt(hai[1]) - 1] < 4) {
           tehaiCheckedList[haiType][parseInt(hai[1]) - 1] += 1;
@@ -118,7 +121,9 @@ export const TehaiView = () => {
   if (suteHaiCount >= MAX_PLAY_TIMES && open[0] === false) {
     setOpen([true, 1]);
   }
-
+  const handleChange = (e) => {
+    setHaiMode(e.target.value);
+  };
   return (
     <Card sx={{ p: 3 }}>
       {tehai.length < 1 || Object.keys(diffShanten).length === 0 ? (
@@ -126,10 +131,29 @@ export const TehaiView = () => {
       ) : (
         <>
           <Grid container>
-            <Grid item xs={5}>
+            <Grid item xs={1}>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 手牌
               </Typography>
+            </Grid>
+            <Grid item xs={3}>
+              <FormControl fullWidth>
+                <InputLabel id="">自模モードを選択</InputLabel>
+                <NativeSelect
+                  defaultValue={0}
+                  inputProps={{
+                    name: "haiMode",
+                    id: "",
+                  }}
+                  disabled={suteHaiList.length > 0 ? true : false}
+                  onChange={handleChange}
+                >
+                  <option value={0}>すべての牌</option>
+                  <option value={1}>混一色</option>
+                  <option value={2}>清一色</option>
+                  <option value={3}>国士</option>
+                </NativeSelect>
+              </FormControl>
             </Grid>
             <Grid item xs={1}>
               <Typography variant="h6" component="div" sx={{ pl: 3 }}>
@@ -268,16 +292,14 @@ export const TehaiView = () => {
 const getRandomInt = (min = 0, max = 34) => {
   return Math.floor(Math.random() * (max - min) + min);
 };
-const generateNewHai = () => {
-  // 全て
-  // const test = [...Array(34)].map((_, i) => i);
-  // 混一色
-  const test = [0, 1, 2, 3, 4, 5, 6, 7, 8, 27, 28, 29, 30, 31, 32, 33];
-  // 清一色
-  // const test = [...Array(9)].map((_, i) => i);
-  // 国士
-  // const test = [0, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33];
-  const intHai = test[getRandomInt()];
+const generateNewHai = (mode = 0) => {
+  const haiList = [
+    [...Array(34)].map((_, i) => i),
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 27, 28, 29, 30, 31, 32, 33],
+    [...Array(9)].map((_, i) => i),
+    [0, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33],
+  ];
+  const intHai = haiList[mode][getRandomInt(0, haiList[mode].length)];
 
   let hai = "";
   if (intHai <= 8) {

@@ -6,7 +6,6 @@ import { useRecoilValue } from "recoil";
 
 export const DisplayInfo = (props) => {
   const { onClose, open } = props;
-  const data = [1, 2, 3];
   const { featureList, shanten } = defineFeature(useRecoilValue(tehaiState));
   const data1 = defineYaku(featureList, 14, 0);
   const YakuNameDisplaied = {
