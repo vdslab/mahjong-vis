@@ -6,6 +6,7 @@ import {
   haiCheckListState,
   shantenState,
   diffShantenState,
+  selectedTileState,
 } from "./atoms";
 import { HAI_ORDER } from "../const/HaiOrder";
 import Image from "next/image";
@@ -32,45 +33,52 @@ export const TehaiView = () => {
   const [tehai, setTehai] = useRecoilState(tehaiState);
   const [suteHaiList, setSuteHaiList] = useRecoilState(suteHaiListState);
   const [haiCheckList, setHaiCheckList] = useRecoilState(haiCheckListState);
+  const [selectedTile, setSelectedTile] = useRecoilState(selectedTileState);
   const [open, setOpen] = useState([false, 0]);
   const [tumoOpen, setTumoOpen] = useState(false);
   const [haiMode, setHaiMode] = useState(0);
   const suteHaiCount = suteHaiList.length;
   const shanten = useRecoilValue(shantenState);
   const diffShanten = useRecoilValue(diffShantenState);
+  const [clickedHai, setClickedHai] = useState(null);
+
   useEffect(() => {
     const haiList = initHai();
     setTehai(haiList);
   }, []);
 
-  const clickHandler = (clickedHai, idx) => {
-    const copiedTehai = JSON.parse(JSON.stringify(tehai));
-    const addedHai = "";
-    const tehaiCheckedList = [];
-    for (const item of haiCheckList) {
-      tehaiCheckedList.push(item.slice());
-    }
-    let isAddedHai = 1;
-    while (isAddedHai) {
-      const hai = generateNewHai(haiMode);
-      const haiType = HAITYPELIST.indexOf(hai[0]);
-      if (tehaiCheckedList[haiType][parseInt(hai[1]) - 1] < 4) {
-        tehaiCheckedList[haiType][parseInt(hai[1]) - 1] += 1;
-        addedHai += hai;
-        isAddedHai = 0;
+  const handleTileClicked = (tile, idx) => {
+    if (idx === clickedHai) {
+      const tmpTehai = JSON.parse(JSON.stringify(tehai));
+      const addedHai = "";
+      const tehaiCheckedList = haiCheckList.map((item) => item.slice());
+      let isAddedHai = 1;
+      while (isAddedHai) {
+        const hai = generateNewHai(haiMode);
+        const haiType = HAITYPELIST.indexOf(hai[0]);
+        if (tehaiCheckedList[haiType][parseInt(hai[1]) - 1] < 4) {
+          tehaiCheckedList[haiType][parseInt(hai[1]) - 1] += 1;
+          addedHai += hai;
+          isAddedHai = 0;
+        }
       }
+      setHaiCheckList(tehaiCheckedList);
+      const newTehai = tmpTehai
+        .filter((_, id) => id !== idx)
+        .sort((x, y) => HAI_ORDER.indexOf(x) - HAI_ORDER.indexOf(y));
+      newTehai.push(addedHai);
+      setTehai(newTehai);
+      setSuteHaiList([...suteHaiList, selectedTile]);
+      setSelectedTile("");
+      setClickedHai(null);
+    } else {
+      setSelectedTile(tile);
+      setClickedHai(idx);
     }
-    setHaiCheckList(tehaiCheckedList);
-    const newTehai = copiedTehai.filter((_, id) => idx != id);
-    newTehai.sort((x, y) => HAI_ORDER.indexOf(x) - HAI_ORDER.indexOf(y));
-    newTehai.push(addedHai);
-    setTehai(newTehai);
-    setSuteHaiList([...suteHaiList, clickedHai]);
   };
 
   const handleTumo = () => {
     setTumoOpen(true);
-    console.log("ツモ");
   };
   const handleTumoClose = () => {
     setTumoOpen(false);
@@ -130,7 +138,7 @@ export const TehaiView = () => {
         <div>loading...</div>
       ) : (
         <>
-          <Grid container>
+          <Grid container sx={{ p: 1 }}>
             <Grid item xs={1}>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 手牌
@@ -189,7 +197,7 @@ export const TehaiView = () => {
                   (key) => shanten[key] === min
                 );
               })();
-              const icon = (function () {
+              const icon = (() => {
                 for (const name of names) {
                   if (diffShanten[item]?.name > 0)
                     return <TrendingUpIcon color="error" sx={{ m: "auto" }} />;
@@ -200,7 +208,7 @@ export const TehaiView = () => {
                 return (
                   <Stack key={idx}>
                     <Image
-                      onClick={() => clickHandler(item, idx)}
+                      onClick={() => handleTileClicked(item, idx)}
                       src={changeHaiName2Path(item)}
                       width="60%"
                       height="80%"
@@ -214,7 +222,7 @@ export const TehaiView = () => {
                     <Box sx={{ p: 1 }} />
                     <Stack key={idx}>
                       <Image
-                        onClick={() => clickHandler(item, idx)}
+                        onClick={() => handleTileClicked(item, idx)}
                         src={changeHaiName2Path(item)}
                         width="60%"
                         height="80%"

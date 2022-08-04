@@ -1,6 +1,6 @@
 import * as d3 from "d3";
-import { useRecoilValue } from "recoil";
-import { yakuValueState } from "./atoms";
+import { useRecoilValue, useRecoilState } from "recoil";
+import { yakuValueState, selectedTileState } from "./atoms";
 import { changeHaiName2Path } from "./TehaiView";
 import { DIMENSIONS } from "../const/upper";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
@@ -8,6 +8,7 @@ import { Card } from "@mui/material";
 
 export const AssessmentView = () => {
   const yakuValue = useRecoilValue(yakuValueState);
+  const [selectedTile, setSelectedTile] = useRecoilState(selectedTileState);
 
   const margin = {
     top: 10,
@@ -24,7 +25,7 @@ export const AssessmentView = () => {
   const colorScale = d3
     .scaleLinear()
     .domain([100, 0, -100])
-    .range(["red", "yellow", "blue"]);
+    .range(["orangered", "whitesmoke", "dodgerblue"]);
   const xScale = d3
     .scaleLinear()
     .domain([0, Object.keys(yakuValue).length])
@@ -32,8 +33,8 @@ export const AssessmentView = () => {
     .nice();
   const yScale = d3
     .scaleLinear()
-    .domain([DIMENSIONS.length, 0])
-    .range([contentHeight, 0])
+    .domain([0, DIMENSIONS.length])
+    .range([0, contentHeight - 80])
     .nice();
 
   return (
@@ -55,6 +56,8 @@ export const AssessmentView = () => {
             scale={xScale}
             strokeColor={strokeColor}
             width={svgWidth}
+            selectedTile={selectedTile}
+            setSelectedTile={setSelectedTile}
           />
           <Contents
             data={yakuValue}
@@ -76,7 +79,7 @@ const VerticalAxis = ({ names, scale, strokeColor, height }) => {
       <line x1={x} y1={y1} x2={x} y2={y2} stroke={strokeColor} />
       {names.map((name, idx) => {
         return (
-          <g key={idx} transform={`translate(${x}, ${140 + scale(idx)})`}>
+          <g key={idx} transform={`translate(${x}, ${120 + scale(idx)})`}>
             <text
               x="-20"
               textAnchor="end"
@@ -93,16 +96,39 @@ const VerticalAxis = ({ names, scale, strokeColor, height }) => {
   );
 };
 
-const HorizontalAxis = ({ tiles, scale, strokeColor, width }) => {
-  const y = 85;
+const HorizontalAxis = ({
+  tiles,
+  scale,
+  strokeColor,
+  width,
+  selectedTile,
+  setSelectedTile,
+}) => {
+  const y = 80;
   const [x1, x2] = [-60, width];
+  const [tileWidth, tileHeight] = [51, 68];
+
   return (
     <g>
       <line x1={x1} y1={y} x2={x2} y2={y} stroke={strokeColor} />
       {tiles.map((tile, idx) => {
         return (
           <g key={idx} transform={`translate(${80 + scale(idx)}, 0)`}>
-            <image href={changeHaiName2Path(tile)} width="57" height="76" />
+            <image
+              href={changeHaiName2Path(tile)}
+              width={tileWidth}
+              height={tileHeight}
+              onClick={() => setSelectedTile(tile)}
+            />
+            {selectedTile === tile && (
+              <rect
+                fill="none"
+                stroke="red"
+                strokeWidth="4px"
+                width={tileWidth}
+                height={tileHeight}
+              />
+            )}
           </g>
         );
       })}
@@ -114,7 +140,7 @@ const Contents = ({ data, xScale, yScale, colorScale }) => {
   const viewData = transpose(Object.values(data).map((i) => Object.values(i)));
 
   return (
-    <g transform={`translate(80, 110)`}>
+    <g transform={`translate(80, 90)`}>
       {viewData.map((rows, i) => {
         return rows.map((item, j) => {
           return (
@@ -122,8 +148,8 @@ const Contents = ({ data, xScale, yScale, colorScale }) => {
               key={i * viewData.length + j}
               x={xScale(j)}
               y={yScale(i)}
-              width={65}
-              height={65}
+              width={52}
+              height={58}
               fill={colorScale(item)}
             />
           );
@@ -132,12 +158,6 @@ const Contents = ({ data, xScale, yScale, colorScale }) => {
     </g>
   );
 };
-
-// style={{
-//   transitionDuration: "1s",
-//   transitionProperty: "all",
-//   transitionDelay: "0.2s",
-// }}
 
 // 転置
 const transpose = (a) => {
