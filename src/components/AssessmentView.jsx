@@ -48,7 +48,7 @@ export const AssessmentView = () => {
             names={DIMENSIONS}
             scale={yScale}
             strokeColor={strokeColor}
-            height={contentHeight}
+            height={svgHeight}
           />
           <HorizontalAxis
             tiles={Object.keys(yakuValue)}
@@ -114,7 +114,7 @@ const Contents = ({ data, xScale, yScale, colorScale }) => {
   const viewData = transpose(Object.values(data).map((i) => Object.values(i)));
 
   return (
-    <g transform={`translate(80, 115)`}>
+    <g transform={`translate(80, 110)`}>
       {viewData.map((rows, i) => {
         return rows.map((item, j) => {
           return (
@@ -122,8 +122,8 @@ const Contents = ({ data, xScale, yScale, colorScale }) => {
               key={i * viewData.length + j}
               x={xScale(j)}
               y={yScale(i)}
-              width={57}
-              height={57}
+              width={65}
+              height={65}
               fill={colorScale(item)}
             />
           );
