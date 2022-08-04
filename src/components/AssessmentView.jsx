@@ -4,7 +4,7 @@ import { yakuValueState, selectedTileState } from "./atoms";
 import { changeHaiName2Path } from "./TehaiView";
 import { DIMENSIONS } from "../const/upper";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
-import { Card } from "@mui/material";
+import { Card, Tooltip } from "@mui/material";
 
 export const AssessmentView = () => {
   const yakuValue = useRecoilValue(yakuValueState);
@@ -12,7 +12,7 @@ export const AssessmentView = () => {
 
   const margin = {
     top: 10,
-    bottom: 45,
+    bottom: 50,
     left: 100,
     right: 90,
   };
@@ -34,7 +34,7 @@ export const AssessmentView = () => {
   const yScale = d3
     .scaleLinear()
     .domain([0, DIMENSIONS.length])
-    .range([0, contentHeight - 80])
+    .range([0, contentHeight - 200])
     .nice();
 
   return (
@@ -65,6 +65,12 @@ export const AssessmentView = () => {
             yScale={yScale}
             colorScale={colorScale}
           />
+          <Legends
+            x={80}
+            y={svgHeight - 160}
+            width={svgWidth - 200}
+            colorScale={colorScale}
+          />
         </svg>
       )}
     </Card>
@@ -73,22 +79,29 @@ export const AssessmentView = () => {
 
 const VerticalAxis = ({ names, scale, strokeColor, height }) => {
   const x = 70;
-  const [y1, y2] = [-20, height + 50];
+  const [y1, y2] = [-20, height - 180];
   return (
     <g>
       <line x1={x} y1={y1} x2={x} y2={y2} stroke={strokeColor} />
       {names.map((name, idx) => {
         return (
           <g key={idx} transform={`translate(${x}, ${120 + scale(idx)})`}>
-            <text
-              x="-20"
-              textAnchor="end"
-              dominantBaseline="central"
-              fontSize="30"
-              style={{ userSelect: "none" }}
+            <Tooltip
+              title={YAKU_DESCRIPTION[name]["description"]}
+              placement="top-start"
+              arrow
+              disableInteractive
             >
-              {YAKU_DESCRIPTION[name]["name"]}
-            </text>
+              <text
+                x="-20"
+                textAnchor="end"
+                dominantBaseline="central"
+                fontSize="30"
+                style={{ userSelect: "none" }}
+              >
+                {YAKU_DESCRIPTION[name]["name"]}
+              </text>
+            </Tooltip>
           </g>
         );
       })}
@@ -155,6 +168,43 @@ const Contents = ({ data, xScale, yScale, colorScale }) => {
           );
         });
       })}
+    </g>
+  );
+};
+
+const Legends = ({ x, y, width, colorScale }) => {
+  return (
+    <g transform={`translate(${x}, ${y})`}>
+      <linearGradient id="gradient">
+        {[...Array(41)].map((_, idx) => {
+          return (
+            <stop
+              key={idx}
+              offset={`${(idx * 5) / 2}%`}
+              stopColor={colorScale(100 - idx * 5)}
+            />
+          );
+        })}
+      </linearGradient>
+      <rect width={width} height="50" fill="url('#gradient')" />
+      <text
+        dominantBaseline="text-after-edge"
+        fontSize={30}
+        y="100"
+        style={{ userSelect: "none" }}
+      >
+        {`<---- その役になる`}
+      </text>
+      <text
+        textAnchor="end"
+        dominantBaseline="text-after-edge"
+        fontSize={30}
+        x={width}
+        y="100"
+        style={{ userSelect: "none" }}
+      >
+        {`その役にならない ---->`}
+      </text>
     </g>
   );
 };

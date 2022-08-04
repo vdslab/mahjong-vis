@@ -1,4 +1,4 @@
-import { Card } from "@mui/material";
+import { Card, Tooltip } from "@mui/material";
 import { useSetRecoilState, useRecoilValue } from "recoil";
 import {
   shantenState,
@@ -105,14 +105,21 @@ export const Radviz = () => {
                     stroke={lineColor}
                     opacity={0.3}
                   />
-                  <text
-                    y={-r}
-                    textAnchor="middle"
-                    dominantBaseline="text-after-edge"
-                    fontSize={20}
+                  <Tooltip
+                    title={YAKU_DESCRIPTION[property]["description"]}
+                    arrow
+                    disableInteractive
                   >
-                    {YAKU_DESCRIPTION[property]["name"]}
-                  </text>
+                    <text
+                      y={-r}
+                      textAnchor="middle"
+                      dominantBaseline="text-after-edge"
+                      fontSize={20}
+                      style={{ userSelect: "none" }}
+                    >
+                      {YAKU_DESCRIPTION[property]["name"]}
+                    </text>
+                  </Tooltip>
                 </g>
               );
             })}
