@@ -130,7 +130,7 @@ export const TehaiView = () => {
         <div>loading...</div>
       ) : (
         <>
-          <Grid container>
+          <Grid container sx={{ p: 1 }}>
             <Grid item xs={1}>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 手牌
