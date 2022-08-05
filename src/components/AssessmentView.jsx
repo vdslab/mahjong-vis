@@ -21,7 +21,7 @@ export const AssessmentView = () => {
   const contentHeight = 1200;
   const strokeColor = "#888";
   const svgWidth = margin.left + margin.right + contentWidth;
-  const svgHeight = margin.top + margin.bottom + contentHeight;
+  const svgHeight = margin.top + margin.bottom + contentHeight + 0;
 
   const colorScale = useCallback(
     d3
@@ -74,7 +74,7 @@ export const AssessmentView = () => {
           />
           <Legends
             x={80}
-            y={svgHeight - 160}
+            y={svgHeight - 130}
             width={svgWidth - 200}
             colorScale={colorScale}
           />
