@@ -164,9 +164,13 @@ const Contents = ({ data, xScale, yScale, colorScale }) => {
       {viewData.map((rows, i) => {
         return rows.map((item, j) => {
           return (
-            <Tooltip title={Math.ceil(item)} arrow disableInteractive>
+            <Tooltip
+              key={i * viewData.length + j}
+              title={Math.ceil(item)}
+              arrow
+              disableInteractive
+            >
               <rect
-                key={i * viewData.length + j}
                 x={xScale(j)}
                 y={yScale(i)}
                 width={52}
