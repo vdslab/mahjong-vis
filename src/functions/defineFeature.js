@@ -2,7 +2,6 @@ import { FEATURE_LIST, TYPE_LIST } from "../const/const";
 import { SHANTEN_TABLE } from "../const/shantenTable";
 
 export const defineFeature = (tehai) => {
-  console.log("feature");
   // 面子と面子候補と浮き牌のリスト
   // 萬子筒子索子風三元の5種類
   const mentuList = [...Array(5)].map((_) => [...Array(3)].map((_) => []));
