@@ -157,14 +157,16 @@ const Contents = ({ data, xScale, yScale, colorScale }) => {
       {viewData.map((rows, i) => {
         return rows.map((item, j) => {
           return (
-            <rect
-              key={i * viewData.length + j}
-              x={xScale(j)}
-              y={yScale(i)}
-              width={52}
-              height={58}
-              fill={colorScale(item)}
-            />
+            <Tooltip title={Math.ceil(item)} arrow disableInteractive>
+              <rect
+                key={i * viewData.length + j}
+                x={xScale(j)}
+                y={yScale(i)}
+                width={52}
+                height={58}
+                fill={colorScale(item)}
+              />
+            </Tooltip>
           );
         });
       })}
