@@ -62,7 +62,7 @@ export const defineFeature = (tehai) => {
       .trim()
       .replaceAll(" ", "0");
     const buf = tileArrangement.split(/00+/);
-    console.log(buf);
+    // console.log(buf);
     let tmp = [0, 0, 0, 0];
     for (const i of buf) {
       // console.log(i, tehai);
