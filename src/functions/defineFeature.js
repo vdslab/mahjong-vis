@@ -62,22 +62,22 @@ export const defineFeature = (tehai) => {
       .trim()
       .replaceAll(" ", "0");
     const buf = tileArrangement.split(/00+/);
-    // console.log(buf);
     let tmp = [0, 0, 0, 0];
     for (const i of buf) {
-      // console.log(i, tehai);
+      // 分割された牌の合計枚数が2枚以上ならShantenTableに存在するので計算
       if ([...i].reduce((prev, cur) => prev + Number(cur), 0) >= 2) {
         [...SHANTEN_TABLE[i]].map((num, index) => (tmp[index] += Number(num)));
       }
     }
+
+    // 頭がある場合の計算
+    // 全ての頭に対して向聴計算をして、最適な分解（向聴数最小のもの）を見つける
     const a = tmp[2] * 2 + tmp[3];
     const b = tmp[0] * 2 + tmp[1];
-    const [three, two] = a > b ? [tmp[2], tmp[3]] : [tmp[0], tmp[1]];
     if (a === 0 && b === 0) return;
-    else {
-      tmpThree += three;
-      tmpTwo += two;
-    }
+    const [three, two] = a > b ? [tmp[2], tmp[3]] : [tmp[0], tmp[1]];
+    tmpThree += three;
+    tmpTwo += two;
 
     const threeMentu = mentuList[idx][0];
     const twoMentu = mentuList[idx][1];
@@ -85,10 +85,11 @@ export const defineFeature = (tehai) => {
     // TODO:分解結果は複数ある
     // 22345688 => 22 345 68 8 or 22 345 6 88 etc....
     const tmp_res = [];
+
     for (const i of deleteDuplicate([...combs(threeMentu, three)])) {
+      console.log("=====");
       const tmp_i = JSON.parse(JSON.stringify(data));
       let flag_i = false;
-      let cnt = 0;
 
       for (const j of i) {
         for (const k of j) {
@@ -136,11 +137,8 @@ export const defineFeature = (tehai) => {
           featureList["ittu_cnt"],
           tmp_ittu_cnt
         );
-        cnt += 1;
-        if (cnt === 1) {
-          tmp_res.push(i);
-          tmp_res.push(j);
-        }
+        tmp_res.push(i);
+        tmp_res.push(j);
       }
     }
     res.push(tmp_res);
@@ -223,7 +221,7 @@ export const defineFeature = (tehai) => {
   let f = featureList["zi_toitu"];
   for (const i of res) {
     i.map((j, idx) => {
-      if (idx % 2 && new Set(j).size === 1) {
+      if (idx % 2 && new Set(...j).size === 1) {
         f += 1;
       }
     });
