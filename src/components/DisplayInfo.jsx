@@ -42,24 +42,18 @@ export const DisplayInfo = (props) => {
     <Dialog onClose={onClose} open={open}>
       <DialogTitle>結果</DialogTitle>
       <Stack sx={{ p: 1 }}>
-        {Object.keys(data1).map((key, idx) => {
-          if (data1[key] === 100) {
+        {Object.keys(data1)
+          .filter((key) => data1[key] === 100)
+          .map((key, idx) => {
             if (Object.keys(noDupYaku).includes(key)) {
-              noDupYaku[key].map((yaku) => {
-                if (data1[yaku] === 100) {
-                  return <></>;
+              for (const dupYaku of noDupYaku[key]) {
+                if (data1[dupYaku] === 100) {
+                  return;
                 }
-                return (
-                  <Typography key={idx}>{YakuNameDisplaied[key]}</Typography>
-                );
-              });
-            } else {
-              return (
-                <Typography key={idx}>{YakuNameDisplaied[key]}</Typography>
-              );
+              }
             }
-          }
-        })}
+            return <Typography key={idx}>{YakuNameDisplaied[key]}</Typography>;
+          })}
       </Stack>
     </Dialog>
   );
