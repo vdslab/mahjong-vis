@@ -183,9 +183,6 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
   // TODO:段階的にすべきかどうか
   yakuList["chinitu"] = (featureList["same_color_cnt"] * 100) / haiLen;
 
-  if (haiLen === 14) {
-    console.log(yakuList);
-  }
   // 保険
   // 必要ないかも
   for (const [key, value] of Object.entries(yakuList)) {

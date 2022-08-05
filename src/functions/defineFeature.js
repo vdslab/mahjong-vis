@@ -260,9 +260,6 @@ export const defineFeature = (tehai) => {
       Math.max(0, 7 - Object.keys(counter).length),
     kokushi: 13 - featureList["kokushi_cnt"],
   };
-  if (tehai.length === 14) {
-    console.log(featureList, res);
-  }
 
   return { featureList, shanten };
 };
