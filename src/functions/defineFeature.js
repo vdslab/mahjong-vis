@@ -87,7 +87,6 @@ export const defineFeature = (tehai) => {
     const tmp_res = [];
 
     for (const i of deleteDuplicate([...combs(threeMentu, three)])) {
-      console.log("=====");
       const tmp_i = JSON.parse(JSON.stringify(data));
       let flag_i = false;
 
@@ -143,9 +142,10 @@ export const defineFeature = (tehai) => {
     }
     res.push(tmp_res);
 
-    // 一盃口特徴量計算
-    featureList["ipeko_cnt"] = Math.max(
-      featureList["ipeko_cnt"],
+    // 一盃口の構造を持っているかどうか計算
+    // 実際にそのような分解に成っている必要はない
+    featureList["ipeko_score"] = Math.max(
+      featureList["ipeko_score"],
       checkIpeko(tileArrangement)
     );
   });
@@ -187,6 +187,22 @@ export const defineFeature = (tehai) => {
       }
     }
   }
+  // 分解が複数あるときの応急処置
+  // TODO:絶対バグの元
+  for (const i of [
+    "chunchan_kotu",
+    "ichikyu_shuntu",
+    "chunchan_shuntu",
+    "ichikyu_toitu",
+    "chunchan_toitu",
+    "penchan",
+    "23_78_ryanmen",
+    "3-7_ryanmen",
+    "13_79_kanchan",
+    "2-8_kanchan",
+  ]) {
+    featureList[i] = featureList[i] / res.length / 2;
+  }
 
   // 三色同順
   for (let i = 1; i < 8; ++i) {
@@ -221,8 +237,11 @@ export const defineFeature = (tehai) => {
   let f = featureList["zi_toitu"];
   for (const i of res) {
     i.map((j, idx) => {
-      if (idx % 2 && new Set(...j).size === 1) {
-        f += 1;
+      if (idx % 2) {
+        if (new Set(...j).size === 1) f += 1;
+      } else {
+        if (deleteDuplicate(j).length !== j.length)
+          featureList["ipeko_structure"] = 100;
       }
     });
   }
@@ -241,6 +260,10 @@ export const defineFeature = (tehai) => {
       Math.max(0, 7 - Object.keys(counter).length),
     kokushi: 13 - featureList["kokushi_cnt"],
   };
+  if (tehai.length === 14) {
+    console.log(featureList, res);
+  }
+
   return { featureList, shanten };
 };
 
