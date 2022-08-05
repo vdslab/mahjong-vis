@@ -30,42 +30,26 @@ export const DisplayInfo = (props) => {
     toitoiho: "対々和",
     zikaze_bakaze: "字牌,場風",
   };
+  const noDupYaku = {
+    chanta: ["junchan", "honroto"],
+    honitu: ["chinitu"],
+    ipeko: ["ryanpeko"],
+  };
   return (
     <Dialog onClose={onClose} open={open}>
       <DialogTitle>結果</DialogTitle>
       <Stack sx={{ p: 1 }}>
         {Object.keys(data1).map((key, idx) => {
           if (data1[key] === 100) {
-            if (["chanta", "honitu", "ipeko"].includes(key)) {
-              switch (key) {
-                case "chanta":
-                  if (data1.junchan < 100 && data1.honroto < 100) {
-                    return (
-                      <Typography key={idx}>
-                        {YakuNameDisplaied[key]}
-                      </Typography>
-                    );
-                  }
-                  break;
-                case "ipeko":
-                  if (data1.ryanpeko < 100) {
-                    return (
-                      <Typography key={idx}>
-                        {YakuNameDisplaied[key]}
-                      </Typography>
-                    );
-                  }
-                  break;
-                case "honitu":
-                  if (data1.chinitu < 100) {
-                    return (
-                      <Typography key={idx}>
-                        {YakuNameDisplaied[key]}
-                      </Typography>
-                    );
-                  }
-                  break;
-              }
+            if (Object.keys(noDupYaku).includes(key)) {
+              noDupYaku[key].map((yaku) => {
+                if (data1[yaku] === 100) {
+                  return <></>;
+                }
+                return (
+                  <Typography key={idx}>{YakuNameDisplaied[key]}</Typography>
+                );
+              });
             } else {
               return (
                 <Typography key={idx}>{YakuNameDisplaied[key]}</Typography>
