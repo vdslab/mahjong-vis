@@ -91,7 +91,7 @@ export const YAKU_DESCRIPTION = {
     kuiHan: 2,
     menzen: false,
   },
-  shousangen: {
+  shosangen: {
     name: "小三元",
     description:
       "「白」、「發」、「中」の中で、2種類を3つ、残り1種類を2つ（頭で）揃えると成立する",
