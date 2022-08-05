@@ -135,6 +135,7 @@ const HorizontalAxis = ({
         return (
           <g key={idx} transform={`translate(${80 + scale(idx)}, 0)`}>
             <image
+              style={{ cursor: "pointer" }}
               href={changeHaiName2Path(tile)}
               width={tileWidth}
               height={tileHeight}
