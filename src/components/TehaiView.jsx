@@ -51,10 +51,6 @@ export const TehaiView = () => {
     resetTehai();
   }, [haiMode]);
 
-  useEffect(() => {
-    setAaa(diffShanten);
-  }, [diffShanten]);
-
   const handleTileClicked = (tile, idx) => {
     const tmpTehai = JSON.parse(JSON.stringify(tehai));
     const addedHai = "";
