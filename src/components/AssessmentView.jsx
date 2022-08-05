@@ -5,6 +5,7 @@ import { changeHaiName2Path } from "./TehaiView";
 import { DIMENSIONS } from "../const/upper";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 import { Card, Tooltip } from "@mui/material";
+import { memo, useCallback } from "react";
 
 export const AssessmentView = () => {
   const yakuValue = useRecoilValue(yakuValueState);
@@ -22,20 +23,26 @@ export const AssessmentView = () => {
   const svgWidth = margin.left + margin.right + contentWidth;
   const svgHeight = margin.top + margin.bottom + contentHeight;
 
-  const colorScale = d3
-    .scaleLinear()
-    .domain([100, 0, -100])
-    .range(["orangered", "whitesmoke", "dodgerblue"]);
+  const colorScale = useCallback(
+    d3
+      .scaleLinear()
+      .domain([100, 0, -100])
+      .range(["orangered", "whitesmoke", "dodgerblue"]),
+    []
+  );
   const xScale = d3
     .scaleLinear()
     .domain([0, Object.keys(yakuValue).length])
     .range([0, contentWidth])
     .nice();
-  const yScale = d3
-    .scaleLinear()
-    .domain([0, DIMENSIONS.length])
-    .range([0, contentHeight - 200])
-    .nice();
+  const yScale = useCallback(
+    d3
+      .scaleLinear()
+      .domain([0, DIMENSIONS.length])
+      .range([0, contentHeight - 200])
+      .nice(),
+    []
+  );
 
   return (
     <Card sx={{ p: 1, height: "100%" }}>
@@ -77,7 +84,7 @@ export const AssessmentView = () => {
   );
 };
 
-const VerticalAxis = ({ names, scale, strokeColor, height }) => {
+const VerticalAxis = memo(({ names, scale, strokeColor, height }) => {
   const x = 70;
   const [y1, y2] = [-20, height - 180];
   return (
@@ -107,7 +114,7 @@ const VerticalAxis = ({ names, scale, strokeColor, height }) => {
       })}
     </g>
   );
-};
+});
 
 const HorizontalAxis = ({
   tiles,
@@ -174,7 +181,7 @@ const Contents = ({ data, xScale, yScale, colorScale }) => {
   );
 };
 
-const Legends = ({ x, y, width, colorScale }) => {
+const Legends = memo(({ x, y, width, colorScale }) => {
   return (
     <g transform={`translate(${x}, ${y})`}>
       <linearGradient id="gradient">
@@ -209,7 +216,7 @@ const Legends = ({ x, y, width, colorScale }) => {
       </text>
     </g>
   );
-};
+});
 
 // 転置
 const transpose = (a) => {
