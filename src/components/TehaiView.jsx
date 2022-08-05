@@ -148,14 +148,14 @@ export const TehaiView = () => {
       ) : (
         <>
           <Grid container sx={{ p: 1 }}>
-            <Grid item xs={1}>
+            <Grid item xs={12} md={1}>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 手牌
               </Typography>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={6} md={3}>
               <FormControl fullWidth>
-                <InputLabel id="">自模モードを選択</InputLabel>
+                {/* <InputLabel id="">自模モードを選択</InputLabel> */}
                 <NativeSelect
                   defaultValue={0}
                   inputProps={{
@@ -172,24 +172,24 @@ export const TehaiView = () => {
                 </NativeSelect>
               </FormControl>
             </Grid>
-            <Grid item xs={1}>
+            <Grid item xs={8} sm={4} md={1}>
               <Typography variant="h6" component="div" sx={{ pl: 3 }}>
                 向聴数
               </Typography>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={8} sm={4} md={2}>
               <Typography variant="h6" component="div" sx={{ pl: 5 }}>
                 {`通常手：${shanten["other"] > 0 ? shanten["other"] : "聴牌"}`}
               </Typography>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={8} sm={4} md={2}>
               <Typography variant="h6" component="div" sx={{ pl: 5 }}>
                 {`七対子：${
                   shanten["chitoitu"] > 0 ? shanten["chitoitu"] : "聴牌"
                 }`}
               </Typography>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={8} sm={4} md={2}>
               <Typography variant="h6" component="div" sx={{ pl: 5 }}>
                 {`国士無双：${
                   shanten["kokushi"] > 0 ? shanten["kokushi"] : "聴牌"
