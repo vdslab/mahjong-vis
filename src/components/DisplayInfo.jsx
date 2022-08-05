@@ -36,7 +36,41 @@ export const DisplayInfo = (props) => {
       <Stack sx={{ p: 1 }}>
         {Object.keys(data1).map((key, idx) => {
           if (data1[key] === 100) {
-            return <Typography key={idx}>{YakuNameDisplaied[key]}</Typography>;
+            if (["chanta", "honitu", "ipeko"].includes(key)) {
+              switch (key) {
+                case "chanta":
+                  if (data1.junchan < 100 && data1.honroto < 100) {
+                    return (
+                      <Typography key={idx}>
+                        {YakuNameDisplaied[key]}
+                      </Typography>
+                    );
+                  }
+                  break;
+                case "ipeko":
+                  if (data1.ryanpeko < 100) {
+                    return (
+                      <Typography key={idx}>
+                        {YakuNameDisplaied[key]}
+                      </Typography>
+                    );
+                  }
+                  break;
+                case "honitu":
+                  if (data1.chinitu < 100) {
+                    return (
+                      <Typography key={idx}>
+                        {YakuNameDisplaied[key]}
+                      </Typography>
+                    );
+                  }
+                  break;
+              }
+            } else {
+              return (
+                <Typography key={idx}>{YakuNameDisplaied[key]}</Typography>
+              );
+            }
           }
         })}
       </Stack>
