@@ -46,9 +46,15 @@ export const TehaiView = () => {
     const haiList = initHai();
     setTehai(haiList);
   }, []);
+
   useEffect(() => {
     resetTehai();
   }, [haiMode]);
+
+  useEffect(() => {
+    setAaa(diffShanten);
+  }, [diffShanten]);
+
   const handleTileClicked = (tile, idx) => {
     const tmpTehai = JSON.parse(JSON.stringify(tehai));
     const addedHai = "";
@@ -140,7 +146,8 @@ export const TehaiView = () => {
   };
   return (
     <Card sx={{ p: 3 }}>
-      {tehai.length < 1 || Object.keys(diffShanten).length === 0 ? (
+      {tehai.length < 1 ||
+      tehai.filter((tile) => diffShanten[tile]).length !== tehai.length ? (
         <div>loading...</div>
       ) : (
         <>
@@ -198,7 +205,7 @@ export const TehaiView = () => {
           <Stack direction="row" style={{ justifyContent: "center" }}>
             {tehai.map((item, idx) => {
               // 現在の最小向聴数の形を求める
-              const names = (function () {
+              const names = (() => {
                 const min = Math.min(...Object.values(shanten));
                 return Object.keys(shanten).filter(
                   (key) => shanten[key] === min
@@ -206,10 +213,10 @@ export const TehaiView = () => {
               })();
               const icon = (() => {
                 for (const name of names) {
-                  if (diffShanten[item]?.name > 0)
-                    return <TrendingUpIcon color="error" sx={{ m: "auto" }} />;
+                  if (diffShanten[item][name] < 0)
+                    return <TrendingDownIcon color="info" sx={{ m: "auto" }} />;
                 }
-                return <TrendingDownIcon color="info" sx={{ m: "auto" }} />;
+                return <TrendingFlatIcon color="error" sx={{ m: "auto" }} />;
               })();
               if (idx !== 13) {
                 return (
