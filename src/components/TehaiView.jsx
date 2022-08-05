@@ -210,9 +210,19 @@ export const TehaiView = () => {
               const icon = (() => {
                 for (const name of names) {
                   if (diffShanten[item][name] < 0)
-                    return <TrendingDownIcon color="info" sx={{ m: "auto" }} />;
+                    return (
+                      <TrendingDownIcon
+                        color="info"
+                        sx={{ m: "auto", fontSize: "40px" }}
+                      />
+                    );
                 }
-                return <TrendingFlatIcon color="error" sx={{ m: "auto" }} />;
+                return (
+                  <TrendingFlatIcon
+                    color="error"
+                    sx={{ m: "auto", fontSize: "40px" }}
+                  />
+                );
               })();
               if (idx !== 13) {
                 return (
