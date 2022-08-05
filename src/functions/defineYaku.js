@@ -48,16 +48,21 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
   if (naki_cnt === 0) {
     // 平和
     // TODO:七対子の一盃口ぽいやつ対策？
-    // TODO:数値に段階を持たせる
-    yakuList["pinfu"] = pinfu(
-      featureList["chitoitu_cnt"] - featureList["toitoi_sananko_cnt"],
-      featureList["ichikyu_shuntu"] + featureList["chunchan_shuntu"],
-      featureList["3-7_ryanmen"] + featureList["23_78_ryanmen"],
-      featureList["13_79_kanchan"] + featureList["2-8_kanchan"],
-      featureList["penchan"],
-      featureList["sangen_cnt"] + featureList["zikaze_bakaze_cnt"],
-      0
-    );
+    yakuList["pinfu"] =
+      pinfu(
+        featureList["chitoitu_cnt"] - featureList["toitoi_sananko_cnt"],
+        featureList["ichikyu_shuntu"] + featureList["chunchan_shuntu"],
+        featureList["3-7_ryanmen"] + featureList["23_78_ryanmen"],
+        featureList["13_79_kanchan"] + featureList["2-8_kanchan"],
+        featureList["penchan"],
+        featureList["sangen_cnt"] + featureList["zikaze_bakaze_cnt"],
+        0
+      ) -
+      ((featureList["sangen_kotu"] + featureList["zikaze_bakaze_kotu"]) * 25 +
+        (featureList["sangen_toitu"] + featureList["zikaze_bakaze_toitu"]) *
+          15 +
+        (featureList["chunchan_kotu"] + featureList["ichikyu_kotu"]) +
+        featureList["kaze_kotu"] * 20);
 
     // 一盃口
     yakuList["ipeko"] = featureList["ipeko_cnt"];

@@ -51,21 +51,21 @@ export const defineFeature = (tehai) => {
   // 数系特徴量
   const [md, pd, sd] = cntFeature(counter, featureList, 1, 1);
   const res = [];
-  // 字牌の刻子を先にカウントしておく
+  // 字牌の刻子と対子を先にカウントしておく
   let tmpThree = featureList["zi_kotu"] + featureList["zi_kantu"];
   let tmpTwo = featureList["zi_toitu"];
-
   [md, pd, sd].map((data, idx) => {
-    // Numberを噛ませて先頭の0を消す
-    // toString()で末尾の0を消す
+    // 先頭と末尾の不要な0削除
     const tileArrangement = Object.values(data)
       .reduce((prev, cur) => prev + cur, "")
       .replaceAll("0", " ")
       .trim()
       .replaceAll(" ", "0");
     const buf = tileArrangement.split(/00+/);
+    console.log(buf);
     let tmp = [0, 0, 0, 0];
     for (const i of buf) {
+      // console.log(i, tehai);
       if ([...i].reduce((prev, cur) => prev + Number(cur), 0) >= 2) {
         [...SHANTEN_TABLE[i]].map((num, index) => (tmp[index] += Number(num)));
       }
