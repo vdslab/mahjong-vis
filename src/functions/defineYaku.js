@@ -65,7 +65,9 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
         featureList["kaze_kotu"] * 20);
 
     // 一盃口
-    yakuList["ipeko"] = featureList["ipeko_cnt"];
+    yakuList["ipeko"] =
+      (featureList["ipeko_score"] * 7 + featureList["ipeko_structure"] * 3) /
+      10;
 
     // 七対子
     yakuList["chitoitu"] = featureValue(featureList["chitoitu_cnt"], {
