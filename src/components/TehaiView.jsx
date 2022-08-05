@@ -40,7 +40,7 @@ export const TehaiView = () => {
   const suteHaiCount = suteHaiList.length;
   const shanten = useRecoilValue(shantenState);
   const diffShanten = useRecoilValue(diffShantenState);
-  const [clickedHai, setClickedHai] = useState(null);
+  const [mouseOveredTile, setMouseOveredTile] = useState("");
 
   useEffect(() => {
     const haiList = initHai();
@@ -48,35 +48,37 @@ export const TehaiView = () => {
   }, []);
 
   const handleTileClicked = (tile, idx) => {
-    if (idx === clickedHai) {
-      const tmpTehai = JSON.parse(JSON.stringify(tehai));
-      const addedHai = "";
-      const tehaiCheckedList = haiCheckList.map((item) => item.slice());
-      let isAddedHai = 1;
-      while (isAddedHai) {
-        const hai = generateNewHai(haiMode);
-        const haiType = HAITYPELIST.indexOf(hai[0]);
-        if (tehaiCheckedList[haiType][parseInt(hai[1]) - 1] < 4) {
-          tehaiCheckedList[haiType][parseInt(hai[1]) - 1] += 1;
-          addedHai += hai;
-          isAddedHai = 0;
-        }
+    const tmpTehai = JSON.parse(JSON.stringify(tehai));
+    const addedHai = "";
+    const tehaiCheckedList = haiCheckList.map((item) => item.slice());
+    let isAddedHai = 1;
+    while (isAddedHai) {
+      const hai = generateNewHai(haiMode);
+      const haiType = HAITYPELIST.indexOf(hai[0]);
+      if (tehaiCheckedList[haiType][parseInt(hai[1]) - 1] < 4) {
+        tehaiCheckedList[haiType][parseInt(hai[1]) - 1] += 1;
+        addedHai += hai;
+        isAddedHai = 0;
       }
-      setHaiCheckList(tehaiCheckedList);
-      const newTehai = tmpTehai
-        .filter((_, id) => id !== idx)
-        .sort((x, y) => HAI_ORDER.indexOf(x) - HAI_ORDER.indexOf(y));
-      newTehai.push(addedHai);
-      setTehai(newTehai);
-      setSuteHaiList([...suteHaiList, selectedTile]);
-      setSelectedTile("");
-      setClickedHai(null);
-    } else {
-      setSelectedTile(tile);
-      setClickedHai(idx);
     }
+    setHaiCheckList(tehaiCheckedList);
+    const newTehai = tmpTehai
+      .filter((_, id) => id !== idx)
+      .sort((x, y) => HAI_ORDER.indexOf(x) - HAI_ORDER.indexOf(y));
+    newTehai.push(addedHai);
+    setTehai(newTehai);
+    setSuteHaiList([...suteHaiList, tile]);
+    setSelectedTile("");
   };
 
+  const handleMouseOver = (tile) => {
+    setSelectedTile(tile);
+  };
+  const handleMouseOut = () => {
+    if (selectedTile !== "") {
+      setSelectedTile("");
+    }
+  };
   const handleTumo = () => {
     setTumoOpen(true);
   };
@@ -208,7 +210,13 @@ export const TehaiView = () => {
                 return (
                   <Stack key={idx}>
                     <Image
+                      style={{
+                        cursor: "pointer",
+                        opacity: item === selectedTile ? 0.5 : 1,
+                      }}
                       onClick={() => handleTileClicked(item, idx)}
+                      onMouseOver={() => handleMouseOver(item)}
+                      onMouseOut={handleMouseOut}
                       src={changeHaiName2Path(item)}
                       width="60%"
                       height="80%"
@@ -222,7 +230,13 @@ export const TehaiView = () => {
                     <Box sx={{ p: 1 }} />
                     <Stack key={idx}>
                       <Image
+                        style={{
+                          cursor: "pointer",
+                          opacity: item === selectedTile ? 0.5 : 1,
+                        }}
                         onClick={() => handleTileClicked(item, idx)}
+                        onMouseOver={() => handleMouseOver(item)}
+                        onMouseOut={handleMouseOut}
                         src={changeHaiName2Path(item)}
                         width="60%"
                         height="80%"
