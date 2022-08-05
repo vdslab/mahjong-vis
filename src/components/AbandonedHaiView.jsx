@@ -20,7 +20,7 @@ export const AbandonedHaiView = () => {
                 src={changeHaiName2Path(item)}
                 width="80"
                 height="110"
-                layout="responsive"
+                // layout="responsive"
               />
             </Grid>
           );
