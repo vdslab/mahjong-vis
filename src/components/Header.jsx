@@ -15,6 +15,8 @@ import {
   DialogActions,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import { WebInfo } from "./WebInfo";
+import { YakuDescription } from "./YakuDescription";
 import { useState } from "react";
 
 export const Header = () => {
@@ -69,9 +71,17 @@ export const Header = () => {
               <p>{menuList[1]}</p>
             </DialogContent>
           )}
-          <DialogActions>
-            <Button onClick={() => handleClose(dialogOpen[0])}>閉じる</Button>
-          </DialogActions>
+          {dialogOpen[0] === 0 ? (
+            <DialogActions>
+              <WebInfo />
+              {/* <Button onClick={() => handleClose(dialogOpen[0])}>閉じる</Button> */}
+            </DialogActions>
+          ) : (
+            <DialogActions>
+              <YakuDescription />
+              {/* <Button onClick={() => handleClose(dialogOpen[0])}>閉じる</Button> */}
+            </DialogActions>
+          )}
         </Box>
       </Dialog>
     </Box>
