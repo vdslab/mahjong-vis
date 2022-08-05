@@ -46,7 +46,9 @@ export const TehaiView = () => {
     const haiList = initHai();
     setTehai(haiList);
   }, []);
-
+  useEffect(() => {
+    resetTehai();
+  }, [haiMode]);
   const handleTileClicked = (tile, idx) => {
     const tmpTehai = JSON.parse(JSON.stringify(tehai));
     const addedHai = "";
