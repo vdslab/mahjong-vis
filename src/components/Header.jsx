@@ -20,7 +20,7 @@ import { useState } from "react";
 export const Header = () => {
   const [open, setOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState([0, false]);
-  const menuList = ["mahjong-visとは", "役説明"];
+  const menuList = ["このサイトについて", "役説明"];
   const handleClick = (btnId) => {
     setDialogOpen([btnId, true]);
   };
