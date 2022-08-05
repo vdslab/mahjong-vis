@@ -40,7 +40,7 @@ export const TehaiView = () => {
   const suteHaiCount = suteHaiList.length;
   const shanten = useRecoilValue(shantenState);
   const diffShanten = useRecoilValue(diffShantenState);
-  const [mouseOveredTile, setMouseOveredTile] = useState("");
+  const [mouseOveredTile, setMouseOveredTile] = useState(null);
 
   useEffect(() => {
     const haiList = initHai();
@@ -71,12 +71,14 @@ export const TehaiView = () => {
     setSelectedTile("");
   };
 
-  const handleMouseOver = (tile) => {
+  const handleMouseOver = (tile, idx) => {
     setSelectedTile(tile);
+    setMouseOveredTile(idx);
   };
   const handleMouseOut = () => {
     if (selectedTile !== "") {
       setSelectedTile("");
+      setMouseOveredTile(null);
     }
   };
   const handleTumo = () => {
@@ -212,10 +214,13 @@ export const TehaiView = () => {
                     <Image
                       style={{
                         cursor: "pointer",
-                        opacity: item === selectedTile ? 0.5 : 1,
+                        opacity:
+                          item === selectedTile && idx === mouseOveredTile
+                            ? 0.5
+                            : 1,
                       }}
                       onClick={() => handleTileClicked(item, idx)}
-                      onMouseOver={() => handleMouseOver(item)}
+                      onMouseOver={() => handleMouseOver(item, idx)}
                       onMouseOut={handleMouseOut}
                       src={changeHaiName2Path(item)}
                       width="60%"
@@ -232,10 +237,13 @@ export const TehaiView = () => {
                       <Image
                         style={{
                           cursor: "pointer",
-                          opacity: item === selectedTile ? 0.5 : 1,
+                          opacity:
+                            item === selectedTile && idx === mouseOveredTile
+                              ? 0.5
+                              : 1,
                         }}
                         onClick={() => handleTileClicked(item, idx)}
-                        onMouseOver={() => handleMouseOver(item)}
+                        onMouseOver={() => handleMouseOver(item, idx)}
                         onMouseOut={handleMouseOut}
                         src={changeHaiName2Path(item)}
                         width="60%"
