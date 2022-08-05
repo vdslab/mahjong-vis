@@ -2,6 +2,7 @@ import { FEATURE_LIST, TYPE_LIST } from "../const/const";
 import { SHANTEN_TABLE } from "../const/shantenTable";
 
 export const defineFeature = (tehai) => {
+  console.log("feature");
   // 面子と面子候補と浮き牌のリスト
   // 萬子筒子索子風三元の5種類
   const mentuList = [...Array(5)].map((_) => [...Array(3)].map((_) => []));
@@ -62,7 +63,7 @@ export const defineFeature = (tehai) => {
       .trim()
       .replaceAll(" ", "0");
     const buf = tileArrangement.split(/00+/);
-    console.log(buf);
+    // console.log(buf);
     let tmp = [0, 0, 0, 0];
     for (const i of buf) {
       // console.log(i, tehai);
