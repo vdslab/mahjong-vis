@@ -194,7 +194,8 @@ export const TehaiView = () => {
               </Typography>
             </Grid>
           </Grid>
-          <Stack direction="row">
+
+          <Stack direction="row" style={{ justifyContent: "center" }}>
             {tehai.map((item, idx) => {
               // 現在の最小向聴数の形を求める
               const names = (function () {
@@ -225,8 +226,8 @@ export const TehaiView = () => {
                       onMouseOver={() => handleMouseOver(item, idx)}
                       onMouseOut={handleMouseOut}
                       src={changeHaiName2Path(item)}
-                      width="60%"
-                      height="80%"
+                      width="80"
+                      height="110"
                     />
                     {icon}
                   </Stack>
@@ -248,8 +249,8 @@ export const TehaiView = () => {
                         onMouseOver={() => handleMouseOver(item, idx)}
                         onMouseOut={handleMouseOut}
                         src={changeHaiName2Path(item)}
-                        width="60%"
-                        height="80%"
+                        width="80"
+                        height="110"
                       />
                       {icon}
                     </Stack>
