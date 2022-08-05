@@ -201,7 +201,7 @@ export const defineFeature = (tehai) => {
     "13_79_kanchan",
     "2-8_kanchan",
   ]) {
-    featureList[i] = featureList[i] / res.length / 2;
+    featureList[i] = featureList[i] / (res.length ? res.length : 1) / 2;
   }
 
   // 三色同順
