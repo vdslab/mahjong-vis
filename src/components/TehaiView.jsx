@@ -37,10 +37,10 @@ export const TehaiView = () => {
   const [open, setOpen] = useState([false, 0]);
   const [tumoOpen, setTumoOpen] = useState(false);
   const [haiMode, setHaiMode] = useState(0);
+  const [mouseOveredTile, setMouseOveredTile] = useState(null);
   const suteHaiCount = suteHaiList.length;
   const shanten = useRecoilValue(shantenState);
   const diffShanten = useRecoilValue(diffShantenState);
-  const [mouseOveredTile, setMouseOveredTile] = useState(null);
 
   useEffect(() => {
     const haiList = initHai();
@@ -126,7 +126,7 @@ export const TehaiView = () => {
   };
   const resetTehai = () => {
     setSuteHaiList([]);
-
+    setSelectedTile("");
     const haiList = initHai();
     setTehai(haiList);
   };
