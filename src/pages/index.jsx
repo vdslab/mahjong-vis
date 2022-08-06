@@ -6,6 +6,7 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Radviz } from "../components/Radviz";
 import { TehaiView } from "../components/TehaiView";
+import { DecompositionView } from "../components/DecompositionView";
 
 const Home = () => {
   return (
@@ -13,7 +14,14 @@ const Home = () => {
       <Header />
       <Grid container sx={{ p: 3 }} columnSpacing={2} rowSpacing={2}>
         <Grid item xs={3}>
-          <AbandonedHaiView />
+          <Grid container rowSpacing={2}>
+            <Grid item xs={12}>
+              <AbandonedHaiView />
+            </Grid>
+            {/* <Grid item xs={12}>
+              <DecompositionView />
+            </Grid> */}
+          </Grid>
         </Grid>
         <Grid item xs={5}>
           <Radviz />

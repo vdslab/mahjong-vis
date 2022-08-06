@@ -44,3 +44,8 @@ export const selectedTileState = atom({
   key: "selectedTile",
   default: "",
 });
+
+export const decompositionsState = atom({
+  key: "decompositions",
+  default: {},
+});
