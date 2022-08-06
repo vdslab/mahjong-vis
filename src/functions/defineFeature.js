@@ -261,7 +261,7 @@ export const defineFeature = (tehai) => {
     kokushi: 13 - featureList["kokushi_cnt"],
   };
 
-  return { featureList, shanten };
+  return { featureList, shanten, res };
 };
 
 // 面子構成を列挙

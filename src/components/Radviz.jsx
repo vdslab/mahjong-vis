@@ -6,6 +6,7 @@ import {
   yakuValueState,
   diffShantenState,
   selectedTileState,
+  decompositionsState,
 } from "./atoms";
 import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
@@ -38,6 +39,7 @@ export const Radviz = () => {
   const setShanten = useSetRecoilState(shantenState);
   const setYakuValue = useSetRecoilState(yakuValueState);
   const setDiffShanten = useSetRecoilState(diffShantenState);
+  const setDecompositions = useSetRecoilState(decompositionsState);
   const [points, setPoints] = useState([]);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
@@ -51,6 +53,7 @@ export const Radviz = () => {
   const height = contentHeight + margin * 2;
   const lineColor = "#444";
 
+  // 点の大きさ
   const pointSize = 10;
 
   useEffect(() => {
@@ -61,9 +64,11 @@ export const Radviz = () => {
       const data = defineYaku(featureList, 14, 0);
       // 点の座標
       const { x, y } = radviz(data, r);
-      // 点の大きさ
 
+      // 13枚になったときの点の座標
       const points = [];
+      // 13枚になったときの手牌分解のされ方
+      const decompositions = {};
 
       // 14枚の手牌の特徴量と、13枚の手牌の特徴量の差
       const diffAssessment = {};
@@ -72,6 +77,7 @@ export const Radviz = () => {
       for (const [key, value] of Object.entries(deleteElement(tehai))) {
         const tmp = defineFeature(value);
         const yaku = defineYaku(tmp["featureList"], value.length, 0);
+        decompositions[key] = tmp["res"];
         points.push([key, radviz(yaku, r)]);
         diffAssessment[key] = DIMENSIONS.reduce(
           (obj, x) => Object.assign(obj, { [x]: yaku[x] - data[x] }),
@@ -86,6 +92,7 @@ export const Radviz = () => {
       setX(x);
       setY(y);
       setPoints(points);
+      setDecompositions(decompositions);
       setShanten(shanten);
       setYakuValue(diffAssessment);
       setDiffShanten(diffShanten);
