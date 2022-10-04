@@ -62,6 +62,7 @@ export const Radviz = () => {
       const { featureList, shanten } = defineFeature(tehai);
       // 役を推定
       const data = defineYaku(featureList, 14, 0);
+
       // 点の座標
       const { x, y } = radviz(data, r);
 

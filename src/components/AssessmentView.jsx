@@ -1,16 +1,23 @@
 import * as d3 from "d3";
 import { useRecoilValue, useRecoilState } from "recoil";
-import { yakuValueState, selectedTileState } from "./atoms";
+import {
+  yakuValueState,
+  selectedTileState,
+  tehaiState,
+  yakuRankState,
+} from "./atoms";
 import { changeHaiName2Path } from "./TehaiView";
+import { defineFeature } from "../functions/defineFeature";
+import { defineYaku } from "../functions/defineYaku";
 import { DIMENSIONS } from "../const/upper";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 import { Card, Tooltip } from "@mui/material";
 import { memo, useCallback } from "react";
+import { useEffect } from "react";
 
 export const AssessmentView = () => {
   const yakuValue = useRecoilValue(yakuValueState);
   const [selectedTile, setSelectedTile] = useRecoilState(selectedTileState);
-
   const margin = {
     top: 10,
     bottom: 50,
@@ -87,10 +94,32 @@ export const AssessmentView = () => {
 const VerticalAxis = memo(({ names, scale, strokeColor, height }) => {
   const x = 70;
   const [y1, y2] = [-20, height - 180];
+  const tehai = useRecoilValue(tehaiState);
+  const [yakuRank, setYakuRank] = useRecoilState(yakuRankState);
+  let fillCol = 0;
+  const colorList = ["red", "green", "pink"];
+  useEffect(() => {
+    if (tehai.length !== 0) {
+      const featureList = defineFeature(tehai);
+      const data = defineYaku(featureList.featureList, 14, 0);
+      const pairs = Object.entries(data);
+
+      pairs.sort(function (p1, p2) {
+        return p2[1] - p1[1];
+      });
+      setYakuRank(pairs);
+    }
+  }, [tehai]);
   return (
     <g>
       <line x1={x} y1={y1} x2={x} y2={y2} stroke={strokeColor} />
       {names.map((name, idx) => {
+        fillCol = 0;
+        yakuRank.slice(0, 3).forEach((value, idx) => {
+          if (value[0] == name) {
+            fillCol = idx + 1;
+          }
+        });
         return (
           <g key={idx} transform={`translate(${x}, ${120 + scale(idx)})`}>
             <Tooltip
@@ -104,9 +133,12 @@ const VerticalAxis = memo(({ names, scale, strokeColor, height }) => {
                 textAnchor="end"
                 dominantBaseline="central"
                 fontSize="30"
-                style={{ userSelect: "none" }}
+                style={{
+                  userSelect: "none",
+                  background: "red",
+                }}
               >
-                {YAKU_DESCRIPTION[name]["name"]}
+                {fillCol > 0 ? fillCol : ""} {YAKU_DESCRIPTION[name]["name"]}
               </text>
             </Tooltip>
           </g>
