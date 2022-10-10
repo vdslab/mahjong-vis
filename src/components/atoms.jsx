@@ -49,3 +49,8 @@ export const decompositionsState = atom({
   key: "decompositions",
   default: {},
 });
+
+export const yakuRankState = atom({
+  key: "yakuRank",
+  default: [],
+});
