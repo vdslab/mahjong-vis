@@ -1,26 +1,41 @@
 import { useRecoilValue } from "recoil";
 import { suteHaiListState } from "./atoms";
-import { Card, Grid, Typography } from "@mui/material";
-import Image from "next/image";
+import { Card } from "@mui/material";
 import { changeHaiName2Path } from "./TehaiView";
 
 export const AbandonedHaiView = () => {
   const suteHaiList = useRecoilValue(suteHaiListState);
 
+  const contentWidth = 300;
+  // const contentHeight = 250;
+  const contentHeight = 533;
+  const imageWidth = 48;
+  const imageHeight = 64;
+
   return (
-    <Card sx={{ p: 3, height: "100%" }}>
-      <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-        河
-      </Typography>
-      <Grid container>
-        {suteHaiList.map((item, idx) => {
-          return (
-            <Grid item key={idx} xs={2} style={{ marginBottom: "1.8%" }}>
-              <Image src={changeHaiName2Path(item)} width="80" height="110" />
-            </Grid>
-          );
-        })}
-      </Grid>
+    <Card sx={{ p: 2 }}>
+      <svg viewBox={`0 0 ${contentWidth} ${contentHeight}`}>
+        <g transform={"translate(5, 30)"}>
+          <text fontSize="30" style={{ userSelect: "none" }}>
+            河
+          </text>
+          <g transform={"translate(0, 20)"}>
+            {suteHaiList.map((tile, idx) => {
+              return (
+                <image
+                  key={idx}
+                  x={(idx % 6) * imageWidth}
+                  y={Math.floor(idx / 6) * imageHeight}
+                  style={{ cursor: "pointer" }}
+                  href={changeHaiName2Path(tile)}
+                  width={imageWidth}
+                  height={imageHeight}
+                />
+              );
+            })}
+          </g>
+        </g>
+      </svg>
     </Card>
   );
 };

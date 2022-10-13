@@ -2,17 +2,19 @@ import {
   AppBar,
   Box,
   Button,
+  Dialog,
+  DialogContent,
+  DialogActions,
   Drawer,
   IconButton,
   List,
   ListItem,
-  Toolbar,
-  Typography,
   ListItemButton,
   ListItemText,
-  Dialog,
-  DialogContent,
-  DialogActions,
+  Stack,
+  Toolbar,
+  Typography,
+  DialogTitle,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { WebInfo } from "./WebInfo";
@@ -64,22 +66,40 @@ export const Header = () => {
         <Box sx={{ p: 1 }}>
           {dialogOpen[0] === 0 ? (
             <DialogContent>
-              <p>{menuList[0]}</p>
+              <DialogTitle sx={{ fontSize: "40px" }}>{menuList[0]}</DialogTitle>
             </DialogContent>
           ) : (
             <DialogContent>
-              <p>{menuList[1]}</p>
+              <DialogTitle sx={{ fontSize: "40px" }}>{menuList[1]}</DialogTitle>
             </DialogContent>
           )}
           {dialogOpen[0] === 0 ? (
             <DialogActions>
-              <WebInfo />
-              {/* <Button onClick={() => handleClose(dialogOpen[0])}>閉じる</Button> */}
+              <Stack spacing={2}>
+                <WebInfo />
+                <Button
+                  sx={{ p: 1 }}
+                  variant="contained"
+                  size="large"
+                  onClick={() => handleClose(dialogOpen[0])}
+                >
+                  閉じる
+                </Button>
+              </Stack>
             </DialogActions>
           ) : (
             <DialogActions>
-              <YakuDescription />
-              {/* <Button onClick={() => handleClose(dialogOpen[0])}>閉じる</Button> */}
+              <Stack spacing={2}>
+                <YakuDescription />
+                <Button
+                  sx={{ p: 1 }}
+                  variant="contained"
+                  size="large"
+                  onClick={() => handleClose(dialogOpen[0])}
+                >
+                  閉じる
+                </Button>
+              </Stack>
             </DialogActions>
           )}
         </Box>

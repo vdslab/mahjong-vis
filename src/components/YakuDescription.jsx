@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Images from "../../public/images/hai_ex/zikaze_bakaze.png";
 import Images1 from "../../public/images/hai_ex/sangenhai.png";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
-import { Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 
 export const YakuDescription = () => {
     const list = [

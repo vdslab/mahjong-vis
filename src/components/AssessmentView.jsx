@@ -1,16 +1,23 @@
 import * as d3 from "d3";
 import { useRecoilValue, useRecoilState } from "recoil";
-import { yakuValueState, selectedTileState } from "./atoms";
+import {
+  yakuValueState,
+  selectedTileState,
+  tehaiState,
+  yakuRankState,
+} from "./atoms";
 import { changeHaiName2Path } from "./TehaiView";
+import { defineFeature } from "../functions/defineFeature";
+import { defineYaku } from "../functions/defineYaku";
 import { DIMENSIONS } from "../const/upper";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 import { Card, Tooltip } from "@mui/material";
 import { memo, useCallback } from "react";
+import { useEffect } from "react";
 
 export const AssessmentView = () => {
   const yakuValue = useRecoilValue(yakuValueState);
   const [selectedTile, setSelectedTile] = useRecoilState(selectedTileState);
-
   const margin = {
     top: 10,
     bottom: 50,
@@ -22,7 +29,7 @@ export const AssessmentView = () => {
   const strokeColor = "#888";
   const svgWidth = margin.left + margin.right + contentWidth;
   const svgHeight = margin.top + margin.bottom + contentHeight + 0;
-
+  const colorList = ["#e6ab02", "#666666", "#a6761d"];
   const colorScale = useCallback(
     d3
       .scaleLinear()
@@ -57,6 +64,7 @@ export const AssessmentView = () => {
             scale={yScale}
             strokeColor={strokeColor}
             height={svgHeight}
+            colorList={colorList}
           />
           <HorizontalAxis
             tiles={Object.keys(yakuValue)}
@@ -77,6 +85,7 @@ export const AssessmentView = () => {
             y={svgHeight - 130}
             width={svgWidth - 200}
             colorScale={colorScale}
+            colorList={colorList}
           />
         </svg>
       )}
@@ -84,37 +93,70 @@ export const AssessmentView = () => {
   );
 };
 
-const VerticalAxis = memo(({ names, scale, strokeColor, height }) => {
-  const x = 70;
-  const [y1, y2] = [-20, height - 180];
-  return (
-    <g>
-      <line x1={x} y1={y1} x2={x} y2={y2} stroke={strokeColor} />
-      {names.map((name, idx) => {
-        return (
-          <g key={idx} transform={`translate(${x}, ${120 + scale(idx)})`}>
-            <Tooltip
-              title={YAKU_DESCRIPTION[name]["description"]}
-              placement="top-start"
-              arrow
-              disableInteractive
-            >
-              <text
-                x="-20"
-                textAnchor="end"
-                dominantBaseline="central"
-                fontSize="30"
-                style={{ userSelect: "none" }}
+const VerticalAxis = memo(
+  ({ names, scale, strokeColor, height, colorList = [] }) => {
+    const x = 70;
+    const [y1, y2] = [-20, height - 180];
+    const tehai = useRecoilValue(tehaiState);
+    const [yakuRank, setYakuRank] = useRecoilState(yakuRankState);
+    let rankIdx = -1;
+
+    useEffect(() => {
+      if (tehai.length !== 0) {
+        const featureList = defineFeature(tehai);
+        const data = defineYaku(featureList.featureList, 14, 0);
+        const DescList = Object.entries(data);
+
+        DescList.sort(function (p1, p2) {
+          return p2[1] - p1[1];
+        });
+        setYakuRank(DescList);
+      }
+    }, [tehai]);
+    return (
+      <g>
+        <line x1={x} y1={y1} x2={x} y2={y2} stroke={strokeColor} />
+        {names.map((name, idx) => {
+          rankIdx = -1;
+          yakuRank.slice(0, 3).forEach((value, idx) => {
+            if (value[0] == name) {
+              rankIdx = idx;
+            }
+          });
+          return (
+            <g key={idx} transform={`translate(${x}, ${120 + scale(idx)})`}>
+              <Tooltip
+                title={YAKU_DESCRIPTION[name]["description"]}
+                placement="top-start"
+                arrow
+                disableInteractive
               >
-                {YAKU_DESCRIPTION[name]["name"]}
-              </text>
-            </Tooltip>
-          </g>
-        );
-      })}
-    </g>
-  );
-});
+                <g>
+                  {rankIdx > -1 ? (
+                    <circle cx="-160" cy="0" r="10" fill={colorList[rankIdx]} />
+                  ) : (
+                    ""
+                  )}
+                  <text
+                    x="-20"
+                    textAnchor="end"
+                    dominantBaseline="central"
+                    fontSize="30"
+                    style={{
+                      userSelect: "none",
+                    }}
+                  >
+                    {YAKU_DESCRIPTION[name]["name"]}
+                  </text>
+                </g>
+              </Tooltip>
+            </g>
+          );
+        })}
+      </g>
+    );
+  }
+);
 
 const HorizontalAxis = ({
   tiles,
@@ -186,39 +228,58 @@ const Contents = ({ data, xScale, yScale, colorScale }) => {
   );
 };
 
-const Legends = memo(({ x, y, width, colorScale }) => {
+const Legends = memo(({ x, y, width, colorScale, colorList = [] }) => {
   return (
-    <g transform={`translate(${x}, ${y})`}>
-      <linearGradient id="gradient">
-        {[...Array(41)].map((_, idx) => {
-          return (
-            <stop
-              key={idx}
-              offset={`${(idx * 5) / 2}%`}
-              stopColor={colorScale(100 - idx * 5)}
-            />
-          );
-        })}
-      </linearGradient>
-      <rect width={width} height="50" fill="url('#gradient')" />
-      <text
-        dominantBaseline="text-after-edge"
-        fontSize={30}
-        y="100"
-        style={{ userSelect: "none" }}
-      >
-        {`<---- その役になる`}
-      </text>
-      <text
-        textAnchor="end"
-        dominantBaseline="text-after-edge"
-        fontSize={30}
-        x={width}
-        y="100"
-        style={{ userSelect: "none" }}
-      >
-        {`その役にならない ---->`}
-      </text>
+    <g>
+      <g transform={`translate(${x - 140}, ${y})`}>
+        <text fontSize="30">役の点数</text>
+      </g>
+
+      {colorList.map((item, idx) => {
+        return (
+          <g
+            key={idx}
+            transform={`translate(${x - 40}, ${y + (idx + 1) * 30})`}
+          >
+            <text x="-100" y="0" fontSize="30" dominantBaseline="middle">
+              {idx + 1}位
+            </text>
+            <circle cx="0" cy="0" r="10" fill={item} />
+          </g>
+        );
+      })}
+      <g transform={`translate(${x}, ${y})`}>
+        <linearGradient id="gradient">
+          {[...Array(41)].map((_, idx) => {
+            return (
+              <stop
+                key={idx}
+                offset={`${(idx * 5) / 2}%`}
+                stopColor={colorScale(100 - idx * 5)}
+              />
+            );
+          })}
+        </linearGradient>
+        <rect width={width} height="50" fill="url('#gradient')" />
+        <text
+          dominantBaseline="text-after-edge"
+          fontSize={30}
+          y="100"
+          style={{ userSelect: "none" }}
+        >
+          {`<---- その役になる`}
+        </text>
+        <text
+          textAnchor="end"
+          dominantBaseline="text-after-edge"
+          fontSize={30}
+          x={width}
+          y="100"
+          style={{ userSelect: "none" }}
+        >
+          {`その役にならない ---->`}
+        </text>
+      </g>
     </g>
   );
 });
