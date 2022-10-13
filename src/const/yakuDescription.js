@@ -72,7 +72,7 @@ export const YAKU_DESCRIPTION = {
   },
   toitoiho: {
     name: "対々和",
-    description: "",
+    description: "同じ牌で揃えたまとまりのみで揃えると成立する",
     han: 2,
     kuiHan: 2,
     menzen: false,
