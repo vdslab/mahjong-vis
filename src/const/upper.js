@@ -4,6 +4,7 @@ export const DIMENSIONS = [
   "pinfu",
   "ittu",
   "honitu",
+  "chinitu",
   "chanta",
   "junchan",
   "sangenhai",
