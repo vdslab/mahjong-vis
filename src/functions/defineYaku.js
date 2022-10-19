@@ -23,7 +23,7 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
 
   // タンヤオ
   yakuList["tanyao"] =
-    ((featureValue(
+    (featureValue(
       featureList["chunchan_shuntu"] + featureList["chunchan_kotu"],
       {
         4: 90,
@@ -33,16 +33,15 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
       }
     ) +
       (featureList["chunchan_toitu"] ? 10 : 0)) *
-      60 +
-      (Math.max(
-        featureList["chunchan_cnt"] -
-          featureList["ichikyu_cnt"] -
-          featureList["zi_cnt"],
-        0
-      ) /
-        haiLen) *
-        40) /
-    100;
+      4 +
+    (Math.max(
+      featureList["chunchan_cnt"] -
+        featureList["ichikyu_cnt"] -
+        featureList["zi_cnt"],
+      0
+    ) /
+      haiLen) *
+      60;
 
   // 鳴いてないときに付く役
   if (naki_cnt === 0) {

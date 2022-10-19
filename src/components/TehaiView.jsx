@@ -12,20 +12,20 @@ import { HAI_ORDER } from "../const/HaiOrder";
 import Image from "next/image";
 import {
   Box,
-  Card,
-  Stack,
-  Typography,
   Button,
+  Card,
   Dialog,
+  FormControl,
   Grid,
   NativeSelect,
-  FormControl,
-  InputLabel,
+  Stack,
+  Typography,
 } from "@mui/material";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import { DisplayInfo } from "./DisplayInfo";
+import { changeHaiName2Path } from "../functions/util";
 
 export const TehaiView = () => {
   const HAITYPELIST = "mpswz";
@@ -137,9 +137,7 @@ export const TehaiView = () => {
   if (suteHaiCount >= MAX_PLAY_TIMES && open[0] === false) {
     setOpen([true, 1]);
   }
-  const handleChange = (e) => {
-    setHaiMode(e.target.value);
-  };
+
   return (
     <Card sx={{ p: 3 }}>
       {tehai.length < 1 ||
@@ -154,16 +152,15 @@ export const TehaiView = () => {
               </Typography>
             </Grid>
             <Grid item xs={6} md={3}>
-              <FormControl fullWidth>
-                {/* <InputLabel id="">自模モードを選択</InputLabel> */}
+              <FormControl fullWidth variant="standard">
                 <NativeSelect
-                  defaultValue={0}
                   inputProps={{
                     name: "haiMode",
                     id: "",
                   }}
+                  value={haiMode}
                   disabled={suteHaiList.length > 0 ? true : false}
-                  onChange={handleChange}
+                  onChange={(e) => setHaiMode(e.target.value)}
                 >
                   <option value={0}>すべての牌</option>
                   <option value={1}>混一色</option>
@@ -211,15 +208,24 @@ export const TehaiView = () => {
                 for (const name of names) {
                   if (diffShanten[item][name] < 0)
                     return (
-                      <TrendingDownIcon
-                        color="info"
+                      <TrendingUpIcon
+                        color="error"
+                        sx={{ m: "auto", fontSize: "40px" }}
+                      />
+                    );
+                }
+                for (const name of names) {
+                  if (diffShanten[item][name] === 0)
+                    return (
+                      <TrendingFlatIcon
+                        color="success"
                         sx={{ m: "auto", fontSize: "40px" }}
                       />
                     );
                 }
                 return (
-                  <TrendingFlatIcon
-                    color="error"
+                  <TrendingDownIcon
+                    color="info"
                     sx={{ m: "auto", fontSize: "40px" }}
                   />
                 );
@@ -265,7 +271,6 @@ export const TehaiView = () => {
                         width="80"
                         height="110"
                       />
-                      {icon}
                     </Stack>
                   </Fragment>
                 );
@@ -338,7 +343,7 @@ export const TehaiView = () => {
 const getRandomInt = (min = 0, max = 34) => {
   return Math.floor(Math.random() * (max - min) + min);
 };
-const generateNewHai = (mode = 0) => {
+const generateNewHai = (mode) => {
   const haiList = [
     [...Array(34)].map((_, i) => i),
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 27, 28, 29, 30, 31, 32, 33],
@@ -360,28 +365,4 @@ const generateNewHai = (mode = 0) => {
     hai += "z" + ((intHai % 9) - 3);
   }
   return hai;
-};
-
-export const changeHaiName2Path = (haiName) => {
-  let path = "/images/hai/";
-  switch (haiName[0]) {
-    case "m":
-      path += "man" + haiName[1];
-      break;
-    case "p":
-      path += "pin" + haiName[1];
-      break;
-    case "s":
-      path += "sou" + haiName[1];
-      break;
-    case "w":
-      path += "ji" + haiName[1];
-      break;
-    case "z":
-      const num = parseInt(haiName[1]) + 4;
-      path += "ji" + num;
-      break;
-  }
-  path += ".gif";
-  return path;
 };

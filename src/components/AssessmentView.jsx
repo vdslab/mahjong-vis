@@ -6,14 +6,13 @@ import {
   tehaiState,
   yakuRankState,
 } from "./atoms";
-import { changeHaiName2Path } from "./TehaiView";
 import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
 import { DIMENSIONS } from "../const/upper";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 import { Card, Tooltip } from "@mui/material";
-import { memo, useCallback } from "react";
-import { useEffect } from "react";
+import { memo, useCallback, useEffect } from "react";
+import { changeHaiName2Path } from "../functions/util";
 
 export const AssessmentView = () => {
   const yakuValue = useRecoilValue(yakuValueState);
