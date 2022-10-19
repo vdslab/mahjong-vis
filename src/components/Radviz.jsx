@@ -6,7 +6,7 @@ import {
   yakuValueState,
   diffShantenState,
   selectedTileState,
-  winState,
+  allTileState,
 } from "../atoms/atoms";
 import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
@@ -39,7 +39,7 @@ export const Radviz = () => {
   const setShanten = useSetRecoilState(shantenState);
   const setYakuValue = useSetRecoilState(yakuValueState);
   const setDiffShanten = useSetRecoilState(diffShantenState);
-  const setWin = useSetRecoilState(winState);
+  const setAllTile = useSetRecoilState(allTileState);
   const [points, setPoints] = useState([]);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
@@ -61,7 +61,7 @@ export const Radviz = () => {
       // 14枚の手牌の特徴量と向聴数を計算
       const { featureList, shanten } = defineFeature(tehai);
       const yaku = defineYaku(featureList, 14, 0);
-      setWin({ shanten, yaku });
+      setAllTile({ shanten, yaku });
 
       // radviz上の点の座標
       // 配列の末尾が現在の点の座標

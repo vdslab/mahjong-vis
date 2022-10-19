@@ -55,7 +55,7 @@ export const yakuRankState = atom({
   default: [],
 });
 
-export const winState = atom({
-  key: "win",
+export const allTileState = atom({
+  key: "allTile",
   default: {},
 });

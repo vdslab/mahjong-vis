@@ -1,6 +1,5 @@
 export const DIMENSIONS = [
   "tanyao",
-  "ipeko",
   "pinfu",
   "ittu",
   "honitu",
@@ -11,6 +10,7 @@ export const DIMENSIONS = [
   "shosangen",
   "sananko",
   "zikaze_bakaze",
+  "ipeko",
   "chitoitu",
   "sanshoku_dojun",
 ];

@@ -10,16 +10,17 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 import { useRecoilValue } from "recoil";
-import { winState } from "../atoms/atoms";
+import { allTileState } from "../atoms/atoms";
 
 export const WinDialog = memo((props) => {
   const { onClose, open } = props;
-  const { yaku } = useRecoilValue(winState);
+  const { yaku } = useRecoilValue(allTileState);
 
   const noDupYaku = {
     chanta: ["junchan", "honroto"],
     honitu: ["chinitu"],
-    ipeko: ["ryanpeko"],
+    ipeko: ["ryanpeko", "chitoitu"],
+    chitoitu: ["ryanpeko"],
   };
 
   return (

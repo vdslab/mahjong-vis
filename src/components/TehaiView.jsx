@@ -7,7 +7,7 @@ import {
   shantenState,
   diffShantenState,
   selectedTileState,
-  winState,
+  allTileState,
 } from "../atoms/atoms";
 import { HAI_ORDER } from "../const/HaiOrder";
 import Image from "next/image";
@@ -42,7 +42,7 @@ export const TehaiView = () => {
   const suteHaiCount = suteHaiList.length;
   const shanten = useRecoilValue(shantenState);
   const diffShanten = useRecoilValue(diffShantenState);
-  const win = useRecoilValue(winState);
+  const allTile = useRecoilValue(allTileState);
 
   useEffect(() => {
     const haiList = initHai();
@@ -52,6 +52,10 @@ export const TehaiView = () => {
   useEffect(() => {
     resetTehai();
   }, [haiMode]);
+
+  // useEffect(() => {
+  //   console.log(calcShanten(tehai))
+  // }, [tehai])
 
   const handleTileClicked = (tile, idx) => {
     const tmpTehai = JSON.parse(JSON.stringify(tehai));
@@ -283,7 +287,7 @@ export const TehaiView = () => {
             <Button
               variant="contained"
               disabled={
-                Object.values(win["shanten"]).filter((val) => val === -1)
+                Object.values(allTile["shanten"]).filter((val) => val === -1)
                   .length === 0
               }
               onClick={() => setWinDialogOpen(true)}
