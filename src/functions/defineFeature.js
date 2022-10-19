@@ -2,6 +2,22 @@ import { FEATURE_LIST, TYPE_LIST } from "../const/const";
 import { SHANTEN_TABLE } from "../const/shantenTable";
 
 export const defineFeature = (tehai) => {
+  // const tehai = [
+  //   "m2",
+  //   "m2",
+  //   "m3",
+  //   "m3",
+  //   "m3",
+  //   "m4",
+  //   "m4",
+  //   "m4",
+  //   "p2",
+  //   "p3",
+  //   "p4",
+  //   "s6",
+  //   "s6",
+  //   "s6",
+  // ];
   // 面子と面子候補と浮き牌のリスト
   // 萬子筒子索子風三元の5種類
   const mentuList = [...Array(5)].map((_) => [...Array(3)].map((_) => []));
@@ -84,6 +100,7 @@ export const defineFeature = (tehai) => {
 
     // TODO:分解結果は複数ある
     // 22345688 => 22 345 68 8 or 22 345 6 88 etc....
+    // 分解した結果から向聴数を求める？
     const tmp_res = [];
 
     for (const i of deleteDuplicate([...combs(threeMentu, three)])) {
@@ -144,6 +161,7 @@ export const defineFeature = (tehai) => {
 
     // 一盃口の構造を持っているかどうか計算
     // 実際にそのような分解に成っている必要はない
+    // 分解が一盃口かどうかは確認したほうがいい気がする
     featureList["ipeko_score"] = Math.max(
       featureList["ipeko_score"],
       checkIpeko(tileArrangement)
@@ -235,6 +253,7 @@ export const defineFeature = (tehai) => {
   // 雀頭候補の数
   // TODO:分解結果が複数ある
   let f = featureList["zi_toitu"];
+  // console.log(res);
   for (const i of res) {
     i.map((j, idx) => {
       if (idx % 2) {

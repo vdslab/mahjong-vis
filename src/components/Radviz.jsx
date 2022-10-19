@@ -6,13 +6,12 @@ import {
   yakuValueState,
   diffShantenState,
   selectedTileState,
-  decompositionsState,
 } from "./atoms";
 import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
 import { DIMENSIONS } from "../const/upper";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 const radviz = (data, r) => {
   const n = DIMENSIONS.length;
@@ -39,7 +38,6 @@ export const Radviz = () => {
   const setShanten = useSetRecoilState(shantenState);
   const setYakuValue = useSetRecoilState(yakuValueState);
   const setDiffShanten = useSetRecoilState(diffShantenState);
-  const setDecompositions = useSetRecoilState(decompositionsState);
   const [points, setPoints] = useState([]);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
@@ -60,41 +58,47 @@ export const Radviz = () => {
     if (tehai.length !== 0) {
       // 14枚の手牌の特徴量と向聴数を計算
       const { featureList, shanten } = defineFeature(tehai);
-      // 役を推定
-      const data = defineYaku(featureList, 14, 0);
 
-      // 点の座標
-      const { x, y } = radviz(data, r);
-
-      // 13枚になったときの点の座標
+      // radviz上の点の座標
+      // 配列の末尾が現在の点の座標
       const points = [];
-      // 13枚になったときの手牌分解のされ方
-      const decompositions = {};
 
-      // 14枚の手牌の特徴量と、13枚の手牌の特徴量の差
+      // 現在持っている13枚の手牌の特徴量とツモ牌を含めて任意の牌を切ったときの手牌の特徴量と向聴数の差
       const diffAssessment = {};
-      // 14枚の手牌の向聴数と、13枚の手牌の向聴数の差
       const diffShanten = {};
+      // 14枚のうち13枚を抜き出したときの役推定と向聴数計算
+      const tehaiFeature = {};
+      const tehaiShanten = {};
       for (const [key, value] of Object.entries(deleteElement(tehai))) {
-        const tmp = defineFeature(value);
-        const yaku = defineYaku(tmp["featureList"], value.length, 0);
-        decompositions[key] = tmp["res"];
+        const { featureList, shanten } = defineFeature(value);
+        const yaku = defineYaku(featureList, value.length, 0);
+        tehaiFeature[key] = yaku;
+        tehaiShanten[key] = shanten;
         points.push([key, radviz(yaku, r)]);
-        diffAssessment[key] = DIMENSIONS.reduce(
-          (obj, x) => Object.assign(obj, { [x]: yaku[x] - data[x] }),
+      }
+
+      for (const [hai, yaku] of Object.entries(tehaiFeature)) {
+        diffAssessment[hai] = DIMENSIONS.reduce(
+          (obj, x) =>
+            Object.assign(obj, {
+              [x]: yaku[x] - tehaiFeature[tehai[tehai.length - 1]][x],
+            }),
           {}
         );
-        diffShanten[key] = Object.keys(shanten).reduce(
+        diffShanten[hai] = Object.keys(shanten).reduce(
           (obj, x) =>
-            Object.assign(obj, { [x]: shanten[x] - tmp["shanten"][x] }),
+            Object.assign(obj, {
+              [x]:
+                tehaiShanten[hai][x] - tehaiShanten[tehai[tehai.length - 1]][x],
+            }),
           {}
         );
       }
+
       setX(x);
       setY(y);
       setPoints(points);
-      setDecompositions(decompositions);
-      setShanten(shanten);
+      setShanten(tehaiShanten[tehai[tehai.length - 1]]);
       setYakuValue(diffAssessment);
       setDiffShanten(diffShanten);
     }
@@ -145,7 +149,7 @@ export const Radviz = () => {
                 <g key={i} transform={`translate(${x},${y})`}>
                   <circle
                     r={pointSize}
-                    fill="green"
+                    fill={i !== points.length - 1 ? "green" : "red"}
                     fillOpacity={
                       selectedTile === "" || selectedTile === tile ? 1 : 0.1
                     }
@@ -153,9 +157,6 @@ export const Radviz = () => {
                 </g>
               );
             })}
-            <g transform={`translate(${x},${y})`}>
-              <circle r={pointSize} fill="red" />
-            </g>
           </g>
         </svg>
       )}
