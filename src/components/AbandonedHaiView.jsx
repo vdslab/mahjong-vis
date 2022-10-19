@@ -1,7 +1,7 @@
 import { useRecoilValue } from "recoil";
 import { suteHaiListState } from "../atoms/atoms";
 import { Card } from "@mui/material";
-import { changeHaiName2Path } from "./TehaiView";
+import { changeHaiName2Path } from "../functions/util";
 
 export const AbandonedHaiView = () => {
   const suteHaiList = useRecoilValue(suteHaiListState);
