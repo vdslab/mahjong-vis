@@ -1,5 +1,5 @@
 import { useRecoilValue } from "recoil";
-import { suteHaiListState } from "./atoms";
+import { suteHaiListState } from "../atoms/atoms";
 import { Card } from "@mui/material";
 import { changeHaiName2Path } from "./TehaiView";
 

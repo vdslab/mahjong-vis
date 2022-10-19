@@ -6,7 +6,7 @@ import {
   yakuValueState,
   diffShantenState,
   selectedTileState,
-} from "./atoms";
+} from "../atoms/atoms";
 import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
 import { DIMENSIONS } from "../const/upper";

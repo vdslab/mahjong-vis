@@ -1,6 +1,6 @@
 import { Card } from "@mui/material";
 import { useRecoilValue } from "recoil";
-import { decompositionsState, selectedTileState } from "./atoms";
+import { decompositionsState, selectedTileState } from "../atoms/atoms";
 import { changeHaiName2Path } from "./TehaiView";
 
 export const DecompositionView = () => {
