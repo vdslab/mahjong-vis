@@ -1,15 +1,20 @@
 import { memo } from "react";
-import { Dialog, DialogTitle, Stack, Typography } from "@mui/material";
-import { defineFeature } from "../functions/defineFeature";
-import { defineYaku } from "../functions/defineYaku";
+import {
+  Dialog,
+  DialogContent,
+  DialogContentText,
+  IconButton,
+  Stack,
+  Typography,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 import { useRecoilValue } from "recoil";
-import { tehaiState } from "../atoms/atoms";
+import { winState } from "../atoms/atoms";
 
 export const WinDialog = memo((props) => {
   const { onClose, open } = props;
-  const { featureList, shanten } = defineFeature(useRecoilValue(tehaiState));
-  const data1 = defineYaku(featureList, 14, 0);
+  const { yaku } = useRecoilValue(winState);
 
   const noDupYaku = {
     chanta: ["junchan", "honroto"],
@@ -19,22 +24,38 @@ export const WinDialog = memo((props) => {
 
   return (
     open && (
-      <Dialog onClose={onClose} open={open}>
-        <DialogTitle>結果</DialogTitle>
-        <Stack sx={{ p: 1 }}>
-          {Object.keys(data1)
-            .filter((key) => data1[key] === 100)
-            .map((key, idx) => {
-              if (Object.keys(noDupYaku).includes(key)) {
-                for (const dupYaku of noDupYaku[key]) {
-                  if (data1[dupYaku] === 100) {
-                    return;
+      <Dialog onClose={onClose} open={open} sx={{ p: 1 }}>
+        <Stack direction="row" sx={{ p: 1 }}>
+          <Typography sx={{ pl: 1, fontSize: 30, flexGrow: 1 }}>
+            結果
+          </Typography>
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </Stack>
+        <DialogContent>
+          <Stack sx={{ p: 1, minWidth: 200 }}>
+            {Object.keys(yaku)
+              .filter((key) => yaku[key] === 100)
+              .map((key, idx) => {
+                if (Object.keys(noDupYaku).includes(key)) {
+                  for (const dupYaku of noDupYaku[key]) {
+                    if (yaku[dupYaku] === 100) {
+                      return;
+                    }
                   }
                 }
-              }
-              return <Typography key={idx}>{YAKU_DESCRIPTION[key]}</Typography>;
-            })}
-        </Stack>
+                return (
+                  <DialogContentText
+                    key={idx}
+                    sx={{ p: 1, textAlign: "center" }}
+                  >
+                    {YAKU_DESCRIPTION[key]["name"]}
+                  </DialogContentText>
+                );
+              })}
+          </Stack>
+        </DialogContent>
       </Dialog>
     )
   );
