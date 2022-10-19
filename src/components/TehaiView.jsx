@@ -7,7 +7,7 @@ import {
   shantenState,
   diffShantenState,
   selectedTileState,
-} from "./atoms";
+} from "../atoms/atoms";
 import { HAI_ORDER } from "../const/HaiOrder";
 import Image from "next/image";
 import {
@@ -24,8 +24,9 @@ import {
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
-import { DisplayInfo } from "./DisplayInfo";
+import { WinDialog } from "./WinDialog";
 import { changeHaiName2Path } from "../functions/util";
+import { useCallback } from "react";
 
 export const TehaiView = () => {
   const HAITYPELIST = "mpswz";
@@ -88,10 +89,10 @@ export const TehaiView = () => {
   const handleTumo = () => {
     setTumoOpen(true);
   };
-  const handleTumoClose = () => {
+  const handleTumoClose = useCallback(() => {
     setTumoOpen(false);
     resetTehai();
-  };
+  }, []);
   const handleClickOpen = () => {
     setOpen([true, 0]);
   };
@@ -333,7 +334,7 @@ export const TehaiView = () => {
               </Stack>
             </Card>
           </Dialog>
-          <DisplayInfo onClose={handleTumoClose} open={tumoOpen} />
+          <WinDialog onClose={handleTumoClose} open={tumoOpen} />
         </>
       )}
     </Card>
