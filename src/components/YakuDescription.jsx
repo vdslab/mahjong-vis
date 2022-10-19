@@ -1,6 +1,5 @@
+import React from "react";
 import Image from 'next/image';
-import Images from "../../public/images/hai_ex/zikaze_bakaze.png";
-import Images1 from "../../public/images/hai_ex/sangenhai.png";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 
@@ -41,7 +40,12 @@ export const YakuDescription = () => {
                         <Typography variant="h6">
                             {YAKU_DESCRIPTION[item]["description"]}
                         </Typography>
-                        <Image src={Images} alt="Image" />
+                            <Image 
+                                src={`/images/hai_ex/${item}.png`}
+                                width="550"
+                                height="50"
+                                alt="Image"
+                            />
                         <Typography>　</Typography>
                         </>
                     )
