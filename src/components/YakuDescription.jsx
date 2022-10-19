@@ -1,4 +1,3 @@
-import React from "react";
 import Image from "next/image";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 import { Box, Card, CardContent, Typography } from "@mui/material";

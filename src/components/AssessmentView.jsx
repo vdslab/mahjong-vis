@@ -5,7 +5,7 @@ import {
   selectedTileState,
   tehaiState,
   yakuRankState,
-} from "./atoms";
+} from "../atoms/atoms";
 import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
 import { DIMENSIONS } from "../const/upper";
@@ -112,6 +112,7 @@ const VerticalAxis = memo(
         setYakuRank(DescList);
       }
     }, [tehai]);
+
     return (
       <g>
         <line x1={x} y1={y1} x2={x} y2={y2} stroke={strokeColor} />

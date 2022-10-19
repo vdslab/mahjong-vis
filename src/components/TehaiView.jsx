@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useCallback } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
   tehaiState,
@@ -7,7 +7,8 @@ import {
   shantenState,
   diffShantenState,
   selectedTileState,
-} from "./atoms";
+  allTileState,
+} from "../atoms/atoms";
 import { HAI_ORDER } from "../const/HaiOrder";
 import Image from "next/image";
 import {
@@ -24,7 +25,7 @@ import {
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
-import { DisplayInfo } from "./DisplayInfo";
+import { WinDialog } from "./WinDialog";
 import { changeHaiName2Path } from "../functions/util";
 
 export const TehaiView = () => {
@@ -35,12 +36,13 @@ export const TehaiView = () => {
   const [haiCheckList, setHaiCheckList] = useRecoilState(haiCheckListState);
   const [selectedTile, setSelectedTile] = useRecoilState(selectedTileState);
   const [open, setOpen] = useState([false, 0]);
-  const [tumoOpen, setTumoOpen] = useState(false);
+  const [winDialogOpen, setWinDialogOpen] = useState(false);
   const [haiMode, setHaiMode] = useState(0);
   const [mouseOveredTile, setMouseOveredTile] = useState(null);
   const suteHaiCount = suteHaiList.length;
   const shanten = useRecoilValue(shantenState);
   const diffShanten = useRecoilValue(diffShantenState);
+  const allTile = useRecoilValue(allTileState);
 
   useEffect(() => {
     const haiList = initHai();
@@ -50,6 +52,10 @@ export const TehaiView = () => {
   useEffect(() => {
     resetTehai();
   }, [haiMode]);
+
+  // useEffect(() => {
+  //   console.log(calcShanten(tehai))
+  // }, [tehai])
 
   const handleTileClicked = (tile, idx) => {
     const tmpTehai = JSON.parse(JSON.stringify(tehai));
@@ -85,13 +91,10 @@ export const TehaiView = () => {
       setMouseOveredTile(null);
     }
   };
-  const handleTumo = () => {
-    setTumoOpen(true);
-  };
-  const handleTumoClose = () => {
-    setTumoOpen(false);
+  const handleTumoClose = useCallback(() => {
+    setWinDialogOpen(false);
     resetTehai();
-  };
+  }, []);
   const handleClickOpen = () => {
     setOpen([true, 0]);
   };
@@ -284,9 +287,10 @@ export const TehaiView = () => {
             <Button
               variant="contained"
               disabled={
-                Object.values(shanten).filter((val) => val === -1).length === 0
+                Object.values(allTile["shanten"]).filter((val) => val === -1)
+                  .length === 0
               }
-              onClick={handleTumo}
+              onClick={() => setWinDialogOpen(true)}
             >
               ツモ
             </Button>
@@ -333,7 +337,7 @@ export const TehaiView = () => {
               </Stack>
             </Card>
           </Dialog>
-          <DisplayInfo onClose={handleTumoClose} open={tumoOpen} />
+          <WinDialog onClose={handleTumoClose} open={winDialogOpen} />
         </>
       )}
     </Card>
@@ -343,6 +347,7 @@ export const TehaiView = () => {
 const getRandomInt = (min = 0, max = 34) => {
   return Math.floor(Math.random() * (max - min) + min);
 };
+
 const generateNewHai = (mode) => {
   const haiList = [
     [...Array(34)].map((_, i) => i),
