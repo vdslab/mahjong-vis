@@ -22,18 +22,29 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
       : 0;
 
   // タンヤオ
+  // ツモ牌で面子が完成したときに評価値が上がる設計なため、中張牌を切っても評価が上がってしまう
+  // ex.)4566678 246 ttt で3をツモ
+  // yakuList["tanyao"] =
+  //   (featureValue(
+  //     featureList["chunchan_shuntu"] + featureList["chunchan_kotu"],
+  //     {
+  //       4: 90,
+  //       3: 70,
+  //       2: 30,
+  //       1: 10,
+  //     }
+  //   ) +
+  //     (featureList["chunchan_toitu"] ? 10 : 0)) *
+  //     4 +
+  //   (Math.max(
+  //     featureList["chunchan_cnt"] -
+  //       featureList["ichikyu_cnt"] -
+  //       featureList["zi_cnt"],
+  //     0
+  //   ) /
+  //     haiLen) *
+  //     60;
   yakuList["tanyao"] =
-    (featureValue(
-      featureList["chunchan_shuntu"] + featureList["chunchan_kotu"],
-      {
-        4: 90,
-        3: 70,
-        2: 30,
-        1: 10,
-      }
-    ) +
-      (featureList["chunchan_toitu"] ? 10 : 0)) *
-      4 +
     (Math.max(
       featureList["chunchan_cnt"] -
         featureList["ichikyu_cnt"] -
@@ -41,7 +52,7 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
       0
     ) /
       haiLen) *
-      60;
+    100;
 
   // 鳴いてないときに付く役
   if (naki_cnt === 0) {
