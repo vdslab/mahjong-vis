@@ -59,3 +59,8 @@ export const allTileState = atom({
   key: "allTile",
   default: {},
 });
+
+export const haiModeState = atom({
+  key: "haiMode",
+  default: 0,
+});

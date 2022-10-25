@@ -8,6 +8,7 @@ import {
   diffShantenState,
   selectedTileState,
   allTileState,
+  haiModeState,
 } from "../atoms/atoms";
 import { HAI_ORDER } from "../const/HaiOrder";
 import Image from "next/image";
@@ -16,9 +17,7 @@ import {
   Button,
   Card,
   Dialog,
-  FormControl,
   Grid,
-  NativeSelect,
   Stack,
   Typography,
 } from "@mui/material";
@@ -37,7 +36,7 @@ export const TehaiView = () => {
   const [selectedTile, setSelectedTile] = useRecoilState(selectedTileState);
   const [open, setOpen] = useState([false, 0]);
   const [winDialogOpen, setWinDialogOpen] = useState(false);
-  const [haiMode, setHaiMode] = useState(0);
+  const haiMode = useRecoilValue(haiModeState);
   const [mouseOveredTile, setMouseOveredTile] = useState(null);
   const suteHaiCount = suteHaiList.length;
   const shanten = useRecoilValue(shantenState);
@@ -91,10 +90,12 @@ export const TehaiView = () => {
       setMouseOveredTile(null);
     }
   };
+
   const handleTumoClose = useCallback(() => {
     setWinDialogOpen(false);
     resetTehai();
-  }, []);
+  }, [haiMode]);
+
   const handleClickOpen = () => {
     setOpen([true, 0]);
   };
@@ -153,24 +154,6 @@ export const TehaiView = () => {
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 手牌
               </Typography>
-            </Grid>
-            <Grid item xs={6} md={3}>
-              <FormControl fullWidth variant="standard">
-                <NativeSelect
-                  inputProps={{
-                    name: "haiMode",
-                    id: "",
-                  }}
-                  value={haiMode}
-                  disabled={suteHaiList.length > 0 ? true : false}
-                  onChange={(e) => setHaiMode(e.target.value)}
-                >
-                  <option value={0}>すべての牌</option>
-                  <option value={1}>混一色</option>
-                  <option value={2}>清一色</option>
-                  <option value={3}>国士</option>
-                </NativeSelect>
-              </FormControl>
             </Grid>
             <Grid item xs={8} sm={4} md={1}>
               <Typography variant="h6" component="div" sx={{ pl: 3 }}>

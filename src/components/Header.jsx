@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   AppBar,
   Box,
@@ -17,9 +18,9 @@ import {
   DialogTitle,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { WebInfo } from "./WebInfo";
 import { YakuDescription } from "./YakuDescription";
-import { useState } from "react";
+import { WebInfo } from "./WebInfo";
+import { ChangeMode } from "./ChamgeMode";
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
@@ -31,13 +32,11 @@ export const Header = () => {
   const handleClose = (btnId) => {
     setDialogOpen([btnId, false]);
   };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            mahjong-vis
-          </Typography>
           <IconButton
             size="large"
             edge="start"
@@ -47,9 +46,13 @@ export const Header = () => {
           >
             <MenuIcon />
           </IconButton>
+          <Typography variant="h6" component="div" sx={{ pl: 2, flexGrow: 1 }}>
+            mahjong-vis
+          </Typography>
+          <ChangeMode />
         </Toolbar>
       </AppBar>
-      <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
+      <Drawer anchor="left" open={open} onClose={() => setOpen(false)}>
         <List>
           {menuList.map((text, idx) => {
             return (
