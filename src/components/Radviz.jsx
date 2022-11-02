@@ -13,6 +13,8 @@ import { defineYaku } from "../functions/defineYaku";
 import { DIMENSIONS } from "../const/upper";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 import { useEffect, useState } from "react";
+import { changeHaiName2Path } from "../functions/util";
+import Image from "next/image";
 
 const radviz = (data, r) => {
   const n = DIMENSIONS.length;
@@ -41,6 +43,7 @@ export const Radviz = () => {
   const setDiffShanten = useSetRecoilState(diffShantenState);
   const setAllTile = useSetRecoilState(allTileState);
   const [points, setPoints] = useState([]);
+  const [radvizCircle, setRadvizCircle] = useState(null);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
 
@@ -55,6 +58,10 @@ export const Radviz = () => {
 
   // 点の大きさ
   const pointSize = 10;
+
+  const handleMouseOver = (id) => {
+    setRadvizCircle(id);
+  };
 
   useEffect(() => {
     if (tehai.length !== 0) {
@@ -113,56 +120,76 @@ export const Radviz = () => {
       {tehai.length === 0 ? (
         <div>loading...</div>
       ) : (
-        <svg viewBox={`0 0 ${width} ${height}`}>
-          <g transform={`translate(${margin + r},${margin + r})`}>
-            <circle r={r} fill="none" stroke={lineColor} />
-            {DIMENSIONS.map((property, i) => {
-              return (
-                <g
-                  key={i}
-                  transform={`rotate(${(360 / DIMENSIONS.length) * i + 90})`}
-                >
-                  <line
-                    x1="0"
-                    y1="0"
-                    x2="0"
-                    y2={-r}
-                    stroke={lineColor}
-                    opacity={0.3}
-                  />
-                  <Tooltip
-                    title={YAKU_DESCRIPTION[property]["description"]}
-                    arrow
-                    disableInteractive
+        <div>
+          <svg viewBox={`0 0 ${width} ${height}`}>
+            <g transform={`translate(${margin + r},${margin + r})`}>
+              <circle r={r} fill="none" stroke={lineColor} />
+              {DIMENSIONS.map((property, i) => {
+                return (
+                  <g
+                    key={i}
+                    transform={`rotate(${(360 / DIMENSIONS.length) * i + 90})`}
                   >
-                    <text
-                      y={-r}
-                      textAnchor="middle"
-                      dominantBaseline="text-after-edge"
-                      fontSize={20}
-                      style={{ userSelect: "none" }}
+                    <line
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2={-r}
+                      stroke={lineColor}
+                      opacity={0.3}
+                    />
+                    <Tooltip
+                      title={YAKU_DESCRIPTION[property]["description"]}
+                      arrow
+                      disableInteractive
                     >
-                      {YAKU_DESCRIPTION[property]["name"]}
-                    </text>
-                  </Tooltip>
-                </g>
-              );
-            })}
-            {points.map(([tile, { x, y }], i) => {
-              return (
-                <g key={i} transform={`translate(${x},${y})`}>
-                  <circle
-                    r={pointSize}
-                    fill={i !== points.length - 1 ? "green" : "red"}
-                    fillOpacity={
-                      selectedTile === "" || selectedTile === tile ? 1 : 0.1
-                    }
-                  />
-                </g>
-              );
-            })}
-          </g>
-        </svg>
+                      <text
+                        y={-r}
+                        textAnchor="middle"
+                        dominantBaseline="text-after-edge"
+                        fontSize={20}
+                        style={{ userSelect: "none" }}
+                      >
+                        {YAKU_DESCRIPTION[property]["name"]}
+                      </text>
+                    </Tooltip>
+                  </g>
+                );
+              })}
+              {points.map(([tile, { x, y }], i) => {
+                return (
+                  <g key={i} transform={`translate(${x},${y})`}>
+                    <Tooltip
+                      title={
+                        radvizCircle != null ? (
+                          <img
+                            src={changeHaiName2Path(radvizCircle)}
+                            width="20"
+                            height="30"
+                          />
+                        ) : (
+                          ""
+                        )
+                      }
+                      arrow
+                      placement="top"
+                    >
+                      <circle
+                        id={tile}
+                        r={pointSize}
+                        fill={i !== points.length - 1 ? "green" : "red"}
+                        fillOpacity={
+                          selectedTile === "" || selectedTile === tile ? 1 : 0.1
+                        }
+                        onMouseOver={() => handleMouseOver(tile)}
+                      />
+                    </Tooltip>
+                  </g>
+                );
+              })}
+            </g>
+          </svg>
+        </div>
       )}
     </Card>
   );
