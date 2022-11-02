@@ -164,15 +164,15 @@ export const Radviz = () => {
                         radvizCircle != null ? (
                           <img
                             src={changeHaiName2Path(radvizCircle)}
-                            width="20"
-                            height="30"
+                            width="40"
+                            height="55"
                           />
                         ) : (
                           ""
                         )
                       }
                       arrow
-                      placement="top"
+                      placement="top-start"
                     >
                       <circle
                         id={tile}
@@ -187,6 +187,16 @@ export const Radviz = () => {
                   </g>
                 );
               })}
+            </g>
+            <g transform={`translate(570,650)`}>
+              <circle cx="0" cy="0" r="10" fill="red" />
+              <text x="20" y="0" fontSize="15" dominantBaseline="middle">
+                現在の位置
+              </text>
+              <circle cx="0" cy="30" r="10" fill="green" />
+              <text x="20" y="30" fontSize="15" dominantBaseline="middle">
+                予測位置
+              </text>
             </g>
           </svg>
         </div>
