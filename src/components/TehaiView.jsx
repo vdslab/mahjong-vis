@@ -12,15 +12,7 @@ import {
 } from "../atoms/atoms";
 import { HAI_ORDER } from "../const/HaiOrder";
 import Image from "next/image";
-import {
-  Box,
-  Button,
-  Card,
-  Dialog,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Card, Dialog, Stack, Typography } from "@mui/material";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
@@ -143,44 +135,12 @@ export const TehaiView = () => {
   }
 
   return (
-    <Card sx={{ p: 3 }}>
+    <Card sx={{ px: 3, pt: 3, pb: 1 }}>
       {tehai.length < 1 ||
       tehai.filter((tile) => diffShanten[tile]).length !== tehai.length ? (
         <div>loading...</div>
       ) : (
         <>
-          <Grid container sx={{ p: 1 }}>
-            <Grid item xs={12} md={1}>
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                手牌
-              </Typography>
-            </Grid>
-            <Grid item xs={8} sm={4} md={1}>
-              <Typography variant="h6" component="div" sx={{ pl: 3 }}>
-                向聴数
-              </Typography>
-            </Grid>
-            <Grid item xs={8} sm={4} md={2}>
-              <Typography variant="h6" component="div" sx={{ pl: 5 }}>
-                {`通常手：${shanten["other"] > 0 ? shanten["other"] : "聴牌"}`}
-              </Typography>
-            </Grid>
-            <Grid item xs={8} sm={4} md={2}>
-              <Typography variant="h6" component="div" sx={{ pl: 5 }}>
-                {`七対子：${
-                  shanten["chitoitu"] > 0 ? shanten["chitoitu"] : "聴牌"
-                }`}
-              </Typography>
-            </Grid>
-            <Grid item xs={8} sm={4} md={2}>
-              <Typography variant="h6" component="div" sx={{ pl: 5 }}>
-                {`国士無双：${
-                  shanten["kokushi"] > 0 ? shanten["kokushi"] : "聴牌"
-                }`}
-              </Typography>
-            </Grid>
-          </Grid>
-
           <Stack direction="row" style={{ justifyContent: "center" }}>
             {tehai.map((item, idx) => {
               // 現在の最小向聴数の形を求める
