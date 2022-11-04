@@ -35,6 +35,7 @@ export const ShantenView = memo(() => {
           display: "table-cell",
           verticalAlign: "middle",
           px: 1,
+          pt: 1,
         }}
       >
         <Typography variant="h6" component="div">
