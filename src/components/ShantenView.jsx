@@ -11,7 +11,7 @@ import {
   tehaiState,
 } from "../atoms/atoms";
 
-export const ShantenView = () => {
+export const ShantenView = memo(() => {
   const tehai = useRecoilValue(tehaiState);
   const shanten = useRecoilValue(shantenState);
   const diffShanten = useRecoilValue(diffShantenState);
@@ -77,4 +77,4 @@ export const ShantenView = () => {
       </Card>
     </Box>
   );
-};
+});
