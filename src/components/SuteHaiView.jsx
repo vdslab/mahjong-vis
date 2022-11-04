@@ -7,8 +7,7 @@ export const SuteHaiView = () => {
   const suteHaiList = useRecoilValue(suteHaiListState);
 
   const contentWidth = 300;
-  // const contentHeight = 250;
-  const contentHeight = 533;
+  const contentHeight = 192;
   const imageWidth = 48;
   const imageHeight = 64;
 
@@ -20,7 +19,7 @@ export const SuteHaiView = () => {
             return (
               <image
                 key={idx}
-                x={(idx % 6) * imageWidth}
+                x={(idx % 6) * imageWidth + 6}
                 y={Math.floor(idx / 6) * imageHeight}
                 style={{ cursor: "pointer" }}
                 href={changeHaiName2Path(tile)}
