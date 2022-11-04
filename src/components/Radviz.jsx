@@ -14,7 +14,6 @@ import { DIMENSIONS } from "../const/upper";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 import { useEffect, useState } from "react";
 import { changeHaiName2Path } from "../functions/util";
-import Image from "next/image";
 
 const radviz = (data, r) => {
   const n = DIMENSIONS.length;
@@ -48,12 +47,10 @@ export const Radviz = () => {
   const [y, setY] = useState(0);
 
   // 図の大きさ
-  const r = 300;
-  const contentWidth = 2 * r;
-  const contentHeight = 2 * r;
-  const margin = 50;
-  const width = contentWidth + margin * 2;
-  const height = contentHeight + margin * 2;
+  const contentWidth = 850;
+  const contentHeight = 876;
+  const r = contentWidth / 2;
+  const margin = 60;
   const lineColor = "#444";
 
   // 点の大きさ
@@ -120,86 +117,100 @@ export const Radviz = () => {
       {tehai.length === 0 ? (
         <div>loading...</div>
       ) : (
-        <div>
-          <svg viewBox={`0 0 ${width} ${height}`}>
-            <g transform={`translate(${margin + r},${margin + r})`}>
-              <circle r={r} fill="none" stroke={lineColor} />
-              {DIMENSIONS.map((property, i) => {
-                return (
-                  <g
-                    key={i}
-                    transform={`rotate(${(360 / DIMENSIONS.length) * i + 90})`}
+        <svg viewBox={`0 0 ${contentWidth} ${contentHeight}`}>
+          <g transform={`translate(${contentWidth / 2},${contentHeight / 2})`}>
+            <circle r={r - margin} fill="none" stroke={lineColor} />
+            {DIMENSIONS.map((property, i) => {
+              return (
+                <g
+                  key={i}
+                  transform={`rotate(${(360 / DIMENSIONS.length) * i + 90})`}
+                >
+                  <line
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2={-r + margin}
+                    stroke={lineColor}
+                    opacity={0.3}
+                  />
+                  <Tooltip
+                    title={YAKU_DESCRIPTION[property]["description"]}
+                    arrow
+                    disableInteractive
                   >
-                    <line
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2={-r}
-                      stroke={lineColor}
-                      opacity={0.3}
-                    />
-                    <Tooltip
-                      title={YAKU_DESCRIPTION[property]["description"]}
-                      arrow
-                      disableInteractive
+                    <text
+                      y={-r + margin}
+                      textAnchor="middle"
+                      dominantBaseline="text-after-edge"
+                      fontSize={20}
+                      style={{ userSelect: "none" }}
                     >
-                      <text
-                        y={-r}
-                        textAnchor="middle"
-                        dominantBaseline="text-after-edge"
-                        fontSize={20}
-                        style={{ userSelect: "none" }}
-                      >
-                        {YAKU_DESCRIPTION[property]["name"]}
-                      </text>
-                    </Tooltip>
-                  </g>
-                );
-              })}
-              {points.map(([tile, { x, y }], i) => {
-                return (
-                  <g key={i} transform={`translate(${x},${y})`}>
-                    <Tooltip
-                      title={
-                        radvizCircle != null ? (
-                          <img
-                            src={changeHaiName2Path(radvizCircle)}
-                            width="40"
-                            height="55"
-                          />
-                        ) : (
-                          ""
-                        )
+                      {YAKU_DESCRIPTION[property]["name"]}
+                    </text>
+                  </Tooltip>
+                </g>
+              );
+            })}
+            {points.map(([tile, { x, y }], i) => {
+              return (
+                <g key={i} transform={`translate(${x},${y})`}>
+                  <Tooltip
+                    title={
+                      radvizCircle != null ? (
+                        <img
+                          src={changeHaiName2Path(radvizCircle)}
+                          width="40"
+                          height="55"
+                        />
+                      ) : (
+                        ""
+                      )
+                    }
+                    arrow
+                    placement="top-start"
+                  >
+                    <circle
+                      id={tile}
+                      r={pointSize}
+                      fill={i !== points.length - 1 ? "green" : "red"}
+                      fillOpacity={
+                        selectedTile === "" || selectedTile === tile ? 1 : 0.1
                       }
-                      arrow
-                      placement="top-start"
-                    >
-                      <circle
-                        id={tile}
-                        r={pointSize}
-                        fill={i !== points.length - 1 ? "green" : "red"}
-                        fillOpacity={
-                          selectedTile === "" || selectedTile === tile ? 1 : 0.1
-                        }
-                        onMouseOver={() => handleMouseOver(tile)}
-                      />
-                    </Tooltip>
-                  </g>
-                );
-              })}
-            </g>
-            <g transform={`translate(570,650)`}>
-              <circle cx="0" cy="0" r="10" fill="red" />
-              <text x="20" y="0" fontSize="15" dominantBaseline="middle">
-                現在の位置
-              </text>
-              <circle cx="0" cy="30" r="10" fill="green" />
-              <text x="20" y="30" fontSize="15" dominantBaseline="middle">
-                予測位置
-              </text>
-            </g>
-          </svg>
-        </div>
+                      onMouseOver={() => handleMouseOver(tile)}
+                    />
+                  </Tooltip>
+                </g>
+              );
+            })}
+          </g>
+          <g
+            transform={`translate(${contentWidth - 130}, ${
+              contentHeight - 70
+            })`}
+          >
+            <circle cx="0" cy="0" r="10" fill="red" />
+            <text
+              x="20"
+              y="0"
+              fontSize="20"
+              dominantBaseline="middle"
+              style={{ userSelect: "none" }}
+            >
+              現在の位置
+            </text>
+            <circle cx="0" cy="30" r="10" fill="green" />
+            <text
+              x="20"
+              y="30"
+              fontSize="20"
+              dominantBaseline="middle"
+              style={{ userSelect: "none" }}
+            >
+              予測位置
+            </text>
+          </g>
+        </svg>
       )}
     </Card>
   );
