@@ -11,7 +11,7 @@ import { defineYaku } from "../functions/defineYaku";
 import { DIMENSIONS } from "../const/upper";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 import { Card, Tooltip } from "@mui/material";
-import { memo, useCallback, useEffect, useMemo } from "react";
+import { memo, useCallback, useEffect } from "react";
 import { changeHaiName2Path } from "../functions/util";
 
 const dataHeight = 68;
