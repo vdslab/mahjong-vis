@@ -116,7 +116,7 @@ export const YAKU_DESCRIPTION = {
   },
   junchan: {
     name: "純チャン",
-    description: "すべての牌を1と9の牌のみで揃えると成立する",
+    description: "すべての牌を1か9を含めた牌のみで揃えると成立する",
     han: 3,
     kuiHan: 2,
     menzen: false,
