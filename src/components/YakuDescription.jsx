@@ -31,13 +31,23 @@ export const YakuDescription = () => {
         {list.map((item, i) => {
           return (
             <Box key={i}>
-              <Typography variant="h4">
-                ・{YAKU_DESCRIPTION[item]["name"]}
-              </Typography>
-              <Typography variant="h6">
-                ・翻：{YAKU_DESCRIPTION[item]["han"]}　・喰い下がり：
-                {YAKU_DESCRIPTION[item]["kuiHan"]}
-              </Typography>
+              <Box style={{ textAlign: 'right' }}>
+                <Typography variant="h4" style={{ textAlign: 'left' }}>
+                    ・{YAKU_DESCRIPTION[item]["name"]}
+                    {YAKU_DESCRIPTION[item]["menzen"] === true ? (
+                        <Typography variant="h6" sx={{ display:"inline", textAlign:'right' }}>
+                        ・翻：{YAKU_DESCRIPTION[item]["han"]}（鳴き不可）
+                        </Typography>
+                    ) : (
+                        <Typography variant="h6" display="inline">
+                        ・翻：{YAKU_DESCRIPTION[item]["han"]}　・喰い下がり：
+                        {YAKU_DESCRIPTION[item]["kuiHan"]}
+                        </Typography>
+                    )}
+                </Typography>
+              </Box>
+                
+                
               <Typography variant="h6">
                 {YAKU_DESCRIPTION[item]["description"]}
               </Typography>
@@ -47,6 +57,7 @@ export const YakuDescription = () => {
                 height="50"
                 alt="Image"
               />
+              <Typography paragraph></Typography>
             </Box>
           );
         })}
