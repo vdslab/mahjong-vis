@@ -28,13 +28,6 @@ export const YAKU_DESCRIPTION = {
     kuiHan: 1,
     menzen: true,
   },
-  ipeko: {
-    name: "一盃口",
-    description: "同じ数の牌で同じ連番のまとまりが二つ揃うと成立する",
-    han: 1,
-    kuiHan: 1,
-    menzen: true,
-  },
   sanshoku_dojun: {
     name: "三色同順",
     description: "連番のまとまりを3種類ともすべて同じ数で揃えると成立する",
@@ -48,13 +41,6 @@ export const YAKU_DESCRIPTION = {
     han: 2,
     kuiHan: 2,
     menzen: false,
-  },
-  sananko: {
-    name: "三暗刻",
-    description: "自分のみで同じ牌を3つ揃えたまとまりを3種類揃えると成立する",
-    han: 2,
-    kuiHan: 2,
-    menzen: true,
   },
   ittu: {
     name: "一気通貫",
@@ -77,11 +63,32 @@ export const YAKU_DESCRIPTION = {
     kuiHan: 2,
     menzen: false,
   },
+  sananko: {
+    name: "三暗刻",
+    description: "自分のみで同じ牌を3つ揃えたまとまりを3種類揃えると成立する",
+    han: 2,
+    kuiHan: 2,
+    menzen: true,
+  },
   chanta: {
     name: "チャンタ",
     description: "1か9の牌が含まれるまとまりと字牌で揃えると成立する",
     han: 2,
     kuiHan: 1,
+    menzen: false,
+  },
+  junchan: {
+    name: "純チャン",
+    description: "すべての牌を1か9を含めた牌のみで揃えると成立する",
+    han: 3,
+    kuiHan: 2,
+    menzen: false,
+  },
+  honroto: {
+    name: "混老頭",
+    description: "1か9の牌のみと字牌で揃えると成立する",
+    han: 2,
+    kuiHan: 2,
     menzen: false,
   },
   sankantu: {
@@ -99,12 +106,12 @@ export const YAKU_DESCRIPTION = {
     kuiHan: 2,
     menzen: false,
   },
-  honroto: {
-    name: "混老頭",
-    description: "1か9の牌のみと字牌で揃えると成立する",
-    han: 2,
-    kuiHan: 2,
-    menzen: false,
+  ipeko: {
+    name: "一盃口",
+    description: "同じ数の牌で同じ連番のまとまりが二つ揃うと成立する",
+    han: 1,
+    kuiHan: 1,
+    menzen: true,
   },
   ryanpeko: {
     name: "二盃口",
@@ -113,13 +120,6 @@ export const YAKU_DESCRIPTION = {
     han: 3,
     kuiHan: 3,
     menzen: true,
-  },
-  junchan: {
-    name: "純チャン",
-    description: "すべての牌を1か9を含めた牌のみで揃えると成立する",
-    han: 3,
-    kuiHan: 2,
-    menzen: false,
   },
   honitu: {
     name: "混一色",
