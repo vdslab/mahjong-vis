@@ -12,16 +12,21 @@ import {
   DialogTitle,
   Divider,
 } from "@mui/material";
-import { YakuDescription } from "./YakuDescription";
+import { YakuDescriptionDialog } from "./YakuDescriptionDialog";
 import { WebInfo } from "./WebInfo";
 import { ChangeMode } from "./ChamgeMode";
+import { useCallback } from "react";
 
 export const Header = () => {
   const [dialogOpen, setDialogOpen] = useState([0, false]);
+  const [yakuDialogOpen, setYakuDialogOpen] = useState(false);
   const pages = ["このサイトについて", "役説明"];
 
-  const handleClick = (btnId) => setDialogOpen([btnId, true]);
+  const handleClick = (btnId) => {
+    if (btnId === "役説明") setYakuDialogOpen(true);
+  };
   const handleClose = (btnId) => setDialogOpen([btnId, false]);
+  const handleYakuDialogClose = useCallback(() => setYakuDialogOpen(false), []);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -35,7 +40,7 @@ export const Header = () => {
             {pages.map((page, idx) => (
               <Fragment key={page}>
                 <Button
-                  onClick={() => handleClick(idx)}
+                  onClick={() => handleClick(page)}
                   sx={{ color: "white", display: "block" }}
                 >
                   {page}
@@ -54,16 +59,12 @@ export const Header = () => {
       </AppBar>
       <Dialog open={dialogOpen[1]} onClose={() => handleClose(dialogOpen[0])}>
         <Box sx={{ p: 1 }}>
-          {dialogOpen[0] === 0 ? (
+          {dialogOpen[0] === 0 && (
             <DialogContent>
               <DialogTitle sx={{ fontSize: "40px" }}>{pages[0]}</DialogTitle>
             </DialogContent>
-          ) : (
-            <DialogContent>
-              <DialogTitle sx={{ fontSize: "40px" }}>{pages[1]}</DialogTitle>
-            </DialogContent>
           )}
-          {dialogOpen[0] === 0 ? (
+          {dialogOpen[0] === 0 && (
             <DialogActions>
               <Stack spacing={2}>
                 <WebInfo />
@@ -77,23 +78,13 @@ export const Header = () => {
                 </Button>
               </Stack>
             </DialogActions>
-          ) : (
-            <DialogActions>
-              <Stack spacing={2}>
-                <YakuDescription />
-                <Button
-                  sx={{ p: 1 }}
-                  variant="contained"
-                  size="large"
-                  onClick={() => handleClose(dialogOpen[0])}
-                >
-                  閉じる
-                </Button>
-              </Stack>
-            </DialogActions>
           )}
         </Box>
       </Dialog>
+      <YakuDescriptionDialog
+        open={yakuDialogOpen}
+        onClose={handleYakuDialogClose}
+      />
     </Box>
   );
 };
