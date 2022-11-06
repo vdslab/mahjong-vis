@@ -5,18 +5,18 @@ export const defineFeature = (tehai) => {
   // const tehai = [
   //   "m2",
   //   "m2",
-  //   "m3",
-  //   "m3",
-  //   "m3",
+  //   "m2",
   //   "m4",
-  //   "m4",
-  //   "m4",
-  //   "p2",
-  //   "p3",
-  //   "p4",
-  //   "s6",
-  //   "s6",
-  //   "s6",
+  //   "m5",
+  //   "m5",
+  //   "m5",
+  //   "m5",
+  //   "m6",
+  //   "m8",
+  //   "m8",
+  //   "m8",
+  //   "m9",
+  //   "m9",
   // ];
   // 面子と面子候補と浮き牌のリスト
   // 萬子筒子索子風三元の5種類
@@ -207,20 +207,20 @@ export const defineFeature = (tehai) => {
   }
   // 分解が複数あるときの応急処置
   // TODO:絶対バグの元
-  for (const i of [
-    "chunchan_kotu",
-    "ichikyu_shuntu",
-    "chunchan_shuntu",
-    "ichikyu_toitu",
-    "chunchan_toitu",
-    "penchan",
-    "23_78_ryanmen",
-    "3-7_ryanmen",
-    "13_79_kanchan",
-    "2-8_kanchan",
-  ]) {
-    featureList[i] = featureList[i] / (res.length ? res.length : 1) / 2;
-  }
+  // for (const i of [
+  //   "chunchan_kotu",
+  //   "ichikyu_shuntu",
+  //   "chunchan_shuntu",
+  //   "ichikyu_toitu",
+  //   "chunchan_toitu",
+  //   "penchan",
+  //   "23_78_ryanmen",
+  //   "3-7_ryanmen",
+  //   "13_79_kanchan",
+  //   "2-8_kanchan",
+  // ]) {
+  //   featureList[i] = featureList[i] / (res.length ? res.length : 1) / 2;
+  // }
 
   // 三色同順
   for (let i = 1; i < 8; ++i) {
@@ -253,11 +253,10 @@ export const defineFeature = (tehai) => {
   // 雀頭候補の数
   // TODO:分解結果が複数ある
   let f = featureList["zi_toitu"];
-  // console.log(res);
   for (const i of res) {
     i.map((j, idx) => {
       if (idx % 2) {
-        if (new Set(...j).size === 1) f += 1;
+        for (const k of j) if (new Set(k).size === 1) f += 1;
       } else {
         if (deleteDuplicate(j).length !== j.length)
           featureList["ipeko_structure"] = 100;

@@ -143,7 +143,7 @@ export const Radviz = () => {
                       y={-r + margin}
                       textAnchor="middle"
                       dominantBaseline="text-after-edge"
-                      fontSize={20}
+                      fontSize={30}
                       style={{ userSelect: "none" }}
                     >
                       {YAKU_DESCRIPTION[property]["name"]}

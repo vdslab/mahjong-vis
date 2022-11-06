@@ -128,12 +128,12 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
 
   // 対々和
   // TODO:三槓子と対々和と差別
-  yakuList["sananko"] = featureList["toitoi_sananko_cnt"] * 22;
-  yakuList["sananko"] +=
-    Math.min(
-      5,
-      featureList["chitoitu_cnt"] - featureList["toitoi_sananko_cnt"]
-    ) * 12;
+  // yakuList["sananko"] = featureList["toitoi_sananko_cnt"] * 22;
+  // yakuList["sananko"] +=
+  //   Math.min(
+  //     5,
+  //     featureList["chitoitu_cnt"] - featureList["toitoi_sananko_cnt"]
+  //   ) * 12;
 
   // チャンタ
   // TODO:浮き,評価値
@@ -199,8 +199,7 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
   // TODO:段階的にすべきかどうか
   yakuList["chinitu"] = (featureList["same_color_cnt"] * 100) / haiLen;
 
-  // 保険
-  // 必要ないかも
+  // 100点を超えるやつを100に丸める
   for (const [key, value] of Object.entries(yakuList)) {
     yakuList[key] = Math.min(100, value);
   }
