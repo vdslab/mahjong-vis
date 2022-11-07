@@ -21,12 +21,11 @@ export const ShantenView = memo(() => {
     chitoitu: "七対子",
     kokushi: "国士無双",
   };
-  const contentHeight = 192;
   return (
     <Box
       sx={{
         display: "table",
-        height: contentHeight,
+        height: "100%",
         width: "100%",
       }}
     >
