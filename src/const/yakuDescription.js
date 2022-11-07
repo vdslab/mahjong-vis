@@ -23,7 +23,7 @@ export const YAKU_DESCRIPTION = {
   pinfu: {
     name: "平和",
     description:
-      "連番で揃えたまとまりが４つ、頭が数牌、待ちが２種類以上の形を満たす",
+      "連番で揃えたまとまりが４つ、頭が役牌以外、待ちが２種類以上の形を満たす",
     han: 1,
     kuiHan: 1,
     menzen: true,
