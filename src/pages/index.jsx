@@ -11,31 +11,53 @@ import { ShantenView } from "../components/ShantenView";
 import { Container } from "@mui/system";
 
 const Home = () => {
+  const viewHeight = 380 - 12;
   return (
     <Box sx={{ bgcolor: "#f5f5f5", minWidth: "1000px" }}>
       <Header />
       <Container>
-        <Grid container sx={{ p: 3 }} columnSpacing={2} rowSpacing={2}>
-          <Grid item xs={3}>
-            <Grid container rowSpacing={2}>
-              <Grid item xs={12}>
-                <SuteHaiView />
-              </Grid>
-              <Grid item xs={12}>
-                <ShantenView />
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item xs={4}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: "20px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              width: "264px",
+              height: viewHeight,
+              flexFlow: "column",
+              marginRight: "20px",
+            }}
+          >
+            <SuteHaiView />
+
+            <ShantenView />
+          </Box>
+
+          <Box sx={{ width: "350px", height: viewHeight, marginRight: "20px" }}>
             <Radviz />
-          </Grid>
-          <Grid item xs={5}>
+          </Box>
+          <Box sx={{ width: "350px", height: viewHeight }}>
             <AssessmentView />
-          </Grid>
-          <Grid item xs={12}>
-            <TehaiView />
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            height: "150px",
+            width: "100%",
+            marginTop: "20px",
+            marginBottom: "20px",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <TehaiView />
+        </Box>
       </Container>
       <Footer />
     </Box>
