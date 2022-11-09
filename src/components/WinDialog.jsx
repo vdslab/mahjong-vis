@@ -33,22 +33,26 @@ export const WinDialog = memo((props) => {
       </Stack>
       <DialogContent>
         <Stack sx={{ p: 1, minWidth: 200 }}>
-          {Object.keys(yaku)
-            .filter((key) => yaku[key] === 100)
-            .map((key, idx) => {
-              if (Object.keys(noDupYaku).includes(key)) {
-                for (const dupYaku of noDupYaku[key]) {
-                  if (yaku[dupYaku] === 100) {
-                    return;
+          {Object.keys(yaku).length !== 0 &&
+            Object.keys(yaku)
+              .filter((key) => yaku[key] === 100)
+              .map((key, idx) => {
+                if (Object.keys(noDupYaku).includes(key)) {
+                  for (const dupYaku of noDupYaku[key]) {
+                    if (yaku[dupYaku] === 100) {
+                      return;
+                    }
                   }
                 }
-              }
-              return (
-                <DialogContentText key={idx} sx={{ p: 1, textAlign: "center" }}>
-                  {YAKU_DESCRIPTION[key]["name"]}
-                </DialogContentText>
-              );
-            })}
+                return (
+                  <DialogContentText
+                    key={idx}
+                    sx={{ p: 1, textAlign: "center" }}
+                  >
+                    {YAKU_DESCRIPTION[key]["name"]}
+                  </DialogContentText>
+                );
+              })}
         </Stack>
       </DialogContent>
     </Dialog>
