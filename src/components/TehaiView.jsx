@@ -135,7 +135,7 @@ export const TehaiView = () => {
   }
 
   return (
-    <Card sx={{ px: 3, pt: 3, pb: 1 }}>
+    <Card sx={{ px: 3, pt: 3, pb: 1, width: "900px" }}>
       {tehai.length < 1 ||
       tehai.filter((tile) => diffShanten[tile]).length !== tehai.length ? (
         <div>loading...</div>

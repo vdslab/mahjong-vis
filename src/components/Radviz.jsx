@@ -113,11 +113,15 @@ export const Radviz = () => {
   }, [tehai]);
 
   return (
-    <Card sx={{ p: 1, height: "100%" }}>
+    <Card sx={{ p: 1, height: "368px", width: "100%" }}>
       {tehai.length === 0 ? (
         <div>loading...</div>
       ) : (
-        <svg viewBox={`0 0 ${contentWidth} ${contentHeight}`}>
+        <svg
+          viewBox={`0 0 ${contentWidth} ${contentHeight}`}
+          width="334"
+          height="344"
+        >
           <g transform={`translate(${contentWidth / 2},${contentHeight / 2})`}>
             <circle r={r - margin} fill="none" stroke={lineColor} />
             {DIMENSIONS.map((property, i) => {

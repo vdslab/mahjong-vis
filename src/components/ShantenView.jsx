@@ -25,7 +25,7 @@ export const ShantenView = memo(() => {
     <Box
       sx={{
         display: "table",
-        height: "100%",
+        height: "50%",
         width: "100%",
       }}
     >

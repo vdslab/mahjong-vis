@@ -41,11 +41,15 @@ export const AssessmentView = () => {
     .nice();
 
   return (
-    <Card sx={{ p: 1, height: "100%" }}>
+    <Card sx={{ p: 1, height: "100%", width: "100%" }}>
       {Object.keys(yakuValue).length === 0 ? (
         <div>loading...</div>
       ) : (
-        <svg viewBox={`0 0 ${contentWidth} ${contentHeight}`}>
+        <svg
+          viewBox={`0 0 ${contentWidth} ${contentHeight}`}
+          width="434px"
+          height="351px"
+        >
           <VerticalAxis strokeColor={strokeColor} colorList={colorList} />
           <HorizontalAxis
             tiles={Object.keys(yakuValue)}
