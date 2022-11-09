@@ -45,11 +45,7 @@ export const AssessmentView = () => {
       {Object.keys(yakuValue).length === 0 ? (
         <div>loading...</div>
       ) : (
-        <svg
-          viewBox={`0 0 ${contentWidth} ${contentHeight}`}
-          width="434px"
-          height="351px"
-        >
+        <svg viewBox={`0 0 ${contentWidth} ${contentHeight}`}>
           <VerticalAxis strokeColor={strokeColor} colorList={colorList} />
           <HorizontalAxis
             tiles={Object.keys(yakuValue)}

@@ -13,7 +13,11 @@ export const SuteHaiView = () => {
 
   return (
     <Card sx={{ p: 2, width: "100%", height: "51%", marginBottom: "10px" }}>
-      <svg viewBox={`0 0 ${contentWidth} ${contentHeight}`}>
+      <svg
+        viewBox={`0 0 ${contentWidth} ${contentHeight}`}
+        width={232}
+        height={148}
+      >
         <g>
           {suteHaiList.map((tile, idx) => {
             return (

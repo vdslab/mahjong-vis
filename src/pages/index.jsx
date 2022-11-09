@@ -34,10 +34,8 @@ const Home = () => {
             }}
           >
             <SuteHaiView />
-
             <ShantenView />
           </Box>
-
           <Box sx={{ width: "350px", height: viewHeight, marginRight: "20px" }}>
             <Radviz />
           </Box>
