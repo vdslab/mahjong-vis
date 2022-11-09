@@ -12,7 +12,7 @@ export const SuteHaiView = () => {
   const imageHeight = 64;
 
   return (
-    <Card sx={{ p: 2 }}>
+    <Card sx={{ p: 2, height: "48%" }}>
       <svg viewBox={`0 0 ${contentWidth} ${contentHeight}`}>
         <g>
           {suteHaiList.map((tile, idx) => {
