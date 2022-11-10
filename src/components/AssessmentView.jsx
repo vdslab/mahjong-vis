@@ -14,12 +14,12 @@ import { Card, Tooltip } from "@mui/material";
 import { memo, useCallback, useEffect } from "react";
 import { changeHaiName2Path } from "../functions/util";
 
-const dataHeight = 68;
-const dataWidth = 51;
+const dataHeight = 78;
+const dataWidth = 79;
 const contentX = 180;
 const contentY = 80;
-const contentWidth = 1050;
-const contentHeight = 850;
+const contentWidth = 1500;
+const contentHeight = 1395;
 const legendWidth = 150;
 
 export const AssessmentView = () => {
@@ -47,8 +47,8 @@ export const AssessmentView = () => {
       ) : (
         <svg
           viewBox={`0 0 ${contentWidth} ${contentHeight}`}
-          width="330px"
-          height="350px"
+          width="400px"
+          height="390px"
         >
           <VerticalAxis strokeColor={strokeColor} colorList={colorList} />
           <HorizontalAxis
@@ -89,7 +89,7 @@ const VerticalAxis = memo(({ strokeColor, colorList = [] }) => {
         x1={contentX - 10}
         y1={0}
         x2={contentX - 10}
-        y2={contentHeight}
+        y2={contentHeight - 160}
         stroke={strokeColor}
       />
       {DIMENSIONS.map((name, idx) => {
@@ -103,7 +103,7 @@ const VerticalAxis = memo(({ strokeColor, colorList = [] }) => {
           <g
             key={idx}
             transform={`translate(${contentX}, ${
-              contentY + idx * (dataWidth + 3) + 30
+              contentY + idx * (dataWidth + 4) + 30
             })`}
           >
             <Tooltip
@@ -206,9 +206,10 @@ const Contents = ({ data, xScale, colorScale }) => {
 const RankLegends = memo(({ colorList = [] }) => {
   return (
     <g
-      transform={`translate(${contentWidth - legendWidth + 10}, ${
-        contentHeight - 20
+      transform={`translate(${contentWidth - legendWidth + 25}, ${
+        contentHeight - 550
       })`}
+      style={{ userSelect: "none" }}
     >
       {colorList.reverse().map((item, idx) => {
         return (
@@ -229,7 +230,7 @@ const RankLegends = memo(({ colorList = [] }) => {
 
 const GradationLegends = memo(({ colorScale }) => {
   return (
-    <g transform={`translate(${contentWidth - legendWidth + 10}, ${0})`}>
+    <g transform={`translate(${contentWidth - legendWidth + 25}, ${0})`}>
       <linearGradient id="gradient">
         {[...Array(41)].map((_, idx) => {
           return (
