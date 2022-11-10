@@ -1,4 +1,4 @@
-module.exports = {
+export const SHANTEN_TABLE = {
   "2": "0101",
   "3": "1010",
   "4": "1010",
