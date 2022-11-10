@@ -201,7 +201,7 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
 
   // 100点を超えるやつを100に丸める
   for (const [key, value] of Object.entries(yakuList)) {
-    yakuList[key] = Math.min(100, value);
+    yakuList[key] = Math.max(0, Math.min(100, value));
   }
   return yakuList;
 };
