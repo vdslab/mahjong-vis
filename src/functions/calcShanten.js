@@ -1,7 +1,7 @@
 import { SHANTEN_TABLE } from "../const/ShantenTable";
 
 // 13枚の手牌入力があると仮定
-export const calcShanten = (tehai) => {
+export const calcShanten = (counter, rleList) => {
   const shanten = {
     other: 8,
     kokushi: 13,
@@ -15,19 +15,6 @@ export const calcShanten = (tehai) => {
     p: { mentu: 0, mentuCandidate: 0 },
     s: { mentu: 0, mentuCandidate: 0 },
   };
-
-  // 手牌を枚数*数字に圧縮するためのランレングス圧縮
-  const rleList = {
-    m: makeObject([...Array(9)].map((_, i) => i + 1)),
-    p: makeObject([...Array(9)].map((_, i) => i + 1)),
-    s: makeObject([...Array(9)].map((_, i) => i + 1)),
-  };
-  // 手牌に何があるかのカウント
-  const counter = {};
-  for (const tile of tehai) {
-    counter[tile] = (counter[tile] || 0) + 1;
-    if (tile[0] !== "w" && tile[0] !== "z") rleList[tile[0]][tile[1]] += 1;
-  }
 
   const kokushiSet = new Set([
     "m1",
