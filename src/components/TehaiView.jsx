@@ -135,7 +135,7 @@ export const TehaiView = () => {
   }
 
   return (
-    <Card sx={{ px: 3, pt: 3, pb: 1 }}>
+    <Card sx={{ px: 3, pt: 3, pb: 1, width: "900px" }}>
       {tehai.length < 1 ||
       tehai.filter((tile) => diffShanten[tile]).length !== tehai.length ? (
         <div>loading...</div>
@@ -223,12 +223,18 @@ export const TehaiView = () => {
               }
             })}
             <Box sx={{ p: 1 }} />
-            <Button variant="contained" color="error" onClick={handleClickOpen}>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleClickOpen}
+              sx={{ height: "70px", whiteSpace: "nowrap" }}
+            >
               リセット
             </Button>
             <Box sx={{ p: 1 }} />
             <Button
               variant="contained"
+              sx={{ height: "70px" }}
               disabled={
                 Object.values(allTile["shanten"]).filter((val) => val === -1)
                   .length === 0
