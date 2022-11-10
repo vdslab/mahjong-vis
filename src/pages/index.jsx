@@ -39,7 +39,7 @@ const Home = () => {
           <Box sx={{ width: "350px", height: viewHeight, marginRight: "20px" }}>
             <Radviz />
           </Box>
-          <Box sx={{ width: "350px", height: viewHeight }}>
+          <Box sx={{ width: "420px", height: viewHeight }}>
             <AssessmentView />
           </Box>
         </Box>
