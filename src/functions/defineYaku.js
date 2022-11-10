@@ -124,7 +124,7 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
 
   // 一通
   yakuList["ittu"] =
-    (featureList["1-9_cnt"] * 70 + featureList["ittu_cnt"] * 30) / 9;
+    (featureList["1-9_cnt"] * 70 + featureList["ittu_cnt"] * 30) / 100;
 
   // 対々和
   // TODO:三槓子と対々和と差別
