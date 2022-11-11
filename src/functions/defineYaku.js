@@ -124,7 +124,7 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
 
   // 一通
   yakuList["ittu"] =
-    (featureList["1-9_cnt"] * 70 + featureList["ittu_cnt"] * 30) / 9;
+    (featureList["1-9_cnt"] * 70 + featureList["ittu_cnt"] * 30) / 100;
 
   // 対々和
   // TODO:三槓子と対々和と差別
@@ -201,7 +201,7 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
 
   // 100点を超えるやつを100に丸める
   for (const [key, value] of Object.entries(yakuList)) {
-    yakuList[key] = Math.min(100, value);
+    yakuList[key] = Math.max(0, Math.min(100, value));
   }
   return yakuList;
 };
