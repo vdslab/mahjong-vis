@@ -41,11 +41,3 @@ export const FEATURE_LIST = [
   "ipeko_structure",
   "kokushi_cnt",
 ];
-
-export const TYPE_LIST = {
-  m: 0,
-  p: 1,
-  s: 2,
-  w: 3,
-  z: 4,
-};

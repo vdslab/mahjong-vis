@@ -11,7 +11,7 @@ export const Footer = () => {
       }}
     >
       <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-        &copy; team2022-namako
+        &copy; 2022. team2022-namako. All Rights Reserved.
       </Typography>
       <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
         ※ 画像は「<a href="https://mj-dragon.com/rule/">麻雀の雀龍.com</a>
