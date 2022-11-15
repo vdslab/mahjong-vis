@@ -81,7 +81,6 @@ const VerticalAxis = memo(({ strokeColor, colorList = [] }) => {
       const top3List = [];
       let score = -1;
       let rank = 0;
-      console.log(DescList);
       for (const item of DescList) {
         if (rank < 3 && item[1] > 0) {
           rank = item[1] == score || score == -1 ? rank : rank + 1;
