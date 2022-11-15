@@ -21,7 +21,8 @@ export const ChangeMode = memo(() => {
           <option value={0}>すべての牌</option>
           <option value={1}>混一色</option>
           <option value={2}>清一色</option>
-          <option value={3}>国士</option>
+          <option value={3}>タンヤオ</option>
+          <option value={4}>国士</option>
         </NativeSelect>
       </FormControl>
     </>
