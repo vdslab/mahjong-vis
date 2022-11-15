@@ -221,11 +221,11 @@ const RankLegends = memo(({ colorList = [] }) => {
   return (
     <g
       transform={`translate(${contentWidth - legendWidth + 25}, ${
-        contentHeight - 550 + 180 + 100 + 80 - 80 + 80
+        contentHeight - 190
       })`}
       style={{ userSelect: "none" }}
     >
-      <text y={-120 - 20 - 30} fontSize="30">
+      <text y={-170} fontSize="30">
         役の点数
       </text>
       {colorList.reverse().map((item, idx) => {
@@ -260,19 +260,15 @@ const GradationLegends = memo(({ colorScale }) => {
         <text y={30} fontSize="30" textAnchor="start">
           100
         </text>
-        <text y={350 + 65 + 100 - 10} fontSize="30" textAnchor="start">
+        <text y={455} fontSize="30" textAnchor="start">
           0
         </text>
-        <text y={650 + 100 + 180 + 10 - 100} fontSize="30" textAnchor="start">
+        <text y={835} fontSize="30" textAnchor="start">
           -100
         </text>
       </g>
       <g transform={`rotate(90) translate(10 , -50)`}>
-        <rect
-          width={650 + 100 + 100 + 100 - 20 - 100}
-          height="50"
-          fill="url('#gradient')"
-        />
+        <rect width={830} height="50" fill="url('#gradient')" />
       </g>
     </g>
   );
