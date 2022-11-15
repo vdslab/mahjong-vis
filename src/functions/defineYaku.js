@@ -22,28 +22,7 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
       : 0;
 
   // タンヤオ
-  // ツモ牌で面子が完成したときに評価値が上がる設計なため、中張牌を切っても評価が上がってしまう
-  // ex.)4566678 246 ttt で3をツモ
-  // yakuList["tanyao"] =
-  //   (featureValue(
-  //     featureList["chunchan_shuntu"] + featureList["chunchan_kotu"],
-  //     {
-  //       4: 90,
-  //       3: 70,
-  //       2: 30,
-  //       1: 10,
-  //     }
-  //   ) +
-  //     (featureList["chunchan_toitu"] ? 10 : 0)) *
-  //     4 +
-  //   (Math.max(
-  //     featureList["chunchan_cnt"] -
-  //       featureList["ichikyu_cnt"] -
-  //       featureList["zi_cnt"],
-  //     0
-  //   ) /
-  //     haiLen) *
-  //     60;
+  // 枚数付与点(30点)
   yakuList["tanyao"] =
     (Math.max(
       featureList["chunchan_cnt"] -
@@ -52,7 +31,18 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
       0
     ) /
       haiLen) *
-    100;
+    30;
+
+  // 構造付与点(70点)
+  yakuList["tanyao"] += Math.max(
+    (featureList["chunchan_shuntu"] + featureList["chunchan_kotu"]) * 15 +
+      featureList["chunchan_toitu"] * 10 +
+      (featureList["3-7_ryanmen"] + featureList["2-8_kanchan"]) * 8 +
+      featureList["23_78_ryanmen"] * 6 +
+      featureList["13_79_kanchan"] * 3 +
+      featureList["penchan"],
+    featureList["chitoitu_chunchan_cnt"] * 10
+  );
 
   // 鳴いてないときに付く役
   if (naki_cnt === 0) {
@@ -86,14 +76,19 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
       10;
 
     // 七対子
-    yakuList["chitoitu"] = featureValue(featureList["chitoitu_cnt"], {
-      7: 100,
-      6: 95,
-      5: 80,
-      4: 50,
-      3: 20,
-      2: 10,
-    });
+    yakuList["chitoitu"] = featureValue(
+      featureList["chitoitu_chunchan_cnt"] +
+        featureList["chitoitu_ichikyu_cnt"] +
+        featureList["chitoitu_zi_cnt"],
+      {
+        7: 100,
+        6: 95,
+        5: 80,
+        4: 50,
+        3: 20,
+        2: 10,
+      }
+    );
 
     // 二盃口
     yakuList["ryanpeko"] = 0;
@@ -151,17 +146,17 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
   yakuList["chanta"] += featureList["23_78_ryanmen"] * 4;
 
   // 三槓子
-  yakuList["sankantu"] =
-    ((featureList["zi_kantu"] +
-      featureList["ichikyu_kantu"] +
-      featureList["chunchan_kantu"]) *
-      100) /
-    3;
-  yakuList["sankantu"] +=
-    (featureList["zi_kotu"] +
-      featureList["ichikyu_kotu"] +
-      featureList["chunchan_kotu"]) *
-    15;
+  // yakuList["sankantu"] =
+  //   ((featureList["zi_kantu"] +
+  //     featureList["ichikyu_kantu"] +
+  //     featureList["chunchan_kantu"]) *
+  //     100) /
+  //   3;
+  // yakuList["sankantu"] +=
+  //   (featureList["zi_kotu"] +
+  //     featureList["ichikyu_kotu"] +
+  //     featureList["chunchan_kotu"]) *
+  //   15;
 
   // 小三元
   yakuList["shosangen"] =
@@ -169,15 +164,22 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
     featureList["sangen_toitu"] * 20;
 
   // 混老頭
-  // TODO:浮き
+  // 枚数付与点(30点)
   yakuList["honroto"] =
-    (featureList["ichikyu_kotu"] +
-      featureList["ichikyu_kantu"] +
-      featureList["zi_kotu"] +
-      featureList["zi_kantu"]) *
-    22;
-  yakuList["honroto"] +=
-    (featureList["zi_toitu"] + featureList["ichikyu_toitu"]) * 12;
+    (Math.max(
+      featureList["ichikyu_cnt"] +
+        featureList["zi_cnt"] -
+        featureList["chunchan_cnt"],
+      0
+    ) /
+      haiLen) *
+    30;
+  // 構造付与点(70点)
+  yakuList["honroto"] += Math.max(
+    (featureList["zi_kotu"] + featureList["ichikyu_kotu"]) * 15 +
+      (featureList["zi_toitu"] + featureList["ichikyu_toitu"]) * 10,
+    (featureList["chitoitu_ichikyu_cnt"] + featureList["chitoitu_zi_cnt"]) * 10
+  );
 
   // 純チャン
   yakuList["junchan"] =
@@ -191,13 +193,16 @@ export const defineYaku = (featureList, haiLen, naki_cnt) => {
   yakuList["junchan"] += featureList["23_78_ryanmen"] * 8;
 
   // 混一色
-  // TODO:段階的にすべきかどうか
+  // 枚数付与点(30点)
   yakuList["honitu"] =
-    ((featureList["same_color_cnt"] + featureList["zi_cnt"]) * 100) / haiLen;
-
+    ((featureList["same_color_cnt"] + featureList["zi_cnt"]) / haiLen) * 30;
+  // 構造付与点(70点)
+  yakuList["honitu"] += featureList["honitu_score"];
   // 清一色
-  // TODO:段階的にすべきかどうか
-  yakuList["chinitu"] = (featureList["same_color_cnt"] * 100) / haiLen;
+  // 枚数付与点(30点)
+  yakuList["chinitu"] = (featureList["same_color_cnt"] / haiLen) * 30;
+  // 構造付与点(70点)
+  yakuList["chinitu"] += featureList["chinitu_score"];
 
   // 100点を超えるやつを100に丸める
   for (const [key, value] of Object.entries(yakuList)) {
