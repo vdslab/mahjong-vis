@@ -75,11 +75,24 @@ const VerticalAxis = memo(({ strokeColor, colorList = [] }) => {
       const featureList = defineFeature(tehai);
       const data = defineYaku(featureList.featureList, 14, 0);
       const DescList = Object.entries(data);
-
       DescList.sort(function (p1, p2) {
         return p2[1] - p1[1];
       });
-      setYakuRank(DescList);
+      const top3List = [];
+      let score = 0;
+      let rank = 0;
+      for (const item of DescList) {
+        if (rank < 3 && item[1] > 0) {
+          top3List.push({
+            rank,
+            name: item[0],
+            score: item[1],
+          });
+          rank = item[1] != score ? rank + 1 : rank;
+          score = item[1];
+        }
+      }
+      setYakuRank(top3List);
     }
   }, [tehai]);
 
@@ -94,11 +107,12 @@ const VerticalAxis = memo(({ strokeColor, colorList = [] }) => {
       />
       {DIMENSIONS.map((name, idx) => {
         rankIdx = -1;
-        yakuRank.slice(0, 3).forEach((value, idx) => {
-          if (value[0] == name) {
-            rankIdx = idx;
+        yakuRank.forEach((item) => {
+          if (item.name == name) {
+            rankIdx = item.rank;
           }
         });
+
         return (
           <g
             key={idx}
@@ -207,13 +221,16 @@ const RankLegends = memo(({ colorList = [] }) => {
   return (
     <g
       transform={`translate(${contentWidth - legendWidth + 25}, ${
-        contentHeight - 550
+        contentHeight - 190
       })`}
       style={{ userSelect: "none" }}
     >
+      <text y={-170} fontSize="30">
+        役の点数
+      </text>
       {colorList.reverse().map((item, idx) => {
         return (
-          <g key={idx} transform={`translate(${0}, ${-(idx * 40)})`}>
+          <g key={idx} transform={`translate(${0}, ${-(idx * 60)})`}>
             <text fontSize="30" dominantBaseline="middle">
               {3 - idx}位
             </text>
@@ -221,16 +238,13 @@ const RankLegends = memo(({ colorList = [] }) => {
           </g>
         );
       })}
-      <text y={-120} fontSize="30">
-        役の点数
-      </text>
     </g>
   );
 });
 
 const GradationLegends = memo(({ colorScale }) => {
   return (
-    <g transform={`translate(${contentWidth - legendWidth + 25}, ${0})`}>
+    <g transform={`translate(${contentWidth - legendWidth + 25}, ${75})`}>
       <linearGradient id="gradient">
         {[...Array(41)].map((_, idx) => {
           return (
@@ -246,15 +260,15 @@ const GradationLegends = memo(({ colorScale }) => {
         <text y={30} fontSize="30" textAnchor="start">
           100
         </text>
-        <text y={350} fontSize="30" textAnchor="start">
+        <text y={455} fontSize="30" textAnchor="start">
           0
         </text>
-        <text y={650} fontSize="30" textAnchor="start">
+        <text y={835} fontSize="30" textAnchor="start">
           -100
         </text>
       </g>
       <g transform={`rotate(90) translate(10 , -50)`}>
-        <rect width={650} height="50" fill="url('#gradient')" />
+        <rect width={830} height="50" fill="url('#gradient')" />
       </g>
     </g>
   );
