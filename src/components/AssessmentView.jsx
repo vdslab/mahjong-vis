@@ -79,17 +79,20 @@ const VerticalAxis = memo(({ strokeColor, colorList = [] }) => {
         return p2[1] - p1[1];
       });
       const top3List = [];
-      let score = 0;
+      let score = -1;
       let rank = 0;
+      console.log(DescList);
       for (const item of DescList) {
         if (rank < 3 && item[1] > 0) {
-          top3List.push({
-            rank,
-            name: item[0],
-            score: item[1],
-          });
-          rank = item[1] != score ? rank + 1 : rank;
-          score = item[1];
+          rank = item[1] == score || score == -1 ? rank : rank + 1;
+          if (rank < 3) {
+            top3List.push({
+              rank,
+              name: item[0],
+              score: item[1],
+            });
+            score = item[1];
+          }
         }
       }
       setYakuRank(top3List);
