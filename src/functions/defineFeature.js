@@ -1,4 +1,4 @@
-import { FEATURE_LIST } from "../const/const";
+import { FEATURE_LIST } from "../const/featureList";
 import { calcShanten } from "./calcShanten";
 const ziSet = new Set(["w", "z"]);
 
@@ -35,7 +35,20 @@ export const defineFeature = (tehai) => {
   }
   cntFeature(counter, featureList, rleList);
   // 七対子は面子分解に寄らない
-  featureList["chitoitu_cnt"] = arrayFilterLength(Object.values(counter), 2);
+  // 七対子のときの対子量計算
+  for (const [tile, cnt] of Object.entries(counter)) {
+    const type = tile[0];
+    const num = tile[1];
+    if (cnt >= 2) {
+      if (ziSet.has(type)) featureList["chitoitu_zi_cnt"] += 1;
+      else {
+        if (num === "1" || num === "9")
+          featureList["chitoitu_ichikyu_cnt"] += 1;
+        else featureList["chitoitu_chunchan_cnt"] += 1;
+        featureList[`chitoitu_${type}_cnt`] += 1;
+      }
+    }
+  }
   // 対々和,三暗刻は面子分解に寄らない
   // TODO:本当か？そもそも要らない？
   featureList["toitoi_sananko_cnt"] = arrayFilterLength(
@@ -62,7 +75,6 @@ export const defineFeature = (tehai) => {
     const two = composition[type]["mentuCandidate"];
     const threeCombs = deleteDuplicate([...combs(mentu, three)]);
     const twoCombs = deleteDuplicate([...combs(mentuCandidate, two)]);
-
     for (const i of threeCombs) {
       const tmpI = JSON.parse(JSON.stringify(list));
       let flagI = false;
@@ -167,6 +179,7 @@ export const defineFeature = (tehai) => {
     }
   }
 
+  isshokuStructure(composition, counter, featureList);
   return { shanten, res, featureList };
 };
 
@@ -181,7 +194,7 @@ const mentuFeature = (counter) => {
     const cnt = value;
 
     // 順子
-    if (!ziSet.has(type) && num !== 9) {
+    if (!ziSet.has(type)) {
       // 面子
       if (
         counter.hasOwnProperty(`${type}${num + 1}`) &&
@@ -221,13 +234,6 @@ const mentuFeature = (counter) => {
 
 // 数系特徴量
 const cntFeature = (counter, featureList, rleList) => {
-  // 牌種の枚数
-  const typeCnt = {
-    m: 0,
-    p: 0,
-    s: 0,
-  };
-
   for (const [key, value] of Object.entries(counter)) {
     const type = key[0];
     const num = Number(key[1]);
@@ -237,7 +243,6 @@ const cntFeature = (counter, featureList, rleList) => {
       // 数牌の数カウント
       if (num === 1 || num === 9) featureList["ichikyu_cnt"] += cnt;
       else featureList["chunchan_cnt"] += cnt;
-      typeCnt[type] += cnt;
     } else {
       // 字牌対子,刻子の数カウント
       if (cnt >= 2) {
@@ -260,8 +265,6 @@ const cntFeature = (counter, featureList, rleList) => {
     }
   }
 
-  // 手牌の中で最も多い色の数
-  featureList["same_color_cnt"] = Math.max(...Object.values(typeCnt));
   // 手牌の中で1枚以上ある数牌の数
   featureList["1-9_cnt"] = Math.max(
     ...Object.values(rleList).map(
@@ -382,6 +385,42 @@ const checkIpeko = (buf) => {
     if (newBuf.indexOf(key) !== -1) return value;
   }
   return 0;
+};
+
+// 一色手の特徴量計算
+const isshokuStructure = (data, counter, featureList) => {
+  let chinitu_score = 0;
+  let maxType = "m";
+  for (const type of ["m", "p", "s"]) {
+    let tmp =
+      data[type]["mentu"] * 15 +
+      data[type]["mentuCandidate"] * 7 +
+      (data["head"]?.[0] === type ? 10 : 0);
+    if (chinitu_score < tmp) {
+      chinitu_score = tmp;
+      maxType = type;
+    }
+  }
+  let honitu_score = chinitu_score + (ziSet.has(data["head"]?.[0]) ? 10 : 0);
+  let same_color_cnt = data["head"]?.[0] === maxType ? 2 : 0;
+  for (const [tile, cnt] of Object.entries(counter)) {
+    const type = tile[0];
+    if (ziSet.has(type)) {
+      if (cnt === 2) honitu_score += 7;
+      else if (cnt >= 3) honitu_score += 15;
+    } else if (type === maxType) same_color_cnt += cnt;
+  }
+
+  featureList["chinitu_score"] = Math.max(
+    chinitu_score,
+    featureList[`chitoitu_${maxType}_cnt`] * 10
+  );
+  featureList["honitu_score"] = Math.max(
+    honitu_score,
+    (featureList[`chitoitu_${maxType}_cnt`] + featureList[`chitoitu_zi_cnt`]) *
+      10
+  );
+  featureList["same_color_cnt"] = same_color_cnt;
 };
 
 // 配列の中身をkeyとしたobjectを返す

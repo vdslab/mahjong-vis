@@ -270,7 +270,7 @@ export const TehaiView = () => {
                   }}
                 >
                   {open[1] === 0 ? "リセットする" : "OK"}
-                </Button>{" "}
+                </Button>
                 {open[1] === 0 ? (
                   <Button
                     variant="outlined"
@@ -302,6 +302,10 @@ const generateNewHai = (mode) => {
     [...Array(34)].map((_, i) => i),
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 27, 28, 29, 30, 31, 32, 33],
     [...Array(9)].map((_, i) => i),
+    [
+      1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24,
+      25,
+    ],
     [0, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33],
   ];
   const intHai = haiList[mode][getRandomInt(0, haiList[mode].length)];

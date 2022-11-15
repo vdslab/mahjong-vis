@@ -7,10 +7,12 @@ export const DIMENSIONS = [
   "chanta",
   "junchan",
   "sangenhai",
+  // "honroto",
   "shosangen",
   "sananko",
   "zikaze_bakaze",
   "ipeko",
+  // "ryanpeko",
   "chitoitu",
   "sanshoku_dojun",
 ];

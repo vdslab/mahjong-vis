@@ -29,7 +29,7 @@ const radviz = (data, r) => {
   }
   a *= r / c;
   b *= r / c;
-  const d = (Math.sqrt(a * a + b * b) * 4) / 3;
+  const d = Math.sqrt(a * a + b * b);
   const t = Math.atan2(b, a);
   return { x: d * Math.cos(t), y: d * Math.sin(t) };
 };
