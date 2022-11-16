@@ -49,8 +49,7 @@ export const defineFeature = (tehai) => {
       }
     }
   }
-  // 対々和,三暗刻は面子分解に寄らない
-  // TODO:本当か？そもそも要らない？
+  // 暗刻になりえる枚数持っているかどうかのカウント
   featureList["toitoi_sananko_cnt"] = arrayFilterLength(
     Object.values(counter),
     3

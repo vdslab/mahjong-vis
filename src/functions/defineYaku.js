@@ -3,6 +3,19 @@ import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 export const defineYaku = (featureList, haiLen) => {
   const yakuList = makeObject(Object.keys(YAKU_DESCRIPTION));
 
+  const tmpKotuCnt =
+    featureList["zi_kotu"] +
+    featureList["ichikyu_kotu"] +
+    featureList["chunchan_kotu"];
+  const tmpToituCnt =
+    featureList["zi_toitu"] +
+    featureList["ichikyu_toitu"] +
+    featureList["chunchan_toitu"];
+  const tmpChitoituCnt =
+    featureList["chitoitu_chunchan_cnt"] +
+    featureList["chitoitu_ichikyu_cnt"] +
+    featureList["chitoitu_zi_cnt"];
+
   // 自風場風
   // TODO:浮き
   yakuList["zikaze_bakaze"] =
@@ -70,19 +83,14 @@ export const defineYaku = (featureList, haiLen) => {
     (featureList["ipeko_score"] * 7 + featureList["ipeko_structure"] * 3) / 10;
 
   // 七対子
-  yakuList["chitoitu"] = featureValue(
-    featureList["chitoitu_chunchan_cnt"] +
-      featureList["chitoitu_ichikyu_cnt"] +
-      featureList["chitoitu_zi_cnt"],
-    {
-      7: 100,
-      6: 95,
-      5: 80,
-      4: 50,
-      3: 20,
-      2: 10,
-    }
-  );
+  yakuList["chitoitu"] = featureValue(tmpChitoituCnt, {
+    7: 100,
+    6: 95,
+    5: 80,
+    4: 50,
+    3: 20,
+    2: 10,
+  });
 
   // 二盃口
   yakuList["ryanpeko"] = 0;
@@ -92,22 +100,15 @@ export const defineYaku = (featureList, haiLen) => {
     (featureList["sanshoku_cnt"] * 70 + featureList["sanshoku_mentu"] * 30) / 9;
 
   // 三暗刻
+  // 枚数点付与(40点)
   yakuList["sananko"] =
-    ((featureList["zi_kantu"] +
-      featureList["ichikyu_kantu"] +
-      featureList["chunchan_kantu"] +
-      featureList["zi_kotu"] +
-      featureList["ichikyu_kotu"] +
-      featureList["chunchan_kotu"]) *
-      100) /
+    ((Math.min(featureList["toitoi_sananko_cnt"], 3) * 40 +
+      Math.min(3 - featureList["toitoi_sananko_cnt"], tmpChitoituCnt)) *
+      15) /
     3;
+  // 構造点付与(60点)
   yakuList["sananko"] +=
-    Math.min(
-      3,
-      featureList["zi_toitu"] +
-        featureList["ichikyu_toitu"] +
-        featureList["chunchan_toitu"]
-    ) * 15;
+    tmpKotuCnt * 20 + Math.min(3 - tmpKotuCnt, tmpToituCnt) * 15;
 
   // 一通
   // 枚数点付与(40点)
