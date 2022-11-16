@@ -33,8 +33,6 @@ export const FEATURE_LIST = [
   "chinitu_score",
   "honitu_score",
   "same_color_cnt",
-  "1-9_cnt",
-  "ittu_cnt",
   "sanshoku_cnt",
   "sanshoku_mentu",
   "chitoitu_chunchan_cnt",
@@ -46,5 +44,6 @@ export const FEATURE_LIST = [
   "toitoi_sananko_cnt",
   "ipeko_score",
   "ipeko_structure",
-  "kokushi_cnt",
+  "ittu_score",
+  "ittu_structure",
 ];

@@ -111,8 +111,8 @@ export const defineFeature = (tehai) => {
 
         // 構造系の特徴量
         // 一通
-        featureList["ittu_cnt"] = Math.max(
-          featureList["ittu_cnt"],
+        featureList["ittu_structure"] = Math.max(
+          featureList["ittu_structure"],
           ittuStructure(i, j)
         );
         // 一盃口
@@ -266,7 +266,7 @@ const cntFeature = (counter, featureList, rleList) => {
   }
 
   // 手牌の中で1枚以上ある数牌の数
-  featureList["1-9_cnt"] = Math.max(
+  featureList["ittu_score"] = Math.max(
     ...Object.values(rleList).map(
       (data, _) => Object.values(data).filter((num) => num >= 1).length
     )
@@ -285,21 +285,28 @@ const cntFeature = (counter, featureList, rleList) => {
   }
 };
 
-// 一通の構造を持つかどうか(MAX:9)
+// 一通の構造を持つかどうか(MAX:60)
 const ittuStructure = (i, j) => {
   let res = 0;
-  // 左
-  if (searchArray(i, [1, 2, 3])) res += 3;
-  else if (searchArray(j, [1, 2]) || searchArray(j, [1, 3])) res += 2;
-  else if (searchArray(j, [2, 3])) res += 1;
+  const maxScore = 20;
+  const midScore = 10;
+  const minScore = 7;
+
+  // 一通が確定するような面子/面子候補には最大の評価値を付与
+  // 面子に対して点数付与
+  for (let n = 1; n < 8; ++n) {
+    if (searchArray(i, [n, n + 1, n + 2]))
+      res += (n - 1) % 3 === 0 ? maxScore : minScore;
+  }
+  // 面子候補に対して点数付与
+  if (searchArray(j, [1, 2]) || searchArray(j, [1, 3])) res += midScore;
+  else if (searchArray(j, [2, 3])) res += minScore;
   // 中
-  if (searchArray(i, [4, 5, 6])) res += 3;
-  else if (searchArray(j, [4, 6])) res += 2;
-  else if (searchArray(j, [4, 5]) || searchArray(j, [5, 6])) res += 1;
+  if (searchArray(j, [4, 6])) res += midScore;
+  else if (searchArray(j, [4, 5]) || searchArray(j, [5, 6])) res += minScore;
   // 右
-  if (searchArray(i, [7, 8, 9])) res += 3;
-  else if (searchArray(j, [7, 9]) || searchArray(j, [8, 9])) res += 2;
-  else if (searchArray(j, [7, 8])) res += 1;
+  if (searchArray(j, [7, 9]) || searchArray(j, [8, 9])) res += midScore;
+  else if (searchArray(j, [7, 8])) res += minScore;
 
   return res;
 };
