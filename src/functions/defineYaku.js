@@ -77,10 +77,6 @@ export const defineYaku = (featureList, haiLen) => {
       (featureList["chunchan_kotu"] + featureList["ichikyu_kotu"]) +
       featureList["kaze_kotu"] * 20);
 
-  // 一盃口
-  yakuList["ipeko"] =
-    (featureList["ipeko_score"] * 7 + featureList["ipeko_structure"] * 3) / 10;
-
   // 七対子
   yakuList["chitoitu"] = featureValue(tmpChitoituCnt, {
     7: 100,
@@ -91,6 +87,11 @@ export const defineYaku = (featureList, haiLen) => {
     2: 10,
   });
 
+  // 一盃口
+  // 枚数点付与(30点)
+  yakuList["ipeko"] = featureList["ipeko_score"] * 5;
+  // 構造点付与(70点)
+  yakuList["ipeko"] += featureList["ipeko_structure"];
   // 二盃口
   yakuList["ryanpeko"] = 0;
 
@@ -103,9 +104,8 @@ export const defineYaku = (featureList, haiLen) => {
   // 三暗刻
   // 枚数点付与(40点)
   yakuList["sananko"] =
-    ((Math.min(featureList["toitoi_sananko_cnt"], 3) * 40 +
-      Math.min(3 - featureList["toitoi_sananko_cnt"], tmpChitoituCnt)) *
-      15) /
+    (Math.min(featureList["toitoi_sananko_cnt"], 3) * 40 +
+      Math.min(3 - featureList["toitoi_sananko_cnt"], tmpChitoituCnt) * 15) /
     3;
   // 構造点付与(60点)
   yakuList["sananko"] +=
@@ -170,11 +170,18 @@ export const defineYaku = (featureList, haiLen) => {
   // 構造付与点(70点)
   yakuList["chinitu"] += featureList["chinitu_score"];
 
-  console.log(yakuList);
-  // 100点を超えるやつを100に丸める
-  for (const [key, value] of Object.entries(yakuList)) {
-    yakuList[key] = Math.max(0, Math.min(100, value));
+  // 範囲外を丸める関数(error検知用)
+  for (const key of Object.keys(yakuList)) {
+    if (yakuList[key] < 0) {
+      console.log(key, yakuList[key]);
+      yakuList[key] = 0;
+    }
+    if (yakuList[key] > 100) {
+      console.log(key, yakuList[key]);
+      yakuList[key] = 100;
+    }
   }
+  console.log(yakuList);
   return yakuList;
 };
 

@@ -1,5 +1,5 @@
 import { FEATURE_LIST } from "../const/featureList";
-import { SANSHOKU_SCORE } from "../const/score";
+import { IPEKO_STRUCTURE, SANSHOKU_STRUCTURE } from "../const/score";
 import { calcShanten } from "./calcShanten";
 const ziSet = new Set(["w", "z"]);
 
@@ -116,9 +116,9 @@ export const defineFeature = (tehai) => {
           ittuStructure(i, j)
         );
         // 一盃口
-        featureList["ipeko_score"] = Math.max(
-          featureList["ipeko_score"],
-          ipekoStructure(i, j)
+        featureList["ipeko_structure"] = Math.max(
+          featureList["ipeko_structure"],
+          ipekoStructure(tmp_res)
         );
       }
     }
@@ -284,6 +284,16 @@ const cntFeature = (counter, featureList, rleList) => {
       featureList["sanshoku_score"]
     );
   }
+  // 一盃口
+  for (const a of Object.values(rleList)) {
+    for (let i = 1; i < 10; ++i) {
+      let tmp = 0;
+      if (a[i] >= 1) tmp += a[i] >= 2 ? 2 : 1;
+      if (a[i + 1] >= 1) tmp += a[i + 1] >= 2 ? 2 : 1;
+      if (a[i + 2] >= 1) tmp += a[i + 2] >= 2 ? 2 : 1;
+      featureList["ipeko_score"] = Math.max(tmp, featureList["ipeko_score"]);
+    }
+  }
 };
 
 // 一通の構造を持つかどうか(MAX:60)
@@ -312,15 +322,18 @@ const ittuStructure = (i, j) => {
   return res;
 };
 
-// 一盃口の構造を持つかどうか()
-// TODO:修正必要
+// 一盃口の構造を持つかどうか(MAX:70)
 const ipekoStructure = (data) => {
-  for (let i = 0; i < data.length - 1; i++) {
-    for (let j = i + 1; j < data.length; j++) {
-      if (JSON.stringify(data[i]) === JSON.stringify(data[j])) return 100;
+  const res = 0;
+  for (const comb of deleteDuplicate([...combs(data, 2)])) {
+    const tmp = makeObject([...Array(9)].map((_, i) => i + 1));
+    for (const i of comb.flat()) tmp[i] += 1;
+    const buf = Object.values(tmp).join("");
+    for (const [key, value] of Object.entries(IPEKO_STRUCTURE)) {
+      if (buf.indexOf(key) !== -1 && res < value) res = value;
     }
   }
-  return 0;
+  return res;
 };
 
 // 二盃口の構造を持つかどうか()
@@ -362,38 +375,9 @@ const sanshokuStructure = (data) => {
         }
       }
     }
-    res = Math.max(res, SANSHOKU_SCORE[tmp.join("")] || 0);
+    res = Math.max(res, SANSHOKU_STRUCTURE[tmp.join("")] || 0);
   }
   return res;
-};
-
-// 一盃口の特徴量計算
-const checkIpeko = (buf) => {
-  const newBuf = buf.replaceAll("3", "2").replaceAll("4", "2");
-  const d = [
-    ["222", 100],
-    ["1221", 90],
-    ["212", 85],
-    ["221", 80],
-    ["122", 80],
-    ["11211", 70],
-    ["1121", 65],
-    ["1211", 65],
-    ["211", 60],
-    ["112", 60],
-    ["202", 50],
-    ["121", 40],
-    ["111", 20],
-    ["102", 20],
-    ["201", 20],
-    ["21", 20],
-    ["12", 20],
-  ];
-
-  for (const [key, value] of d) {
-    if (newBuf.indexOf(key) !== -1) return value;
-  }
-  return 0;
 };
 
 // 一色手の特徴量計算
