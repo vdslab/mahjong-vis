@@ -45,7 +45,6 @@ export const defineYaku = (featureList, haiLen) => {
     ) /
       haiLen) *
     30;
-
   // 構造付与点(70点)
   yakuList["tanyao"] += Math.max(
     (featureList["chunchan_shuntu"] + featureList["chunchan_kotu"]) * 15 +
@@ -96,8 +95,10 @@ export const defineYaku = (featureList, haiLen) => {
   yakuList["ryanpeko"] = 0;
 
   // 三色同順
-  yakuList["sanshoku_dojun"] =
-    (featureList["sanshoku_cnt"] * 70 + featureList["sanshoku_mentu"] * 30) / 9;
+  // 枚数点付与(40点)
+  yakuList["sanshoku_dojun"] = (featureList["sanshoku_score"] * 40) / 9;
+  // 構造点付与(60点)
+  yakuList["sanshoku_dojun"] += featureList["sanshoku_structure"];
 
   // 三暗刻
   // 枚数点付与(40点)

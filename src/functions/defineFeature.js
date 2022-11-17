@@ -1,4 +1,5 @@
 import { FEATURE_LIST } from "../const/featureList";
+import { SANSHOKU_SCORE } from "../const/score";
 import { calcShanten } from "./calcShanten";
 const ziSet = new Set(["w", "z"]);
 
@@ -122,7 +123,7 @@ export const defineFeature = (tehai) => {
       }
     }
   }
-  featureList["sanshoku_mentu"] = sanshokuStructure(res);
+  featureList["sanshoku_structure"] = sanshokuStructure(res);
   for (const type of ["m", "p", "s"]) {
     const tmpFeature = {
       ichikyu_kotu: 0,
@@ -272,15 +273,16 @@ const cntFeature = (counter, featureList, rleList) => {
   );
   // 三色同順
   for (let i = 0; i < 7; ++i) {
-    const tmp = Object.values(rleList).reduce((prev, data) => {
-      return (
-        prev +
-        Object.values(data)
-          .slice(i, i + 3)
-          .filter((num) => num >= 1).length
-      );
-    }, 0);
-    featureList["sanshoku_cnt"] = Math.max(tmp, featureList["sanshoku_cnt"]);
+    let tmp = 0;
+    for (const type of ["m", "p", "s"]) {
+      tmp += rleList[type][i] >= 1 ? 1 : 0;
+      tmp += rleList[type][i + 1] >= 1 ? 1 : 0;
+      tmp += rleList[type][i + 2] >= 1 ? 1 : 0;
+    }
+    featureList["sanshoku_score"] = Math.max(
+      tmp,
+      featureList["sanshoku_score"]
+    );
   }
 };
 
@@ -333,33 +335,34 @@ const ryanpekoStructure = (i) => {
   return cnt === 2;
 };
 
-// 三色同順の構造を持つかどうか(MAX:9)
+// 三色同順の構造を持つかどうか(MAX:60)
 const sanshokuStructure = (data) => {
   let res = 0;
-  for (let i = 1; i < 8; ++i) {
-    let tmp = 0;
+
+  for (let i = 1; i < 9; ++i) {
+    let tmp = [0, 0, 0];
     for (const type of ["m", "p", "s"]) {
       for (const j of data[type]) {
-        if (searchArray(j, [i, i + 1, i + 2])) tmp += 3;
+        if (searchArray(j, [i, i + 1, i + 2])) tmp[0] += 1;
         else {
-          if (i === 1) {
-            if (searchArray(j, [1, 2]) || searchArray(j, [1, 3])) tmp += 2;
-            else if (searchArray(j, [2, 3])) tmp += 1;
+          if (i === 1 || i === 7) {
+            if (searchArray(j, [1, 2]) || searchArray(j, [1, 3])) tmp[1] += 1;
+            else if (searchArray(j, [2, 3])) tmp[2] += 1;
           } else if (i === 7) {
-            if (searchArray(j, [8, 9]) || searchArray(j, [7, 9])) tmp += 2;
-            else if (searchArray(j, [7, 8])) tmp += 1;
+            if (searchArray(j, [8, 9]) || searchArray(j, [7, 9])) tmp[1] += 1;
+            else if (searchArray(j, [7, 8])) tmp[2] += 1;
           } else {
-            if (searchArray(j, [i, i + 2])) tmp += 2;
+            if (searchArray(j, [i, i + 2])) tmp[1] += 1;
             else if (
               searchArray(j, [i, i + 1]) ||
               searchArray(j, [i + 1, i + 2])
             )
-              tmp += 1;
+              tmp[2] += 1;
           }
         }
       }
     }
-    res = Math.max(res, tmp);
+    res = Math.max(res, SANSHOKU_SCORE[tmp.join("")] || 0);
   }
   return res;
 };
