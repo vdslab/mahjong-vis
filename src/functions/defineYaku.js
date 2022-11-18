@@ -93,7 +93,10 @@ export const defineYaku = (featureList, haiLen) => {
   // 構造点付与(70点)
   yakuList["ipeko"] += featureList["ipeko_structure"];
   // 二盃口
-  yakuList["ryanpeko"] = 0;
+  // 枚数点付与(30点)
+  yakuList["ryanpeko"] = featureList["ryanpeko_score"] * 5;
+  // 構造点付与(70点)
+  yakuList["ryanpeko"] += featureList["ryanpeko_structure"];
 
   // 三色同順
   // 枚数点付与(40点)
@@ -181,7 +184,7 @@ export const defineYaku = (featureList, haiLen) => {
       yakuList[key] = 100;
     }
   }
-  console.log(yakuList);
+  if (haiLen === 14) console.log(yakuList);
   return yakuList;
 };
 

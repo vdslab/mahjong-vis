@@ -180,6 +180,11 @@ export const defineFeature = (tehai) => {
   }
 
   isshokuStructure(composition, counter, featureList);
+  featureList["ryanpeko_structure"] = Math.max(
+    featureList["ryanpeko_structure"],
+    ryanpekoStructure(res)
+  );
+
   return { shanten, res, featureList };
 };
 
@@ -285,20 +290,51 @@ const cntFeature = (counter, featureList, rleList) => {
     );
   }
   // 一盃口
-  for (const a of Object.values(rleList)) {
+  let maxType = "m";
+  let maxNum = 1;
+  for (const type of ["m", "p", "s"]) {
     for (let i = 1; i < 10; ++i) {
       let tmp = 0;
-      if (a[i] >= 1) tmp += a[i] >= 2 ? 2 : 1;
-      if (a[i + 1] >= 1) tmp += a[i + 1] >= 2 ? 2 : 1;
-      if (a[i + 2] >= 1) tmp += a[i + 2] >= 2 ? 2 : 1;
-      featureList["ipeko_score"] = Math.max(tmp, featureList["ipeko_score"]);
+      if (rleList[type][i] >= 1) tmp += rleList[type][i] >= 2 ? 2 : 1;
+      if (rleList[type][i + 1] >= 1) tmp += rleList[type][i + 1] >= 2 ? 2 : 1;
+      if (rleList[type][i + 2] >= 1) tmp += rleList[type][i + 2] >= 2 ? 2 : 1;
+      if (featureList["ipeko_score"] < tmp) {
+        featureList["ipeko_score"] = tmp;
+        maxType = type;
+        maxNum = i;
+      }
     }
   }
+  // 二盃口
+  const tmpRleList = JSON.parse(JSON.stringify(rleList));
+  tmpRleList[maxType][maxNum] = Math.max(0, tmpRleList[maxType][maxNum] - 2);
+  tmpRleList[maxType][maxNum + 1] = Math.max(
+    0,
+    tmpRleList[maxType][maxNum + 1] - 2
+  );
+  tmpRleList[maxType][maxNum + 2] = Math.max(
+    0,
+    tmpRleList[maxType][maxNum + 2] - 2
+  );
+  for (const type of ["m", "p", "s"]) {
+    for (let i = 1; i < 10; ++i) {
+      let tmp = 0;
+      if (tmpRleList[type][i] >= 1) tmp += tmpRleList[type][i] >= 2 ? 2 : 1;
+      if (tmpRleList[type][i + 1] >= 1)
+        tmp += tmpRleList[type][i + 1] >= 2 ? 2 : 1;
+      if (tmpRleList[type][i + 2] >= 1)
+        tmp += tmpRleList[type][i + 2] >= 2 ? 2 : 1;
+      if (featureList["ryanpeko_score"] < tmp)
+        featureList["ryanpeko_score"] = tmp;
+    }
+  }
+  featureList["ryanpeko_score"] =
+    (featureList["ipeko_score"] + featureList["ryanpeko_score"]) / 2;
 };
 
 // 一通の構造を持つかどうか(MAX:60)
 const ittuStructure = (i, j) => {
-  let res = 0;
+  const res = [];
   const maxScore = 20;
   const midScore = 10;
   const minScore = 7;
@@ -307,24 +343,25 @@ const ittuStructure = (i, j) => {
   // 面子に対して点数付与
   for (let n = 1; n < 8; ++n) {
     if (searchArray(i, [n, n + 1, n + 2]))
-      res += (n - 1) % 3 === 0 ? maxScore : minScore;
+      res.push((n - 1) % 3 === 0 ? maxScore : minScore);
   }
   // 面子候補に対して点数付与
-  if (searchArray(j, [1, 2]) || searchArray(j, [1, 3])) res += midScore;
-  else if (searchArray(j, [2, 3])) res += minScore;
+  if (searchArray(j, [1, 2]) || searchArray(j, [1, 3])) res.push(midScore);
+  else if (searchArray(j, [2, 3])) res.push(minScore);
   // 中
-  if (searchArray(j, [4, 6])) res += midScore;
-  else if (searchArray(j, [4, 5]) || searchArray(j, [5, 6])) res += minScore;
+  if (searchArray(j, [4, 6])) res.push(midScore);
+  else if (searchArray(j, [4, 5]) || searchArray(j, [5, 6])) res.push(minScore);
   // 右
-  if (searchArray(j, [7, 9]) || searchArray(j, [8, 9])) res += midScore;
-  else if (searchArray(j, [7, 8])) res += minScore;
-
-  return res;
+  if (searchArray(j, [7, 9]) || searchArray(j, [8, 9])) res.push(midScore);
+  else if (searchArray(j, [7, 8])) res.push(minScore);
+  res.sort((a, b) => a - b);
+  return (res[0] || 0) + (res[1] || 0) + (res[2] || 0);
 };
 
 // 一盃口の構造を持つかどうか(MAX:70)
+// TODO:修正必要
 const ipekoStructure = (data) => {
-  const res = 0;
+  let res = 0;
   for (const comb of deleteDuplicate([...combs(data, 2)])) {
     const tmp = makeObject([...Array(9)].map((_, i) => i + 1));
     for (const i of comb.flat()) tmp[i] += 1;
@@ -336,16 +373,52 @@ const ipekoStructure = (data) => {
   return res;
 };
 
-// 二盃口の構造を持つかどうか()
-// TODO:修正必要
-const ryanpekoStructure = (i) => {
-  let cnt = 0;
-  for (let i = 0; i < data.length - 1; i++) {
-    for (let j = i + 1; j < data.length; j++) {
-      if (JSON.stringify(data[i]) === JSON.stringify(data[j])) cnt += 1;
+// 二盃口の構造を持つかどうか(MAX:70)
+const ryanpekoStructure = (data) => {
+  const res = [];
+
+  for (const value of Object.values(data)) {
+    // 面子+候補が3以下の場合はipekoと処理は同じ
+    if (value[0].length <= 3) {
+      let tmp_res = 0;
+      for (const a of value) {
+        const tmp = ipekoStructure(a);
+        if (tmp_res < tmp) tmp_res = tmp;
+      }
+      if (tmp_res !== 0) res.push(tmp_res);
+    } else {
+      const tmp = [];
+      if (value[0].length === 5) {
+        for (const a of value) {
+          for (const b of deleteElement(a)) {
+            tmp.push(calcRyanpeko(b));
+          }
+        }
+      } else {
+        for (const a of value) tmp.push(calcRyanpeko(a));
+      }
+      tmp.sort((a, b) => b - a);
+      return tmp[0] / 2;
     }
   }
-  return cnt === 2;
+  res.sort((a, b) => b - a);
+  return ((res[0] || 0) + (res[1] || 0)) / 2;
+};
+
+const calcRyanpeko = (array) => {
+  const rows = [
+    [array[0], array[1], array[2], array[3]],
+    [array[0], array[2], array[1], array[3]],
+    [array[0], array[3], array[1], array[2]],
+  ];
+  let res = 0;
+  for (const row of rows) {
+    res = Math.max(
+      res,
+      ipekoStructure(row.slice(0, 2)) + ipekoStructure(row.slice(2))
+    );
+  }
+  return res;
 };
 
 // 三色同順の構造を持つかどうか(MAX:60)
@@ -454,4 +527,13 @@ const searchArray = (array, tar) => {
 // 条件にあった配列の長さを返す
 const arrayFilterLength = (array, req) => {
   return array.filter((val) => val >= req).length;
+};
+
+// 配列から取り除いた要素とそれ以外の要素のオブジェクトを返す
+const deleteElement = (array) => {
+  const res = [];
+  for (let i = 0; i < array.length; ++i) {
+    res.push(array.slice(0, i).concat(array.slice(i + 1)));
+  }
+  return res;
 };
