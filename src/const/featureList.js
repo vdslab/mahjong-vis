@@ -48,4 +48,5 @@ export const FEATURE_LIST = [
   "same_color_cnt",
   "honitu_score",
   "chinitu_score",
+  "is_pinfu",
 ];

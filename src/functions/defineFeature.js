@@ -185,7 +185,23 @@ export const defineFeature = (tehai) => {
     ryanpekoStructure(res)
   );
 
-  return { shanten, res, featureList };
+  // 平和フラグ
+  // 聴牌状態のとき分解を検索して両面待ちが存在するとき、和了牌を記録する
+  const ryanmenRes = new Set();
+  if (tehai.length !== 14 && shanten["other"] === 0) {
+    for (const type of ["m", "p", "s"]) {
+      for (const i of res[type]) {
+        for (const j of i) {
+          if (j.length === 2 && j[0] !== 1 && j[1] !== 9 && j[0] + 1 === j[1]) {
+            ryanmenRes.add(`${type}${j[0] - 1}`);
+            ryanmenRes.add(`${type}${j[1] + 1}`);
+          }
+        }
+      }
+    }
+  }
+
+  return { shanten, res, featureList, ryanmenRes };
 };
 
 // 面子構成を列挙
