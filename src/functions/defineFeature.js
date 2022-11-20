@@ -123,7 +123,7 @@ export const defineFeature = (tehai) => {
       }
     }
   }
-  featureList["sanshoku_structure"] = sanshokuStructure(res);
+  featureList["sanshoku_dojun_structure"] = sanshokuStructure(res);
   for (const type of ["m", "p", "s"]) {
     const tmpFeature = {
       ichikyu_kotu: 0,
@@ -293,16 +293,26 @@ const cntFeature = (counter, featureList, rleList) => {
     )
   );
   // 三色同順
-  for (let i = 0; i < 7; ++i) {
+  for (let i = 1; i < 10; ++i) {
     let tmp = 0;
     for (const type of ["m", "p", "s"]) {
       tmp += rleList[type][i] >= 1 ? 1 : 0;
       tmp += rleList[type][i + 1] >= 1 ? 1 : 0;
       tmp += rleList[type][i + 2] >= 1 ? 1 : 0;
     }
-    featureList["sanshoku_score"] = Math.max(
+    featureList["sanshoku_dojun_score"] = Math.max(
       tmp,
-      featureList["sanshoku_score"]
+      featureList["sanshoku_dojun_score"]
+    );
+  }
+  // 三色同項
+  for (let i = 1; i < 10; ++i) {
+    let tmp = 0;
+    for (const type of ["m", "p", "s"])
+      tmp += rleList[type][i] === 4 ? 3 : rleList[type][i];
+    featureList["sanshoku_doko_score"] = Math.max(
+      tmp,
+      featureList["sanshoku_doko_score"]
     );
   }
   // 一盃口

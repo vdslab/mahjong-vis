@@ -109,9 +109,22 @@ export const defineYaku = (featureList, haiLen) => {
 
   // 三色同順
   // 枚数点付与(40点)
-  yakuList["sanshoku_dojun"] = (featureList["sanshoku_score"] * 40) / 9;
+  yakuList["sanshoku_dojun"] = (featureList["sanshoku_dojun_score"] * 40) / 9;
   // 構造点付与(60点)
-  yakuList["sanshoku_dojun"] += featureList["sanshoku_structure"];
+  yakuList["sanshoku_dojun"] += featureList["sanshoku_dojun_structure"];
+  // 三色同項
+  // 枚数点付与(40点)
+  yakuList["sanshoku_doko"] = featureValue(featureList["sanshoku_doko_score"], {
+    9: 100,
+    8: 90,
+    7: 80,
+    6: 60,
+    5: 40,
+    4: 20,
+    3: 10,
+    2: 5,
+    1: 2,
+  });
 
   // 三暗刻
   // 枚数点付与(40点)
@@ -203,5 +216,5 @@ const makeObject = (array, init = 0) => {
 };
 
 const featureValue = (cnt, d) => {
-  return d[cnt] ? d[cnt] : 0;
+  return d[cnt] || 0;
 };

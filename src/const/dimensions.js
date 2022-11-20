@@ -10,6 +10,7 @@ export const DIMENSIONS = [
   // "honroto",
   "shosangen",
   "sananko",
+  // "sanshoku_doko"
   "zikaze_bakaze",
   "ipeko",
   // "ryanpeko",
