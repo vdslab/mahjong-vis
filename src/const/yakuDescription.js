@@ -35,7 +35,7 @@ export const YAKU_DESCRIPTION = {
     kuiHan: 1,
     menzen: false,
   },
-  sanshoku_douko: {
+  sanshoku_doko: {
     name: "三色同刻",
     description: "同じ牌を3つ揃えたまとまりを3種類同じ数字で揃える",
     han: 2,
@@ -56,13 +56,13 @@ export const YAKU_DESCRIPTION = {
     kuiHan: 2,
     menzen: true,
   },
-  toitoiho: {
-    name: "対々和",
-    description: "同じ牌で揃えたまとまりのみで揃える",
-    han: 2,
-    kuiHan: 2,
-    menzen: false,
-  },
+  // toitoiho: {
+  //   name: "対々和",
+  //   description: "同じ牌で揃えたまとまりのみで揃える",
+  //   han: 2,
+  //   kuiHan: 2,
+  //   menzen: false,
+  // },
   sananko: {
     name: "三暗刻",
     description: "自分のみで同じ牌を3つ揃えたまとまりを3種類揃える",
