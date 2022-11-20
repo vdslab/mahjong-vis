@@ -15,7 +15,7 @@ export const YAKU_DESCRIPTION = {
   },
   tanyao: {
     name: "タンヤオ",
-    description: "数牌の2～8牌のみで揃える",
+    description: "数牌の2~8牌のみで揃える",
     han: 1,
     kuiHan: 1,
     menzen: false,
@@ -23,7 +23,7 @@ export const YAKU_DESCRIPTION = {
   pinfu: {
     name: "平和",
     description:
-      "順子が４つ、頭が数牌、待ちが両面待ちであることを満たすと成立する",
+      "順子が4つ、頭が役牌以外、待ちが両面待ちであることを満たすと成立する",
     han: 1,
     kuiHan: 1,
     menzen: true,
@@ -35,7 +35,7 @@ export const YAKU_DESCRIPTION = {
     kuiHan: 1,
     menzen: false,
   },
-  sanshoku_douko: {
+  sanshoku_doko: {
     name: "三色同刻",
     description: "数牌の刻子を3種類とも同じ数字で揃える",
     han: 2,
@@ -44,7 +44,7 @@ export const YAKU_DESCRIPTION = {
   },
   ittu: {
     name: "一気通貫",
-    description: "「123、456、789」をどれかの種類で揃える",
+    description: "「123、456、789」の面子を揃える",
     han: 2,
     kuiHan: 1,
     menzen: false,
@@ -56,16 +56,16 @@ export const YAKU_DESCRIPTION = {
     kuiHan: 2,
     menzen: true,
   },
-  toitoiho: {
-    name: "対々和",
-    description: "刻子のみで揃える",
-    han: 2,
-    kuiHan: 2,
-    menzen: false,
-  },
+  // toitoiho: {
+  //   name: "対々和",
+  //   description: "刻子のみで揃える",
+  //   han: 2,
+  //   kuiHan: 2,
+  //   menzen: false,
+  // },
   sananko: {
     name: "三暗刻",
-    description: "自分のみで刻子を3種類揃える",
+    description: "暗刻を3つ揃える",
     han: 2,
     kuiHan: 2,
     menzen: true,
@@ -93,7 +93,7 @@ export const YAKU_DESCRIPTION = {
   },
   // sankantu: {
   //   name: "三槓子",
-  //   description: "自分でカンを3回鳴く",
+  //   description: "槓子を3つ揃える",
   //   han: 2,
   //   kuiHan: 2,
   //   menzen: false,
