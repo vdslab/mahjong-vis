@@ -305,7 +305,7 @@ const cntFeature = (counter, featureList, rleList) => {
       featureList["sanshoku_dojun_score"]
     );
   }
-  // 三色同項
+  // 三色同刻
   for (let i = 1; i < 10; ++i) {
     let tmp = 0;
     for (const type of ["m", "p", "s"])

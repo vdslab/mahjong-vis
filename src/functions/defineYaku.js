@@ -112,7 +112,7 @@ export const defineYaku = (featureList, haiLen) => {
   yakuList["sanshoku_dojun"] = (featureList["sanshoku_dojun_score"] * 40) / 9;
   // 構造点付与(60点)
   yakuList["sanshoku_dojun"] += featureList["sanshoku_dojun_structure"];
-  // 三色同項
+  // 三色同刻
   // 枚数点付与(40点)
   yakuList["sanshoku_doko"] = featureValue(featureList["sanshoku_doko_score"], {
     9: 100,
