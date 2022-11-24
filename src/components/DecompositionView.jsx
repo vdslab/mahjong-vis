@@ -3,80 +3,103 @@ import { decompositionsState, selectedTileState } from "../atoms/atoms";
 import { changeHaiName2Path } from "../functions/util";
 import { Box, Button, Card, Dialog, Stack, Typography } from "@mui/material";
 import Image from "next/image";
+import { Pattern } from "@mui/icons-material";
 export const DecompositionView = () => {
   const decompositions = useRecoilValue(decompositionsState);
-  const selectedTile = useRecoilValue(selectedTileState);
-
   const contentWidth = 900;
-  const contentHeight = 300;
-  const imageWidth = 48;
-  const imageHeight = 64;
   const tileTypes = ["m", "p", "s"];
   const typeName = ["萬子", "筒子", "索子"];
-  console.log("decompositions", decompositions);
-  // tileTypes.map((type, idx) => {
-  //   decompositions[type].map((arr) => {
-  //     arr.map((ar) => {
-  //       ar.map((a) => {
-  //         console.log(type);
-  //       });
-  //     });
-  //   });
-  // });
+  const decoArr = [];
+  if (Object.keys(decompositions).length > 0) {
+    for (let i_m = 0; i_m < decompositions.m.length; i_m++) {
+      for (let i_p = 0; i_p < decompositions.p.length; i_p++) {
+        for (let i_s = 0; i_s < decompositions.s.length; i_s++) {
+          decoArr.push({ m: i_m, p: i_p, s: i_s });
+        }
+      }
+    }
+  }
+
+  // if (Object.keys(decompositions).length > 0) {
+  //   console.log("m", decompositions.m.length);
+  //   console.log("p", decompositions.p.length);
+  //   console.log("s", decompositions.s.length);
+
+  //   if (decompositions.m.length > 0) {
+  //     for (let i_m = 0; i_m < decompositions.m.length; i_m++) {
+  //       if (decompositions.p.length > 0) {
+  //         for (let i_p = 0; i_p < decompositions.p.length; i_p++) {
+  //           if (decompositions.s.length > 0) {
+  //             for (let i_s = 0; i_s < decompositions.s.length; i_s++) {
+  //               decoArr.push({ m: i_m, p: i_p, s: i_s });
+  //             }
+  //           }
+  //         }
+  //       } else {
+  //         if (decompositions.s.length > 0) {
+  //           for (let i_s = 0; i_s < decompositions.s.length; i_s++) {
+  //             decoArr.push({ m: i_m, p: -1, s: i_s });
+  //           }
+  //         }
+  //       }
+  //     }
+  //   } else {
+  //     if (decompositions.p.length > 0) {
+  //       for (let i_p = 0; i_p < decompositions.p.length; i_p++) {
+  //         if (decompositions.s.length > 0) {
+  //           for (let i_s = 0; i_s < decompositions.s.length; i_s++) {
+  //             decoArr.push({ m: -1, p: i_p, s: i_s });
+  //           }
+  //         }
+  //       }
+  //     } else {
+  //       if (decompositions.s.length > 0) {
+  //         for (let i_s = 0; i_s < decompositions.s.length; i_s++) {
+  //           decoArr.push({ m: -1, p: -1, s: i_s });
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+  console.log(decompositions);
+  console.log(decoArr);
+
   return (
     <Card sx={{ p: 2, width: contentWidth }}>
-      {/* <svg viewBox={`0 0 ${contentWidth} ${contentHeight}`}> */}
       {Object.keys(decompositions).length ? (
-        <g>
-          {tileTypes.map((type, idx) => {
-            return decompositions[type].length == 0 ? (
-              <div>loading...</div>
-            ) : (
-              <Stack direction="row" style={{ justifyContent: "center" }}>
-                {decompositions[type][0].length != 0 ? (
-                  <p>{typeName[idx]}</p>
-                ) : (
-                  <></>
-                )}
-                {decompositions[type].map((arr) => {
-                  return arr.length != 0 ? (
-                    <>
-                      <Stack
-                        direction="row"
-                        sx={{ p: 1, border: "1px solid black", mx: 1, mb: 1 }}
-                      >
-                        {arr.map((ar, id) => {
-                          return ar.map((a, idx) => {
-                            return (
-                              <Stack
-                                sx={{
-                                  pl: id > 0 && idx == 0 ? 1 : 0,
-                                }}
-                              >
-                                <Image
-                                  src={changeHaiName2Path(`${type}${a}`)}
-                                  width="30"
-                                  height="50"
-                                />
-                              </Stack>
-                            );
-                          });
-                        })}
-                      </Stack>
-                    </>
-                  ) : (
-                    ""
+        <Stack justifyContent="center" alignItems="center">
+          {decoArr.map((pt, id) => {
+            return (
+              <Stack direction="row" sx={{ p: 1 }}>
+                {Object.keys(decompositions).map((type, idx) => {
+                  return (
+                    <Stack direction="row" sx={{ ml: 1 }}>
+                      {decompositions[type][pt[type]].length > 0
+                        ? decompositions[type][pt[type]].map((item) => {
+                            return item.map((itemm) => {
+                              return (
+                                <Stack sx={{ width: 8 * 5 }}>
+                                  <Image
+                                    src={changeHaiName2Path(`${type}${itemm}`)}
+                                    width={8 * 5}
+                                    height={11 * 5}
+                                  />
+                                </Stack>
+                              );
+                            });
+                          })
+                        : ""}
+                    </Stack>
                   );
                 })}
               </Stack>
             );
           })}
-        </g>
+        </Stack>
       ) : (
-        <g>
-          <Stack></Stack>
-        </g>
+        <Stack></Stack>
       )}
+
       {/* {!decompositions[selectedTile] ? (
           <g transform={`translate(${contentWidth / 2} ${contentHeight / 2})`}>
             <text
