@@ -3,7 +3,6 @@ import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
 import { UDIMENSIONS } from "../const/upper";
 import { aaa } from "../../public/data/tehai_yaku";
-import { useEffect, useState } from "react";
 
 const permutation = ((
   r = (x, y = x.length - 1, z = []) =>

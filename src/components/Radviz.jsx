@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useSetRecoilState, useRecoilValue, useRecoilState } from "recoil";
+import { Card, Tooltip } from "@mui/material";
+import { useSetRecoilState, useRecoilValue } from "recoil";
 import {
   shantenState,
   tehaiState,
@@ -7,14 +7,13 @@ import {
   diffShantenState,
   selectedTileState,
   allTileState,
-  ryanmenState,
+  decompositionsState,
 } from "../atoms/atoms";
-import Card from "@mui/material/Card";
-import Tooltip from "@mui/material/Tooltip";
 import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
-import { DIMENSIONS } from "../const/dimensions";
+import { DIMENSIONS } from "../const/upper";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
+import { useEffect, useState } from "react";
 import { changeHaiName2Path } from "../functions/util";
 
 const radviz = (data, r) => {
@@ -43,8 +42,12 @@ export const Radviz = () => {
   const setYakuValue = useSetRecoilState(yakuValueState);
   const setDiffShanten = useSetRecoilState(diffShantenState);
   const setAllTile = useSetRecoilState(allTileState);
-  const [ryanmen, setRyanmen] = useRecoilState(ryanmenState);
+  const setDecompositions = useSetRecoilState(decompositionsState);
+
   const [points, setPoints] = useState([]);
+  const [radvizCircle, setRadvizCircle] = useState(null);
+  const [x, setX] = useState(0);
+  const [y, setY] = useState(0);
 
   // 図の大きさ
   const contentWidth = 850;
@@ -56,15 +59,20 @@ export const Radviz = () => {
   // 点の大きさ
   const pointSize = 10;
 
+  const handleMouseOver = (id) => {
+    setRadvizCircle(id);
+  };
+
   useEffect(() => {
     if (tehai.length !== 0) {
       // 14枚の手牌の特徴量と向聴数を計算
-      const { featureList, shanten } = defineFeature(tehai);
-      featureList["is_pinfu"] = ryanmen.has(tehai[tehai.length - 1]) ? 10 : 0;
-      const yaku = defineYaku(featureList, 14);
+      const { featureList, shanten, res } = defineFeature(tehai);
+      setDecompositions(res);
+      const yaku = defineYaku(featureList, 14, 0);
       setAllTile({ shanten, yaku });
 
       // radviz上の点の座標
+      // 配列の末尾が現在の点の座標
       const points = [];
 
       // 現在持っている13枚の手牌の特徴量とツモ牌を含めて任意の牌を切ったときの手牌の特徴量と向聴数の差
@@ -73,13 +81,9 @@ export const Radviz = () => {
       // 14枚のうち13枚を抜き出したときの役推定と向聴数計算
       const tehaiFeature = {};
       const tehaiShanten = {};
-      const tehaiJson = JSON.stringify(tehai.slice(0, -1));
       for (const [key, value] of Object.entries(deleteElement(tehai))) {
-        const { featureList, shanten, ryanmenRes } = defineFeature(value);
-        if (JSON.stringify(value) === tehaiJson) {
-          setRyanmen(ryanmenRes);
-        }
-        const yaku = defineYaku(featureList, value.length);
+        const { featureList, shanten } = defineFeature(value);
+        const yaku = defineYaku(featureList, value.length, 0);
         tehaiFeature[key] = yaku;
         tehaiShanten[key] = shanten;
         points.push([key, radviz(yaku, r)]);
@@ -103,6 +107,8 @@ export const Radviz = () => {
         );
       }
 
+      setX(x);
+      setY(y);
       setPoints(points);
       setShanten(tehaiShanten[tehai[tehai.length - 1]]);
       setYakuValue(diffAssessment);
@@ -159,21 +165,27 @@ export const Radviz = () => {
                 <g key={i} transform={`translate(${x},${y})`}>
                   <Tooltip
                     title={
-                      <img
-                        src={changeHaiName2Path(tile)}
-                        width="30"
-                        height="40"
-                      />
+                      radvizCircle != null ? (
+                        <img
+                          src={changeHaiName2Path(radvizCircle)}
+                          width="40"
+                          height="55"
+                        />
+                      ) : (
+                        ""
+                      )
                     }
                     arrow
                     placement="top-start"
                   >
                     <circle
+                      id={tile}
                       r={pointSize}
-                      fill={tile !== tehai[tehai.length - 1] ? "green" : "red"}
+                      fill={i !== points.length - 1 ? "green" : "red"}
                       fillOpacity={
                         selectedTile === "" || selectedTile === tile ? 1 : 0.1
                       }
+                      onMouseOver={() => handleMouseOver(tile)}
                     />
                   </Tooltip>
                 </g>
