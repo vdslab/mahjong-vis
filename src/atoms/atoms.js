@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 
 export const tehaiState = atom({
   key: "tehai",
@@ -57,10 +58,25 @@ export const yakuRankState = atom({
 
 export const allTileState = atom({
   key: "allTile",
-  default: {},
+  default: {
+    shanten: {
+      other: 8,
+      chitoitu: 6,
+      kokushi: 13,
+    },
+    yaku: Object.keys(YAKU_DESCRIPTION).reduce(
+      (obj, x) => Object.assign(obj, { [x]: 0 }),
+      {}
+    ),
+  },
 });
 
 export const haiModeState = atom({
   key: "haiMode",
   default: 0,
+});
+
+export const ryanmenState = atom({
+  key: "ryanmen",
+  default: new Set(),
 });

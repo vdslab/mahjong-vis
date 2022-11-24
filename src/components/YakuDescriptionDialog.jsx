@@ -57,7 +57,7 @@ const Contents = ({ item }) => {
   const { name, description, han, kuiHan, menzen } = YAKU_DESCRIPTION[item];
 
   return (
-    <Card>
+    <Card sx={{ width: "100%" }}>
       <CardContent>
         <Box sx={{ display: "flex", alignItems: "center", pb: 2 }}>
           <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>

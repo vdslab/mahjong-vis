@@ -1,4 +1,5 @@
 import { FEATURE_LIST } from "../const/featureList";
+import { IPEKO_STRUCTURE, SANSHOKU_STRUCTURE } from "../const/score";
 import { calcShanten } from "./calcShanten";
 const ziSet = new Set(["w", "z"]);
 
@@ -49,8 +50,7 @@ export const defineFeature = (tehai) => {
       }
     }
   }
-  // 対々和,三暗刻は面子分解に寄らない
-  // TODO:本当か？そもそも要らない？
+  // 暗刻になりえる枚数持っているかどうかのカウント
   featureList["toitoi_sananko_cnt"] = arrayFilterLength(
     Object.values(counter),
     3
@@ -111,19 +111,19 @@ export const defineFeature = (tehai) => {
 
         // 構造系の特徴量
         // 一通
-        featureList["ittu_cnt"] = Math.max(
-          featureList["ittu_cnt"],
+        featureList["ittu_structure"] = Math.max(
+          featureList["ittu_structure"],
           ittuStructure(i, j)
         );
         // 一盃口
-        featureList["ipeko_score"] = Math.max(
-          featureList["ipeko_score"],
-          ipekoStructure(i, j)
+        featureList["ipeko_structure"] = Math.max(
+          featureList["ipeko_structure"],
+          ipekoStructure(tmp_res)
         );
       }
     }
   }
-  featureList["sanshoku_mentu"] = sanshokuStructure(res);
+  featureList["sanshoku_dojun_structure"] = sanshokuStructure(res);
   for (const type of ["m", "p", "s"]) {
     const tmpFeature = {
       ichikyu_kotu: 0,
@@ -180,7 +180,28 @@ export const defineFeature = (tehai) => {
   }
 
   isshokuStructure(composition, counter, featureList);
-  return { shanten, res, featureList };
+  featureList["ryanpeko_structure"] = Math.max(
+    featureList["ryanpeko_structure"],
+    ryanpekoStructure(res)
+  );
+
+  // 平和フラグ
+  // 聴牌状態のとき分解を検索して両面待ちが存在するとき、和了牌を記録する
+  const ryanmenRes = new Set();
+  if (tehai.length !== 14 && shanten["other"] === 0) {
+    for (const type of ["m", "p", "s"]) {
+      for (const i of res[type]) {
+        for (const j of i) {
+          if (j.length === 2 && j[0] !== 1 && j[1] !== 9 && j[0] + 1 === j[1]) {
+            ryanmenRes.add(`${type}${j[0] - 1}`);
+            ryanmenRes.add(`${type}${j[1] + 1}`);
+          }
+        }
+      }
+    }
+  }
+
+  return { shanten, res, featureList, ryanmenRes };
 };
 
 // 面子構成を列挙
@@ -266,125 +287,196 @@ const cntFeature = (counter, featureList, rleList) => {
   }
 
   // 手牌の中で1枚以上ある数牌の数
-  featureList["1-9_cnt"] = Math.max(
+  featureList["ittu_score"] = Math.max(
     ...Object.values(rleList).map(
       (data, _) => Object.values(data).filter((num) => num >= 1).length
     )
   );
   // 三色同順
-  for (let i = 0; i < 7; ++i) {
-    const tmp = Object.values(rleList).reduce((prev, data) => {
-      return (
-        prev +
-        Object.values(data)
-          .slice(i, i + 3)
-          .filter((num) => num >= 1).length
-      );
-    }, 0);
-    featureList["sanshoku_cnt"] = Math.max(tmp, featureList["sanshoku_cnt"]);
+  for (let i = 1; i < 10; ++i) {
+    let tmp = 0;
+    for (const type of ["m", "p", "s"]) {
+      tmp += rleList[type][i] >= 1 ? 1 : 0;
+      tmp += rleList[type][i + 1] >= 1 ? 1 : 0;
+      tmp += rleList[type][i + 2] >= 1 ? 1 : 0;
+    }
+    featureList["sanshoku_dojun_score"] = Math.max(
+      tmp,
+      featureList["sanshoku_dojun_score"]
+    );
   }
+  // 三色同刻
+  for (let i = 1; i < 10; ++i) {
+    let tmp = 0;
+    for (const type of ["m", "p", "s"])
+      tmp += rleList[type][i] === 4 ? 3 : rleList[type][i];
+    featureList["sanshoku_doko_score"] = Math.max(
+      tmp,
+      featureList["sanshoku_doko_score"]
+    );
+  }
+  // 一盃口
+  let maxType = "m";
+  let maxNum = 1;
+  for (const type of ["m", "p", "s"]) {
+    for (let i = 1; i < 10; ++i) {
+      let tmp = 0;
+      if (rleList[type][i] >= 1) tmp += rleList[type][i] >= 2 ? 2 : 1;
+      if (rleList[type][i + 1] >= 1) tmp += rleList[type][i + 1] >= 2 ? 2 : 1;
+      if (rleList[type][i + 2] >= 1) tmp += rleList[type][i + 2] >= 2 ? 2 : 1;
+      if (featureList["ipeko_score"] < tmp) {
+        featureList["ipeko_score"] = tmp;
+        maxType = type;
+        maxNum = i;
+      }
+    }
+  }
+  // 二盃口
+  const tmpRleList = JSON.parse(JSON.stringify(rleList));
+  tmpRleList[maxType][maxNum] = Math.max(0, tmpRleList[maxType][maxNum] - 2);
+  tmpRleList[maxType][maxNum + 1] = Math.max(
+    0,
+    tmpRleList[maxType][maxNum + 1] - 2
+  );
+  tmpRleList[maxType][maxNum + 2] = Math.max(
+    0,
+    tmpRleList[maxType][maxNum + 2] - 2
+  );
+  for (const type of ["m", "p", "s"]) {
+    for (let i = 1; i < 10; ++i) {
+      let tmp = 0;
+      if (tmpRleList[type][i] >= 1) tmp += tmpRleList[type][i] >= 2 ? 2 : 1;
+      if (tmpRleList[type][i + 1] >= 1)
+        tmp += tmpRleList[type][i + 1] >= 2 ? 2 : 1;
+      if (tmpRleList[type][i + 2] >= 1)
+        tmp += tmpRleList[type][i + 2] >= 2 ? 2 : 1;
+      if (featureList["ryanpeko_score"] < tmp)
+        featureList["ryanpeko_score"] = tmp;
+    }
+  }
+  featureList["ryanpeko_score"] =
+    (featureList["ipeko_score"] + featureList["ryanpeko_score"]) / 2;
 };
 
-// 一通の構造を持つかどうか(MAX:9)
+// 一通の構造を持つかどうか(MAX:60)
 const ittuStructure = (i, j) => {
-  let res = 0;
-  // 左
-  if (searchArray(i, [1, 2, 3])) res += 3;
-  else if (searchArray(j, [1, 2]) || searchArray(j, [1, 3])) res += 2;
-  else if (searchArray(j, [2, 3])) res += 1;
-  // 中
-  if (searchArray(i, [4, 5, 6])) res += 3;
-  else if (searchArray(j, [4, 6])) res += 2;
-  else if (searchArray(j, [4, 5]) || searchArray(j, [5, 6])) res += 1;
-  // 右
-  if (searchArray(i, [7, 8, 9])) res += 3;
-  else if (searchArray(j, [7, 9]) || searchArray(j, [8, 9])) res += 2;
-  else if (searchArray(j, [7, 8])) res += 1;
+  const res = [];
+  const maxScore = 20;
+  const midScore = 10;
+  const minScore = 7;
 
+  // 一通が確定するような面子/面子候補には最大の評価値を付与
+  // 面子に対して点数付与
+  for (let n = 1; n < 8; ++n) {
+    if (searchArray(i, [n, n + 1, n + 2]))
+      res.push((n - 1) % 3 === 0 ? maxScore : minScore);
+  }
+  // 面子候補に対して点数付与
+  if (searchArray(j, [1, 2]) || searchArray(j, [1, 3])) res.push(midScore);
+  else if (searchArray(j, [2, 3])) res.push(minScore);
+  // 中
+  if (searchArray(j, [4, 6])) res.push(midScore);
+  else if (searchArray(j, [4, 5]) || searchArray(j, [5, 6])) res.push(minScore);
+  // 右
+  if (searchArray(j, [7, 9]) || searchArray(j, [8, 9])) res.push(midScore);
+  else if (searchArray(j, [7, 8])) res.push(minScore);
+  res.sort((a, b) => a - b);
+  return (res[0] || 0) + (res[1] || 0) + (res[2] || 0);
+};
+
+// 一盃口の構造を持つかどうか(MAX:70)
+// TODO:修正必要
+const ipekoStructure = (data) => {
+  let res = 0;
+  for (const comb of deleteDuplicate([...combs(data, 2)])) {
+    const tmp = makeObject([...Array(9)].map((_, i) => i + 1));
+    for (const i of comb.flat()) tmp[i] += 1;
+    const buf = Object.values(tmp).join("");
+    for (const [key, value] of Object.entries(IPEKO_STRUCTURE)) {
+      if (buf.indexOf(key) !== -1 && res < value) res = value;
+    }
+  }
   return res;
 };
 
-// 一盃口の構造を持つかどうか()
-// TODO:修正必要
-const ipekoStructure = (data) => {
-  for (let i = 0; i < data.length - 1; i++) {
-    for (let j = i + 1; j < data.length; j++) {
-      if (JSON.stringify(data[i]) === JSON.stringify(data[j])) return 100;
+// 二盃口の構造を持つかどうか(MAX:70)
+const ryanpekoStructure = (data) => {
+  const res = [];
+
+  for (const value of Object.values(data)) {
+    // 面子+候補が3以下の場合はipekoと処理は同じ
+    if (value[0].length <= 3) {
+      let tmp_res = 0;
+      for (const a of value) {
+        const tmp = ipekoStructure(a);
+        if (tmp_res < tmp) tmp_res = tmp;
+      }
+      if (tmp_res !== 0) res.push(tmp_res);
+    } else {
+      const tmp = [];
+      if (value[0].length === 5) {
+        for (const a of value) {
+          for (const b of deleteElement(a)) {
+            tmp.push(calcRyanpeko(b));
+          }
+        }
+      } else {
+        for (const a of value) tmp.push(calcRyanpeko(a));
+      }
+      tmp.sort((a, b) => b - a);
+      return tmp[0] / 2;
     }
   }
-  return 0;
+  res.sort((a, b) => b - a);
+  return ((res[0] || 0) + (res[1] || 0)) / 2;
 };
 
-// 二盃口の構造を持つかどうか()
-// TODO:修正必要
-const ryanpekoStructure = (i) => {
-  let cnt = 0;
-  for (let i = 0; i < data.length - 1; i++) {
-    for (let j = i + 1; j < data.length; j++) {
-      if (JSON.stringify(data[i]) === JSON.stringify(data[j])) cnt += 1;
-    }
+const calcRyanpeko = (array) => {
+  const rows = [
+    [array[0], array[1], array[2], array[3]],
+    [array[0], array[2], array[1], array[3]],
+    [array[0], array[3], array[1], array[2]],
+  ];
+  let res = 0;
+  for (const row of rows) {
+    res = Math.max(
+      res,
+      ipekoStructure(row.slice(0, 2)) + ipekoStructure(row.slice(2))
+    );
   }
-  return cnt === 2;
+  return res;
 };
 
-// 三色同順の構造を持つかどうか(MAX:9)
+// 三色同順の構造を持つかどうか(MAX:60)
 const sanshokuStructure = (data) => {
   let res = 0;
-  for (let i = 1; i < 8; ++i) {
-    let tmp = 0;
+
+  for (let i = 1; i < 9; ++i) {
+    let tmp = [0, 0, 0];
     for (const type of ["m", "p", "s"]) {
       for (const j of data[type]) {
-        if (searchArray(j, [i, i + 1, i + 2])) tmp += 3;
+        if (searchArray(j, [i, i + 1, i + 2])) tmp[0] += 1;
         else {
-          if (i === 1) {
-            if (searchArray(j, [1, 2]) || searchArray(j, [1, 3])) tmp += 2;
-            else if (searchArray(j, [2, 3])) tmp += 1;
+          if (i === 1 || i === 7) {
+            if (searchArray(j, [1, 2]) || searchArray(j, [1, 3])) tmp[1] += 1;
+            else if (searchArray(j, [2, 3])) tmp[2] += 1;
           } else if (i === 7) {
-            if (searchArray(j, [8, 9]) || searchArray(j, [7, 9])) tmp += 2;
-            else if (searchArray(j, [7, 8])) tmp += 1;
+            if (searchArray(j, [8, 9]) || searchArray(j, [7, 9])) tmp[1] += 1;
+            else if (searchArray(j, [7, 8])) tmp[2] += 1;
           } else {
-            if (searchArray(j, [i, i + 2])) tmp += 2;
+            if (searchArray(j, [i, i + 2])) tmp[1] += 1;
             else if (
               searchArray(j, [i, i + 1]) ||
               searchArray(j, [i + 1, i + 2])
             )
-              tmp += 1;
+              tmp[2] += 1;
           }
         }
       }
     }
-    res = Math.max(res, tmp);
+    res = Math.max(res, SANSHOKU_STRUCTURE[tmp.join("")] || 0);
   }
   return res;
-};
-
-// 一盃口の特徴量計算
-const checkIpeko = (buf) => {
-  const newBuf = buf.replaceAll("3", "2").replaceAll("4", "2");
-  const d = [
-    ["222", 100],
-    ["1221", 90],
-    ["212", 85],
-    ["221", 80],
-    ["122", 80],
-    ["11211", 70],
-    ["1121", 65],
-    ["1211", 65],
-    ["211", 60],
-    ["112", 60],
-    ["202", 50],
-    ["121", 40],
-    ["111", 20],
-    ["102", 20],
-    ["201", 20],
-    ["21", 20],
-    ["12", 20],
-  ];
-
-  for (const [key, value] of d) {
-    if (newBuf.indexOf(key) !== -1) return value;
-  }
-  return 0;
 };
 
 // 一色手の特徴量計算
@@ -461,4 +553,13 @@ const searchArray = (array, tar) => {
 // 条件にあった配列の長さを返す
 const arrayFilterLength = (array, req) => {
   return array.filter((val) => val >= req).length;
+};
+
+// 配列から取り除いた要素とそれ以外の要素のオブジェクトを返す
+const deleteElement = (array) => {
+  const res = [];
+  for (let i = 0; i < array.length; ++i) {
+    res.push(array.slice(0, i).concat(array.slice(i + 1)));
+  }
+  return res;
 };
