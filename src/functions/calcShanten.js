@@ -72,8 +72,106 @@ export const calcShanten = (counter, rleList) => {
     ba[i + 1] += zi_toitu_cnt;
   }
 
+  // 初期化
+  for (const [type, c] of [
+    ["m", mc],
+    ["p", pc],
+    ["s", sc],
+  ]) {
+    composition[type]["mentu"] = c[0];
+    composition[type]["mentuCandidate"] = c[1];
+  }
+  shanten["other"] = 8 - 2 * ba[0] - Math.max(Math.min(4 - ba[0], ba[1]), 0);
+  composition["mentu"] = ba[0];
+  composition["mentuCandidate"] = ba[1];
+  composition["head"] = null;
+  for (const head of headList) {
+    const type = head[0];
+    const num = head[1] - 1;
+    let tmpMc = mc;
+    let tmpPc = pc;
+    let tmpSc = sc;
+    let tmp = [zi_kotu_cnt, zi_toitu_cnt, zi_kotu_cnt, zi_toitu_cnt];
+    if (type === "m") {
+      md[num] -= 2;
+      tmpMc = calc(md);
+      md[num] += 2;
+    } else if (type === "p") {
+      pd[num] -= 2;
+      tmpPc = calc(pd);
+      pd[num] += 2;
+    } else if (type === "s") {
+      sd[num] -= 2;
+      tmpSc = calc(sd);
+      sd[num] += 2;
+    }
+    tmp = arraySum([tmpMc, tmpPc, tmpSc, tmp]);
+    if (type === "w" || type === "z") {
+      if (counter[head] === 2) {
+        tmp[1] -= 1;
+        tmp[3] -= 1;
+      } else {
+        tmp[0] -= 1;
+        tmp[2] -= 1;
+      }
+    }
+    let tmp_res = 0;
+    if (tmp[0] + tmp[1] < 4 && tmp[2] + tmp[3] <= 4) {
+      tmp_res = 7 - 2 * tmp[2] - tmp[3];
+      if (tmp_res <= shanten["other"]) {
+        for (const [type, c] of [
+          ["m", tmpMc],
+          ["p", tmpPc],
+          ["s", tmpSc],
+        ]) {
+          composition[type]["mentu"] = c[2];
+          composition[type]["mentuCandidate"] = c[3];
+        }
+        shanten["other"] = tmp_res;
+        composition["mentu"] = tmp[2];
+        composition["mentuCandidate"] = tmp[3];
+        composition["head"] = head;
+      }
+    } else if (tmp[0] + tmp[1] === 4) {
+      tmp_res = 7 - 2 * tmp[0] - tmp[1];
+      if (tmp_res <= shanten["other"]) {
+        for (const [type, c] of [
+          ["m", tmpMc],
+          ["p", tmpPc],
+          ["s", tmpSc],
+        ]) {
+          composition[type]["mentu"] = c[0];
+          composition[type]["mentuCandidate"] = c[1];
+        }
+        shanten["other"] = tmp_res;
+        composition["mentu"] = tmp[0];
+        composition["mentuCandidate"] = tmp[1];
+        composition["head"] = head;
+      }
+    } else {
+      tmp_res = 7 - 2 * tmp[0] - Math.max(Math.min(4 - tmp[0], tmp[1]), 0);
+      if (tmp_res <= shanten["other"]) {
+        for (const [type, c] of [
+          ["m", tmpMc],
+          ["p", tmpPc],
+          ["s", tmpSc],
+        ]) {
+          composition[type]["mentu"] = c[0];
+          composition[type]["mentuCandidate"] = c[1];
+        }
+        shanten["other"] = tmp_res;
+        composition["mentu"] = tmp[0];
+        composition["mentuCandidate"] = tmp[1];
+        composition["head"] = head;
+      }
+    }
+  }
   // 面子数+面子候補数が4に満たないと下2桁、そうでないときは上2桁を採用
-  if (ba[0] + ba[1] < 4 && ba[2] + ba[3] <= 4) {
+  if (
+    ba[0] + ba[1] < 4 &&
+    ba[2] + ba[3] <= 4 &&
+    8 - 2 * ba[2] - ba[3] < shanten["other"]
+  ) {
     for (const [type, c] of [
       ["m", mc],
       ["p", pc],
@@ -85,7 +183,10 @@ export const calcShanten = (counter, rleList) => {
     shanten["other"] = 8 - 2 * ba[2] - ba[3];
     composition["mentu"] = ba[2];
     composition["mentuCandidate"] = ba[3];
-  } else if (ba[0] + ba[1] === 4) {
+  } else if (
+    ba[0] + ba[1] === 4 &&
+    8 - 2 * ba[0] - Math.max(Math.min(4 - ba[0], ba[1]), 0) < shanten["other"]
+  ) {
     for (const [type, c] of [
       ["m", mc],
       ["p", pc],
@@ -97,107 +198,10 @@ export const calcShanten = (counter, rleList) => {
     shanten["other"] = 8 - 2 * ba[0] - Math.max(Math.min(4 - ba[0], ba[1]), 0);
     composition["mentu"] = ba[0];
     composition["mentuCandidate"] = ba[1];
-  } else {
-    for (const [type, c] of [
-      ["m", mc],
-      ["p", pc],
-      ["s", sc],
-    ]) {
-      composition[type]["mentu"] = c[0];
-      composition[type]["mentuCandidate"] = c[1];
-    }
-    shanten["other"] = 8 - 2 * ba[0] - Math.max(Math.min(4 - ba[0], ba[1]), 0);
-    composition["mentu"] = ba[0];
-    composition["mentuCandidate"] = ba[1];
-    for (const head of headList) {
-      const type = head[0];
-      const num = head[1] - 1;
-      let tmpMc = mc;
-      let tmpPc = pc;
-      let tmpSc = sc;
-      let tmp = [zi_kotu_cnt, zi_toitu_cnt, zi_kotu_cnt, zi_toitu_cnt];
-      if (type === "m") {
-        md[num] -= 2;
-        tmpMc = calc(md);
-        md[num] += 2;
-      } else if (type === "p") {
-        pd[num] -= 2;
-        tmpPc = calc(pd);
-        pd[num] += 2;
-      } else if (type === "s") {
-        sd[num] -= 2;
-        tmpSc = calc(sd);
-        sd[num] += 2;
-      }
-      tmp = arraySum([tmpMc, tmpPc, tmpSc, tmp]);
-      if (type === "w" || type === "z") {
-        if (counter[head] === 2) {
-          tmp[1] -= 1;
-          tmp[3] -= 1;
-        } else {
-          tmp[0] -= 1;
-          tmp[2] -= 1;
-        }
-      }
-      let tmp_res = 0;
-      if (tmp[0] + tmp[1] < 4 && tmp[2] + tmp[3] <= 4) {
-        tmp_res = 7 - 2 * tmp[2] - tmp[3];
-        if (tmp_res < shanten["other"]) {
-          for (const [type, c] of [
-            ["m", tmpMc],
-            ["p", tmpPc],
-            ["s", tmpSc],
-          ]) {
-            composition[type]["mentu"] = c[2];
-            composition[type]["mentuCandidate"] = c[3];
-          }
-          shanten["other"] = tmp_res;
-          composition["mentu"] = tmp[2];
-          composition["mentuCandidate"] = tmp[3];
-          composition["head"] = head;
-        }
-      } else if (tmp[0] + tmp[1] === 4) {
-        tmp_res = 7 - 2 * tmp[0] - tmp[1];
-        if (tmp_res < shanten["other"]) {
-          for (const [type, c] of [
-            ["m", tmpMc],
-            ["p", tmpPc],
-            ["s", tmpSc],
-          ]) {
-            composition[type]["mentu"] = c[0];
-            composition[type]["mentuCandidate"] = c[1];
-          }
-          shanten["other"] = tmp_res;
-          composition["mentu"] = tmp[0];
-          composition["mentuCandidate"] = tmp[1];
-          composition["head"] = head;
-        }
-      } else {
-        tmp_res = 7 - 2 * tmp[0] - Math.max(Math.min(4 - tmp[0], tmp[1]), 0);
-        if (tmp_res < shanten["other"]) {
-          for (const [type, c] of [
-            ["m", tmpMc],
-            ["p", tmpPc],
-            ["s", tmpSc],
-          ]) {
-            composition[type]["mentu"] = c[0];
-            composition[type]["mentuCandidate"] = c[1];
-          }
-          shanten["other"] = tmp_res;
-          composition["mentu"] = tmp[0];
-          composition["mentuCandidate"] = tmp[1];
-          composition["head"] = head;
-        }
-      }
-    }
   }
 
   // 向聴数と向聴数最小の構成の和を返す
   return { shanten, composition };
-};
-// 配列の中身をkeyとしたobjectを返す
-const makeObject = (array, init = 0) => {
-  return array.reduce((obj, x) => Object.assign(obj, { [x]: init }), {});
 };
 
 const calc = (d) => {

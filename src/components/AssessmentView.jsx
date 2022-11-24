@@ -1,17 +1,15 @@
 import * as d3 from "d3";
+import { memo, useCallback, useEffect, useState } from "react";
 import { useRecoilValue, useRecoilState } from "recoil";
 import {
   yakuValueState,
   selectedTileState,
-  tehaiState,
-  yakuRankState,
+  allTileState,
 } from "../atoms/atoms";
-import { defineFeature } from "../functions/defineFeature";
-import { defineYaku } from "../functions/defineYaku";
-import { DIMENSIONS } from "../const/upper";
+import Card from "@mui/material/Card";
+import Tooltip from "@mui/material/Tooltip";
+import { DIMENSIONS } from "../const/dimensions";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
-import { Card, Tooltip } from "@mui/material";
-import { memo, useCallback, useEffect } from "react";
 import { changeHaiName2Path } from "../functions/util";
 
 const dataHeight = 78;
@@ -26,7 +24,7 @@ export const AssessmentView = () => {
   const yakuValue = useRecoilValue(yakuValueState);
 
   const strokeColor = "#888";
-  const colorList = ["#e6ab02", "#666666", "#a6761d"];
+  const colorList = ["#a6761d", "#666666", "#e6ab02"];
   const colorScale = useCallback(
     d3
       .scaleLinear()
@@ -65,38 +63,31 @@ export const AssessmentView = () => {
   );
 };
 
-const VerticalAxis = memo(({ strokeColor, colorList = [] }) => {
-  const tehai = useRecoilValue(tehaiState);
-  const [yakuRank, setYakuRank] = useRecoilState(yakuRankState);
-  let rankIdx = -1;
+const VerticalAxis = memo(({ strokeColor, colorList }) => {
+  const allTile = useRecoilValue(allTileState);
+  const [yakuRank, setYakuRank] = useState([]);
 
   useEffect(() => {
-    if (tehai.length !== 0) {
-      const featureList = defineFeature(tehai);
-      const data = defineYaku(featureList.featureList, 14, 0);
-      const DescList = Object.entries(data);
-      DescList.sort(function (p1, p2) {
-        return p2[1] - p1[1];
-      });
-      const top3List = [];
-      let score = -1;
-      let rank = 0;
-      for (const item of DescList) {
-        if (rank < 3 && item[1] > 0) {
-          rank = item[1] == score || score == -1 ? rank : rank + 1;
-          if (rank < 3) {
-            top3List.push({
-              rank,
-              name: item[0],
-              score: item[1],
-            });
-            score = item[1];
-          }
+    const { yaku } = allTile;
+    const DescList = Object.entries(yaku).sort((p1, p2) => p2[1] - p1[1]);
+    const top3List = [];
+    let score = -1;
+    let rank = 0;
+    for (const item of DescList) {
+      if (rank < 3 && item[1] > 0) {
+        rank = item[1] == score || score == -1 ? rank : rank + 1;
+        if (rank < 3) {
+          top3List.push({
+            rank,
+            name: item[0],
+            score: item[1],
+          });
+          score = item[1];
         }
       }
-      setYakuRank(top3List);
     }
-  }, [tehai]);
+    setYakuRank(top3List);
+  }, [allTile]);
 
   return (
     <g>
@@ -108,12 +99,7 @@ const VerticalAxis = memo(({ strokeColor, colorList = [] }) => {
         stroke={strokeColor}
       />
       {DIMENSIONS.map((name, idx) => {
-        rankIdx = -1;
-        yakuRank.forEach((item) => {
-          if (item.name == name) {
-            rankIdx = item.rank;
-          }
-        });
+        let rankIdx = yakuRank.filter((item) => item["name"] === name)[0];
 
         return (
           <g
@@ -129,10 +115,13 @@ const VerticalAxis = memo(({ strokeColor, colorList = [] }) => {
               disableInteractive
             >
               <g>
-                {rankIdx > -1 ? (
-                  <circle cx="-160" cy="0" r="10" fill={colorList[rankIdx]} />
-                ) : (
-                  ""
+                {rankIdx && (
+                  <circle
+                    cx="-160"
+                    cy="0"
+                    r="10"
+                    fill={colorList[rankIdx["rank"]]}
+                  />
                 )}
                 <text
                   x="-20"
@@ -219,7 +208,7 @@ const Contents = ({ data, xScale, colorScale }) => {
   );
 };
 
-const RankLegends = memo(({ colorList = [] }) => {
+const RankLegends = memo(({ colorList }) => {
   return (
     <g
       transform={`translate(${contentWidth - legendWidth + 25}, ${
@@ -230,7 +219,7 @@ const RankLegends = memo(({ colorList = [] }) => {
       <text y={-170} fontSize="30">
         役の点数
       </text>
-      {colorList.reverse().map((item, idx) => {
+      {colorList.map((item, idx) => {
         return (
           <g key={idx} transform={`translate(${0}, ${-(idx * 60)})`}>
             <text fontSize="30" dominantBaseline="middle">
@@ -258,7 +247,7 @@ const GradationLegends = memo(({ colorScale }) => {
           );
         })}
       </linearGradient>
-      <g transform={`translate(60, 0)`}>
+      <g transform={`translate(60, 0)`} style={{ userSelect: "none" }}>
         <text y={30} fontSize="30" textAnchor="start">
           100
         </text>
