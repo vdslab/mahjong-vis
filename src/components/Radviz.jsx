@@ -7,6 +7,7 @@ import {
   diffShantenState,
   selectedTileState,
   allTileState,
+  decompositionsState,
 } from "../atoms/atoms";
 import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
@@ -41,6 +42,8 @@ export const Radviz = () => {
   const setYakuValue = useSetRecoilState(yakuValueState);
   const setDiffShanten = useSetRecoilState(diffShantenState);
   const setAllTile = useSetRecoilState(allTileState);
+  const setDecompositions = useSetRecoilState(decompositionsState);
+
   const [points, setPoints] = useState([]);
   const [radvizCircle, setRadvizCircle] = useState(null);
   const [x, setX] = useState(0);
@@ -63,7 +66,8 @@ export const Radviz = () => {
   useEffect(() => {
     if (tehai.length !== 0) {
       // 14枚の手牌の特徴量と向聴数を計算
-      const { featureList, shanten } = defineFeature(tehai);
+      const { featureList, shanten, res } = defineFeature(tehai);
+      setDecompositions(res);
       const yaku = defineYaku(featureList, 14, 0);
       setAllTile({ shanten, yaku });
 

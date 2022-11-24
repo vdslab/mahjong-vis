@@ -49,12 +49,24 @@ const Home = () => {
             height: "150px",
             width: "100%",
             marginTop: "20px",
-            marginBottom: "20px",
+            // marginBottom: "20px",
             justifyContent: "center",
             alignItems: "center",
           }}
         >
           <TehaiView />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            width: "100%",
+            marginTop: "10px",
+            marginBottom: "10px",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <DecompositionView />
         </Box>
       </Container>
       <Footer />
