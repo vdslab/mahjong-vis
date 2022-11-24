@@ -1,14 +1,12 @@
 import { useRecoilValue } from "recoil";
-import { decompositionsState, selectedTileState } from "../atoms/atoms";
+import { decompositionsState } from "../atoms/atoms";
 import { changeHaiName2Path } from "../functions/util";
-import { Box, Button, Card, Dialog, Stack, Typography } from "@mui/material";
+import { Card, Stack } from "@mui/material";
 import Image from "next/image";
-import { Pattern } from "@mui/icons-material";
 export const DecompositionView = () => {
   const decompositions = useRecoilValue(decompositionsState);
   const contentWidth = 900;
-  const tileTypes = ["m", "p", "s"];
-  const typeName = ["萬子", "筒子", "索子"];
+
   const decoArr = [];
   if (Object.keys(decompositions).length > 0) {
     for (let i_m = 0; i_m < decompositions.m.length; i_m++) {
@@ -61,8 +59,6 @@ export const DecompositionView = () => {
   //     }
   //   }
   // }
-  console.log(decompositions);
-  console.log(decoArr);
 
   return (
     <Card sx={{ p: 2, width: contentWidth }}>
@@ -76,9 +72,9 @@ export const DecompositionView = () => {
                     <Stack direction="row" sx={{ ml: 1 }}>
                       {decompositions[type][pt[type]].length > 0
                         ? decompositions[type][pt[type]].map((item) => {
-                            return item.map((itemm) => {
+                            return item.map((itemm, id) => {
                               return (
-                                <Stack sx={{ width: 8 * 5 }}>
+                                <Stack sx={{ width: 8 * 5 }} key={id}>
                                   <Image
                                     src={changeHaiName2Path(`${type}${itemm}`)}
                                     width={8 * 5}
