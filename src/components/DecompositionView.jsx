@@ -1,9 +1,12 @@
+import { memo } from "react";
 import { useRecoilValue } from "recoil";
 import { decompositionsState } from "../atoms/atoms";
 import { changeHaiName2Path } from "../functions/util";
-import { Card, Stack } from "@mui/material";
+import Card from "@mui/material/Card";
+import Stack from "@mui/material/Stack";
 import Image from "next/image";
-export const DecompositionView = () => {
+
+export const DecompositionView = memo(() => {
   const decompositions = useRecoilValue(decompositionsState);
   const contentWidth = 900;
 
@@ -62,29 +65,26 @@ export const DecompositionView = () => {
 
   return (
     <Card sx={{ p: 2, width: contentWidth }}>
-      {Object.keys(decompositions).length ? (
+      {Object.keys(decompositions).length && (
         <Stack justifyContent="center" alignItems="center">
           {decoArr.map((pt, id) => {
             return (
-              <Stack direction="row" sx={{ p: 1 }}>
+              <Stack key={id} direction="row" sx={{ p: 1 }}>
                 {Object.keys(decompositions).map((type, idx) => {
                   return (
-                    <Stack direction="row" sx={{ ml: 1 }}>
-                      {decompositions[type][pt[type]].length > 0
-                        ? decompositions[type][pt[type]].map((item) => {
-                            return item.map((itemm, id) => {
-                              return (
-                                <Stack sx={{ width: 8 * 5 }} key={id}>
-                                  <Image
-                                    src={changeHaiName2Path(`${type}${itemm}`)}
-                                    width={8 * 5}
-                                    height={11 * 5}
-                                  />
-                                </Stack>
-                              );
-                            });
-                          })
-                        : ""}
+                    <Stack key={idx} direction="row" sx={{ ml: 1 }}>
+                      {decompositions[type][pt[type]].length > 0 &&
+                        decompositions[type][pt[type]].map((item) => {
+                          return item.map((itemm, id) => (
+                            <Stack sx={{ width: 8 * 5 }} key={id}>
+                              <Image
+                                src={changeHaiName2Path(`${type}${itemm}`)}
+                                width={8 * 5}
+                                height={11 * 5}
+                              />
+                            </Stack>
+                          ));
+                        })}
                     </Stack>
                   );
                 })}
@@ -92,8 +92,6 @@ export const DecompositionView = () => {
             );
           })}
         </Stack>
-      ) : (
-        <Stack></Stack>
       )}
 
       {/* {!decompositions[selectedTile] ? (
@@ -139,12 +137,4 @@ export const DecompositionView = () => {
       {/* </svg> */}
     </Card>
   );
-};
-
-const arrayChunk = ([...array], size = 1) => {
-  return array.reduce(
-    (acc, _, index) =>
-      index % size ? acc : [...acc, array.slice(index, index + size)],
-    []
-  );
-};
+});

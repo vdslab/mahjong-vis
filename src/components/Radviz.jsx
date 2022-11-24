@@ -11,7 +11,7 @@ import {
 } from "../atoms/atoms";
 import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
-import { DIMENSIONS } from "../const/upper";
+import { DIMENSIONS } from "../const/dimensions";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 import { useEffect, useState } from "react";
 import { changeHaiName2Path } from "../functions/util";
@@ -90,7 +90,7 @@ export const Radviz = () => {
       }
 
       for (const [hai, yaku] of Object.entries(tehaiFeature)) {
-        diffAssessment[hai] = DIMENSIONS.reduce(
+        diffAssessment[hai] = Object.keys(YAKU_DESCRIPTION).reduce(
           (obj, x) =>
             Object.assign(obj, {
               [x]: yaku[x] - tehaiFeature[tehai[tehai.length - 1]][x],

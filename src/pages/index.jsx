@@ -1,5 +1,4 @@
-import { Box, Grid } from "@mui/material";
-
+import { Box, Container } from "@mui/material";
 import { SuteHaiView } from "../components/SuteHaiView";
 import { AssessmentView } from "../components/AssessmentView";
 import { Header } from "../components/Header";
@@ -8,7 +7,6 @@ import { Radviz } from "../components/Radviz";
 import { TehaiView } from "../components/TehaiView";
 import { DecompositionView } from "../components/DecompositionView";
 import { ShantenView } from "../components/ShantenView";
-import { Container } from "@mui/system";
 
 const Home = () => {
   const viewHeight = 380 - 12;
