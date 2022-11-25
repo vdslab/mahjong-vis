@@ -30,7 +30,7 @@ export const ChangeMode = memo(() => {
   return (
     <>
       <Typography variant="h6" component="div">
-        現在のモード：
+        現在のモード
       </Typography>
       <FormControl variant="outlined">
         <NativeSelect
