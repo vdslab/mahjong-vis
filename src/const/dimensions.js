@@ -46,11 +46,62 @@ const LIMITED_LDIMENSION = [
   "zikaze_bakaze",
 ];
 
+const HONITU_DIMENSION = [
+  "tanyao",
+  // "honitu",
+  "ipeko",
+  "ryanpeko",
+  "chinitu",
+  "sangenhai",
+  "shosangen",
+  "honroto",
+  "zikaze_bakaze",
+  "chitoitu",
+  "chanta",
+  "junchan",
+  "sananko",
+  "ittu",
+  "pinfu",
+];
+
+const CHINITU_DIMENSION = [
+  "tanyao",
+  "ipeko",
+  "ryanpeko",
+  "chitoitu",
+  "junchan",
+  "sananko",
+  "ittu",
+  "pinfu",
+  // "chinitu",
+];
+
+const KOKUSHI_DIMENSION = [
+  "honroto",
+  "zikaze_bakaze",
+  "sananko",
+  "chitoitu",
+  "honitu",
+  "sangenhai",
+  "shosangen",
+];
+const TANYAO_DIMENSION = [
+  // "tanyao",
+  "sanshoku_dojun",
+  "chinitu",
+  "ipeko",
+  "ryanpeko",
+  "chitoitu",
+  "sanshoku_doko",
+  "sananko",
+  "pinfu",
+];
+
 export const DIMENSIONS = [
   ALL_DIMENSION,
-  ALL_DIMENSION,
-  ALL_DIMENSION,
-  ALL_DIMENSION,
-  ALL_DIMENSION,
+  HONITU_DIMENSION,
+  CHINITU_DIMENSION,
+  TANYAO_DIMENSION,
+  KOKUSHI_DIMENSION,
   LIMITED_HDIMENSION,
 ];
