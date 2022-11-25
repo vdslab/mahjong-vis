@@ -1,4 +1,4 @@
-export const DIMENSIONS = [
+const LIMITED_HDIMENSION = [
   "tanyao",
   "sanshoku_dojun",
   "honitu",
@@ -10,4 +10,27 @@ export const DIMENSIONS = [
   "sananko",
   "ittu",
   "pinfu",
+];
+
+const LIMITED_LDIMENSION = [
+  "tanyao",
+  "chanta",
+  "sangenhai",
+  "ipeko",
+  "sanshoku_dojun",
+  "sananko",
+  "pinfu",
+  "honitu",
+  "chitoitu",
+  "ittu",
+  "zikaze_bakaze",
+];
+
+export const DIMENSIONS = [
+  LIMITED_LDIMENSION,
+  LIMITED_LDIMENSION,
+  LIMITED_LDIMENSION,
+  LIMITED_LDIMENSION,
+  LIMITED_LDIMENSION,
+  LIMITED_HDIMENSION,
 ];

@@ -5,10 +5,10 @@ import {
   yakuValueState,
   selectedTileState,
   allTileState,
+  dimensionState,
 } from "../atoms/atoms";
 import Card from "@mui/material/Card";
 import Tooltip from "@mui/material/Tooltip";
-import { DIMENSIONS } from "../const/dimensions";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 import { changeHaiName2Path } from "../functions/util";
 
@@ -38,6 +38,12 @@ export const AssessmentView = () => {
     .range([0, contentWidth - contentX - legendWidth])
     .nice();
 
+  const yScale = d3
+    .scaleLinear()
+    .domain([0, Object.keys(YAKU_DESCRIPTION).length])
+    .range([contentY + 5, contentHeight - 20])
+    .nice();
+
   return (
     <Card sx={{ p: 1, height: "100%", width: "100%" }}>
       {Object.keys(yakuValue).length === 0 ? (
@@ -48,13 +54,22 @@ export const AssessmentView = () => {
           width="400px"
           height="390px"
         >
-          <VerticalAxis strokeColor={strokeColor} colorList={colorList} />
+          <VerticalAxis
+            strokeColor={strokeColor}
+            scale={yScale}
+            colorList={colorList}
+          />
           <HorizontalAxis
             tiles={Object.keys(yakuValue)}
             scale={xScale}
             strokeColor={strokeColor}
           />
-          <Contents data={yakuValue} xScale={xScale} colorScale={colorScale} />
+          <Contents
+            data={yakuValue}
+            xScale={xScale}
+            yScale={yScale}
+            colorScale={colorScale}
+          />
           <RankLegends colorList={colorList} />
           <GradationLegends colorScale={colorScale} />
         </svg>
@@ -63,7 +78,7 @@ export const AssessmentView = () => {
   );
 };
 
-const VerticalAxis = memo(({ strokeColor, colorList }) => {
+const VerticalAxis = memo(({ strokeColor, scale, colorList }) => {
   const allTile = useRecoilValue(allTileState);
   const [yakuRank, setYakuRank] = useState([]);
 
@@ -95,19 +110,14 @@ const VerticalAxis = memo(({ strokeColor, colorList }) => {
         x1={contentX - 10}
         y1={0}
         x2={contentX - 10}
-        y2={contentHeight - 160}
+        y2={contentHeight - 100}
         stroke={strokeColor}
       />
-      {DIMENSIONS.map((name, idx) => {
+      {Object.keys(YAKU_DESCRIPTION).map((name, idx) => {
         let rankIdx = yakuRank.filter((item) => item["name"] === name)[0];
 
         return (
-          <g
-            key={idx}
-            transform={`translate(${contentX}, ${
-              contentY + idx * (dataWidth + 4) + 30
-            })`}
-          >
+          <g key={idx} transform={`translate(${contentX}, ${scale(idx) + 30})`}>
             <Tooltip
               title={YAKU_DESCRIPTION[name]["description"]}
               placement="top-start"
@@ -179,11 +189,11 @@ const HorizontalAxis = ({ tiles, scale, strokeColor }) => {
   );
 };
 
-const Contents = ({ data, xScale, colorScale }) => {
+const Contents = ({ data, xScale, yScale, colorScale }) => {
   const viewData = transpose(Object.values(data).map((i) => Object.values(i)));
 
   return (
-    <g transform={`translate(${contentX}, ${contentY + 5})`}>
+    <g transform={`translate(${contentX})`}>
       {viewData.map((rows, i) => {
         return rows.map((item, j) => {
           return (
@@ -195,9 +205,9 @@ const Contents = ({ data, xScale, colorScale }) => {
             >
               <rect
                 x={xScale(j)}
-                y={i * (dataWidth + 3)}
+                y={yScale(i)}
                 width={dataWidth}
-                height={dataWidth}
+                height={68}
                 fill={colorScale(item)}
               />
             </Tooltip>

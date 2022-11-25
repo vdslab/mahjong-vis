@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+import { DIMENSIONS } from "../const/dimensions";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 
 export const tehaiState = atom({
@@ -51,11 +52,6 @@ export const decompositionsState = atom({
   default: {},
 });
 
-export const yakuRankState = atom({
-  key: "yakuRank",
-  default: [],
-});
-
 export const allTileState = atom({
   key: "allTile",
   default: {
@@ -79,4 +75,9 @@ export const haiModeState = atom({
 export const ryanmenState = atom({
   key: "ryanmen",
   default: new Set(),
+});
+
+export const dimensionState = atom({
+  key: "dimension",
+  default: DIMENSIONS[0],
 });

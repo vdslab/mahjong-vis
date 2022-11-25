@@ -307,6 +307,7 @@ const generateNewHai = (mode) => {
       25,
     ],
     [0, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33],
+    [...Array(34)].map((_, i) => i),
   ];
   const intHai = haiList[mode][getRandomInt(0, haiList[mode].length)];
 

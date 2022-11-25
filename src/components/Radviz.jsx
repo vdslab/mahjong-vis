@@ -8,22 +8,22 @@ import {
   selectedTileState,
   allTileState,
   decompositionsState,
+  dimensionState,
 } from "../atoms/atoms";
 import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
-import { DIMENSIONS } from "../const/dimensions";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 import { useEffect, useState } from "react";
 import { changeHaiName2Path } from "../functions/util";
 
-const radviz = (data, r) => {
-  const n = DIMENSIONS.length;
+const radviz = (dim, data, r) => {
+  const n = dim.length;
   let a = 0;
   let b = 0;
   let c = 0;
   const dt = (2 * Math.PI) / n;
   for (let j = 0; j < n; ++j) {
-    const v = data[DIMENSIONS[j]];
+    const v = data[dim[j]];
     a += v * Math.cos(dt * j);
     b += v * Math.sin(dt * j);
     c += v;
@@ -38,6 +38,7 @@ const radviz = (data, r) => {
 export const Radviz = () => {
   const tehai = useRecoilValue(tehaiState);
   const selectedTile = useRecoilValue(selectedTileState);
+  const dimension = useRecoilValue(dimensionState);
   const setShanten = useSetRecoilState(shantenState);
   const setYakuValue = useSetRecoilState(yakuValueState);
   const setDiffShanten = useSetRecoilState(diffShantenState);
@@ -46,8 +47,6 @@ export const Radviz = () => {
 
   const [points, setPoints] = useState([]);
   const [radvizCircle, setRadvizCircle] = useState(null);
-  const [x, setX] = useState(0);
-  const [y, setY] = useState(0);
 
   // 図の大きさ
   const contentWidth = 850;
@@ -86,7 +85,7 @@ export const Radviz = () => {
         const yaku = defineYaku(featureList, value.length, 0);
         tehaiFeature[key] = yaku;
         tehaiShanten[key] = shanten;
-        points.push([key, radviz(yaku, r)]);
+        points.push([key, radviz(dimension, yaku, r)]);
       }
 
       for (const [hai, yaku] of Object.entries(tehaiFeature)) {
@@ -106,9 +105,6 @@ export const Radviz = () => {
           {}
         );
       }
-
-      setX(x);
-      setY(y);
       setPoints(points);
       setShanten(tehaiShanten[tehai[tehai.length - 1]]);
       setYakuValue(diffAssessment);
@@ -118,7 +114,7 @@ export const Radviz = () => {
 
   return (
     <Card sx={{ p: 1, height: "368px", width: "100%" }}>
-      {tehai.length === 0 ? (
+      {tehai.length === 0 || !dimension ? (
         <div>loading...</div>
       ) : (
         <svg
@@ -128,11 +124,11 @@ export const Radviz = () => {
         >
           <g transform={`translate(${contentWidth / 2},${contentHeight / 2})`}>
             <circle r={r - margin} fill="none" stroke={lineColor} />
-            {DIMENSIONS.map((property, i) => {
+            {dimension.map((property, i) => {
               return (
                 <g
                   key={i}
-                  transform={`rotate(${(360 / DIMENSIONS.length) * i + 90})`}
+                  transform={`rotate(${(360 / dimension.length) * i + 90})`}
                 >
                   <line
                     x1="0"
