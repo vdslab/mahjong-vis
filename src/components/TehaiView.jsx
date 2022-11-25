@@ -10,7 +10,6 @@ import {
   allTileState,
   haiModeState,
 } from "../atoms/atoms";
-import { HAI_ORDER } from "../const/HaiOrder";
 import Image from "next/image";
 import { Box, Button, Card, Dialog, Stack, Typography } from "@mui/material";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
@@ -18,6 +17,7 @@ import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import { WinDialog } from "./WinDialog";
 import { changeHaiName2Path } from "../functions/util";
+import { HAI_ORDER } from "../const/HaiOrder";
 
 export const TehaiView = () => {
   const HAITYPELIST = "mpswz";
@@ -30,25 +30,15 @@ export const TehaiView = () => {
   const [winDialogOpen, setWinDialogOpen] = useState(false);
   const haiMode = useRecoilValue(haiModeState);
   const [mouseOveredTile, setMouseOveredTile] = useState(null);
-  const suteHaiCount = suteHaiList.length;
   const shanten = useRecoilValue(shantenState);
   const diffShanten = useRecoilValue(diffShantenState);
   const allTile = useRecoilValue(allTileState);
 
   useEffect(() => {
-    const haiList = initHai();
-    setTehai(haiList);
-  }, []);
-
-  useEffect(() => {
-    resetTehai();
+    initHai();
   }, [haiMode]);
 
-  // useEffect(() => {
-  //   console.log(calcShanten(tehai))
-  // }, [tehai])
-
-  const handleTileClicked = (tile, idx) => {
+  const handleTileClicked = async (tile, idx) => {
     const tmpTehai = JSON.parse(JSON.stringify(tehai));
     const addedHai = "";
     const tehaiCheckedList = haiCheckList.map((item) => item.slice());
@@ -66,16 +56,20 @@ export const TehaiView = () => {
     const newTehai = tmpTehai
       .filter((_, id) => id !== idx)
       .sort((x, y) => HAI_ORDER.indexOf(x) - HAI_ORDER.indexOf(y));
-    newTehai.push(addedHai);
-    setTehai(newTehai);
     setSuteHaiList([...suteHaiList, tile]);
     setSelectedTile("");
+    if (suteHaiList.length + 1 < MAX_PLAY_TIMES && open[0] === false)
+      newTehai.push(addedHai);
+    setTehai(newTehai);
+    if (suteHaiList.length + 1 >= MAX_PLAY_TIMES && open[0] === false)
+      setOpen([true, 1]);
   };
 
   const handleMouseOver = (tile, idx) => {
     setSelectedTile(tile);
     setMouseOveredTile(idx);
   };
+
   const handleMouseOut = () => {
     if (selectedTile !== "") {
       setSelectedTile("");
@@ -85,7 +79,7 @@ export const TehaiView = () => {
 
   const handleTumoClose = useCallback(() => {
     setWinDialogOpen(false);
-    resetTehai();
+    initHai();
   }, [haiMode]);
 
   const handleClickOpen = () => {
@@ -94,6 +88,7 @@ export const TehaiView = () => {
   const handleClose = (mode) => {
     setOpen([false, mode === 0 ? 0 : 1]);
   };
+
   const initHai = () => {
     const haiList = [];
     const tehaiCheckedList = [
@@ -117,22 +112,15 @@ export const TehaiView = () => {
       }
     }
     setHaiCheckList(tehaiCheckedList);
-    return [
+    setSuteHaiList([]);
+    setSelectedTile("");
+    setTehai([
       ...haiList
         .slice(0, 13)
         .sort((x, y) => HAI_ORDER.indexOf(x) - HAI_ORDER.indexOf(y)),
       haiList[13],
-    ];
+    ]);
   };
-  const resetTehai = () => {
-    setSuteHaiList([]);
-    setSelectedTile("");
-    const haiList = initHai();
-    setTehai(haiList);
-  };
-  if (suteHaiCount >= MAX_PLAY_TIMES && open[0] === false) {
-    setOpen([true, 1]);
-  }
 
   return (
     <Card sx={{ px: 3, pt: 3, pb: 1, width: "900px" }}>
@@ -265,13 +253,13 @@ export const TehaiView = () => {
                 <Button
                   variant="contained"
                   onClick={() => {
-                    resetTehai();
+                    initHai();
                     handleClose(open[1] === 0 ? 0 : 1);
                   }}
                 >
                   {open[1] === 0 ? "リセットする" : "OK"}
                 </Button>
-                {open[1] === 0 ? (
+                {open[1] === 0 && (
                   <Button
                     variant="outlined"
                     onClick={() => {
@@ -280,8 +268,6 @@ export const TehaiView = () => {
                   >
                     キャンセル
                   </Button>
-                ) : (
-                  ""
                 )}
               </Stack>
             </Card>

@@ -1,4 +1,4 @@
-import { Card, Tooltip } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useSetRecoilState, useRecoilValue } from "recoil";
 import {
   shantenState,
@@ -10,10 +10,11 @@ import {
   decompositionsState,
   dimensionState,
 } from "../atoms/atoms";
+import Card from "@mui/material/Card";
+import Tooltip from "@mui/material/Tooltip";
 import { defineFeature } from "../functions/defineFeature";
 import { defineYaku } from "../functions/defineYaku";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
-import { useEffect, useState } from "react";
 import { changeHaiName2Path } from "../functions/util";
 
 const radviz = (dim, data, r) => {
@@ -161,14 +162,12 @@ export const Radviz = () => {
                 <g key={i} transform={`translate(${x},${y})`}>
                   <Tooltip
                     title={
-                      radvizCircle != null ? (
+                      radvizCircle && (
                         <img
                           src={changeHaiName2Path(radvizCircle)}
                           width="40"
                           height="55"
                         />
-                      ) : (
-                        ""
                       )
                     }
                     arrow

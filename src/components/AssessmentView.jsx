@@ -24,7 +24,7 @@ export const AssessmentView = () => {
   const yakuValue = useRecoilValue(yakuValueState);
 
   const strokeColor = "#888";
-  const colorList = ["#a6761d", "#666666", "#e6ab02"];
+  const colorList = ["#e6ab02", "#666666", "#a6761d"];
   const colorScale = useCallback(
     d3
       .scaleLinear()
@@ -222,18 +222,16 @@ const RankLegends = memo(({ colorList }) => {
   return (
     <g
       transform={`translate(${contentWidth - legendWidth + 25}, ${
-        contentHeight - 190
+        contentHeight - 350
       })`}
       style={{ userSelect: "none" }}
     >
-      <text y={-170} fontSize="30">
-        役の点数
-      </text>
+      <text fontSize="30">役の点数</text>
       {colorList.map((item, idx) => {
         return (
-          <g key={idx} transform={`translate(${0}, ${-(idx * 60)})`}>
+          <g key={idx} transform={`translate(${0}, ${idx * 60 + 60})`}>
             <text fontSize="30" dominantBaseline="middle">
-              {3 - idx}位
+              {idx + 1}位
             </text>
             <circle cx={100} cy={-2} r="10" fill={item} />
           </g>

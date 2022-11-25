@@ -1,6 +1,6 @@
 import { useRecoilValue } from "recoil";
+import Card from "@mui/material/Card";
 import { suteHaiListState } from "../atoms/atoms";
-import { Card } from "@mui/material";
 import { changeHaiName2Path } from "../functions/util";
 
 export const SuteHaiView = () => {
@@ -12,7 +12,7 @@ export const SuteHaiView = () => {
   const imageHeight = 64;
 
   return (
-    <Card sx={{ p: 2, width: "100%", height: "51%", marginBottom: "10px" }}>
+    <Card sx={{ p: 2, marginBottom: "10px" }}>
       <svg
         viewBox={`0 0 ${contentWidth} ${contentHeight}`}
         width={232}

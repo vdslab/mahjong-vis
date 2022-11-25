@@ -1,3 +1,23 @@
+const ALL_DIMENSION = [
+  "tanyao",
+  "chanta",
+  "zikaze_bakaze",
+  "junchan",
+  "ipeko",
+  "shosangen",
+  "honitu",
+  "sanshoku_doko",
+  "pinfu",
+  "ryanpeko",
+  "sananko",
+  "ittu",
+  "sanshoku_dojun",
+  "chitoitu",
+  "sangenhai",
+  "chinitu",
+  "honroto",
+];
+
 const LIMITED_HDIMENSION = [
   "tanyao",
   "sanshoku_dojun",
@@ -27,10 +47,10 @@ const LIMITED_LDIMENSION = [
 ];
 
 export const DIMENSIONS = [
-  LIMITED_LDIMENSION,
-  LIMITED_LDIMENSION,
-  LIMITED_LDIMENSION,
-  LIMITED_LDIMENSION,
-  LIMITED_LDIMENSION,
+  ALL_DIMENSION,
+  ALL_DIMENSION,
+  ALL_DIMENSION,
+  ALL_DIMENSION,
+  ALL_DIMENSION,
   LIMITED_HDIMENSION,
 ];
