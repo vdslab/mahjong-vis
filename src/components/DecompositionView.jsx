@@ -9,82 +9,67 @@ import Image from "next/image";
 export const DecompositionView = memo(() => {
   const decompositions = useRecoilValue(decompositionsState);
   const contentWidth = 900;
-
   const decoArr = [];
+  const sortedDecompositions = JSON.parse(JSON.stringify(decompositions));
   if (Object.keys(decompositions).length > 0) {
-    for (let i_m = 0; i_m < decompositions.m.length; i_m++) {
-      for (let i_p = 0; i_p < decompositions.p.length; i_p++) {
-        for (let i_s = 0; i_s < decompositions.s.length; i_s++) {
+    for (let i_m in decompositions.m) {
+      for (let i_p in decompositions.p) {
+        for (let i_s in decompositions.s) {
           decoArr.push({ m: i_m, p: i_p, s: i_s });
         }
       }
     }
+    Object.keys(decompositions).map((type) => {
+      decompositions[type].map((pItem, id) => {
+        if (pItem.length > 0) {
+          for (let idx in pItem) {
+            sortedDecompositions[type][id][idx].sort((a, b) => a - b);
+          }
+          sortedDecompositions[type][id].sort((a, b) => a[0] - b[0]);
+        }
+      });
+      if (decompositions[type].length > 0) {
+        sortedDecompositions[type].sort((a, b) => {
+          if (a[0][0] - b[0][0] == 0 && a[0][1] - b[0][1] < 0) {
+            return -1;
+          } else {
+            return a[0][0] - b[0][0];
+          }
+        });
+      }
+    });
   }
-
-  // if (Object.keys(decompositions).length > 0) {
-  //   console.log("m", decompositions.m.length);
-  //   console.log("p", decompositions.p.length);
-  //   console.log("s", decompositions.s.length);
-
-  //   if (decompositions.m.length > 0) {
-  //     for (let i_m = 0; i_m < decompositions.m.length; i_m++) {
-  //       if (decompositions.p.length > 0) {
-  //         for (let i_p = 0; i_p < decompositions.p.length; i_p++) {
-  //           if (decompositions.s.length > 0) {
-  //             for (let i_s = 0; i_s < decompositions.s.length; i_s++) {
-  //               decoArr.push({ m: i_m, p: i_p, s: i_s });
-  //             }
-  //           }
-  //         }
-  //       } else {
-  //         if (decompositions.s.length > 0) {
-  //           for (let i_s = 0; i_s < decompositions.s.length; i_s++) {
-  //             decoArr.push({ m: i_m, p: -1, s: i_s });
-  //           }
-  //         }
-  //       }
-  //     }
-  //   } else {
-  //     if (decompositions.p.length > 0) {
-  //       for (let i_p = 0; i_p < decompositions.p.length; i_p++) {
-  //         if (decompositions.s.length > 0) {
-  //           for (let i_s = 0; i_s < decompositions.s.length; i_s++) {
-  //             decoArr.push({ m: -1, p: i_p, s: i_s });
-  //           }
-  //         }
-  //       }
-  //     } else {
-  //       if (decompositions.s.length > 0) {
-  //         for (let i_s = 0; i_s < decompositions.s.length; i_s++) {
-  //           decoArr.push({ m: -1, p: -1, s: i_s });
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
 
   return (
     <Card sx={{ p: 2, width: contentWidth }}>
-      {Object.keys(decompositions).length && (
+      {Object.keys(sortedDecompositions).length && (
         <Stack justifyContent="center" alignItems="center">
           {decoArr.map((pt, id) => {
             return (
               <Stack key={id} direction="row" sx={{ p: 1 }}>
-                {Object.keys(decompositions).map((type, idx) => {
+                {Object.keys(sortedDecompositions).map((type, idx) => {
                   return (
-                    <Stack key={idx} direction="row" sx={{ ml: 1 }}>
-                      {decompositions[type][pt[type]].length > 0 &&
-                        decompositions[type][pt[type]].map((item) => {
-                          return item.map((itemm, id) => (
-                            <Stack sx={{ width: 8 * 5 }} key={id}>
-                              <Image
-                                src={changeHaiName2Path(`${type}${itemm}`)}
-                                width={8 * 5}
-                                height={11 * 5}
-                              />
-                            </Stack>
-                          ));
-                        })}
+                    <Stack key={idx} direction="row">
+                      {sortedDecompositions[type][pt[type]].length > 0 &&
+                        sortedDecompositions[type][pt[type]].map(
+                          (itemGroup) => {
+                            return itemGroup.map((itemHai, id) => (
+                              <Stack
+                                sx={{
+                                  width: 8 * 5,
+                                  ml: id == 0 ? 1 : 0,
+                                }}
+                                key={id}
+                              >
+                                <Image
+                                  src={changeHaiName2Path(`${type}${itemHai}`)}
+                                  width={8 * 5}
+                                  height={11 * 5}
+                                />
+                              </Stack>
+                            ));
+                          }
+                        )}
                     </Stack>
                   );
                 })}
@@ -93,48 +78,6 @@ export const DecompositionView = memo(() => {
           })}
         </Stack>
       )}
-
-      {/* {!decompositions[selectedTile] ? (
-          <g transform={`translate(${contentWidth / 2} ${contentHeight / 2})`}>
-            <text
-              textAnchor="middle"
-              fontSize="20px"
-              style={{ userSelect: "none" }}
-            >
-              分解結果はありません
-            </text>
-          </g>
-        ) : (
-          <g>
-            {decompositions[selectedTile].map((type, idx) => {
-              return arrayChunk(type, 2).map((aaa, i) => {
-                return (
-                  <g key={i}>
-                    {aaa.map((tiles, j) => {
-                      console.log("====");
-                      return tiles.map((tile, k) => {
-                        console.log(tile, j, k);
-                        return (
-                          <image
-                            style={{ cursor: "pointer" }}
-                            href={changeHaiName2Path(
-                              `${tileTypes[idx]}${tile}`
-                            )}
-                            width={imageWidth}
-                            height={imageHeight}
-                            x={k * imageWidth}
-                            y={i * j * imageHeight}
-                          />
-                        );
-                      });
-                    })}
-                  </g>
-                );
-              });
-            })}
-          </g>
-        )} */}
-      {/* </svg> */}
     </Card>
   );
 });
