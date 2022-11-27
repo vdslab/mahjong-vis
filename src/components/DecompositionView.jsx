@@ -25,7 +25,13 @@ export const DecompositionView = memo(() => {
           for (let idx in pItem) {
             sortedDecompositions[type][id][idx].sort((a, b) => a - b);
           }
-          sortedDecompositions[type][id].sort((a, b) => a[0] - b[0]);
+          sortedDecompositions[type][id].sort((a, b) => {
+            if (a[0] - b[0] == 0 && a[1] - b[1] < 0) {
+              return -1;
+            } else {
+              return a[0] - b[0];
+            }
+          });
         }
       });
       if (decompositions[type].length > 0) {
