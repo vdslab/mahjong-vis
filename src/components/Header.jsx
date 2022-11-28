@@ -8,6 +8,7 @@ import {
   Divider,
 } from "@mui/material";
 import { YakuDescriptionDialog } from "./YakuDescriptionDialog";
+import { WordDescriptionDialog } from "./WordDescriptionDialog";
 import { WebInfoDialog } from "./WebInfoDialog";
 import { ChangeMode } from "./ChamgeMode";
 import { useCallback } from "react";
@@ -15,17 +16,20 @@ import { useCallback } from "react";
 export const Header = () => {
   const [yakuDialogOpen, setYakuDialogOpen] = useState(false);
   const [webInfoDialogOpen, setWebInfoDialogOpen] = useState(false);
-  const pages = ["このサイトについて", "役説明"];
+  const [wordDialogOpen, setWordDialogOpen] = useState(false);
+  const pages = ["このサイトについて", "役説明", "用語集"];
 
   const handleClick = (btnId) => {
     if (btnId === "役説明") setYakuDialogOpen(true);
     else if (btnId === "このサイトについて") setWebInfoDialogOpen(true);
+    else if (btnId === "用語集") setWordDialogOpen(true);
   };
   const handleYakuDialogClose = useCallback(() => setYakuDialogOpen(false), []);
   const handleWebInfoDialogClose = useCallback(
     () => setWebInfoDialogOpen(false),
     []
   );
+  const handleWordDialogClose = useCallback(() => setWordDialogOpen(false), []);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -63,6 +67,10 @@ export const Header = () => {
       <YakuDescriptionDialog
         open={yakuDialogOpen}
         onClose={handleYakuDialogClose}
+      />
+      <WordDescriptionDialog
+        open={wordDialogOpen}
+        onClose={handleWordDialogClose}
       />
     </Box>
   );

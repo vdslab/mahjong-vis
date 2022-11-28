@@ -19,13 +19,8 @@ export const YakuDescriptionDialog = memo((props) => {
   const { open, onClose } = props;
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
-      <DialogTitle id="alert-dialog-title">
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>
         <Box sx={{ display: "flex" }}>
           <Typography variant="h3" component="div" sx={{ flexGrow: 1 }}>
             役説明
@@ -35,10 +30,7 @@ export const YakuDescriptionDialog = memo((props) => {
           </IconButton>
         </Box>
       </DialogTitle>
-      <DialogContent
-        id="alert-dialog-description"
-        sx={{ background: "whitesmoke" }}
-      >
+      <DialogContent sx={{ background: "whitesmoke" }}>
         <List>
           {Object.keys(YAKU_DESCRIPTION).map((name) => {
             return (
