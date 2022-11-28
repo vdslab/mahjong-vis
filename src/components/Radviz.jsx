@@ -66,8 +66,7 @@ export const Radviz = () => {
   useEffect(() => {
     if (tehai.length !== 0) {
       // 14枚の手牌の特徴量と向聴数を計算
-      const { featureList, shanten, res } = defineFeature(tehai);
-      setDecompositions(res);
+      const { featureList, shanten } = defineFeature(tehai);
       const yaku = defineYaku(featureList, 14, 0);
       setAllTile({ shanten, yaku });
 
@@ -81,11 +80,14 @@ export const Radviz = () => {
       // 14枚のうち13枚を抜き出したときの役推定と向聴数計算
       const tehaiFeature = {};
       const tehaiShanten = {};
+      // 14枚のうち13枚を抜き出したときの手牌分解
+      const dec = {};
       for (const [key, value] of Object.entries(deleteElement(tehai))) {
-        const { featureList, shanten } = defineFeature(value);
+        const { featureList, shanten, res } = defineFeature(value);
         const yaku = defineYaku(featureList, value.length, 0);
         tehaiFeature[key] = yaku;
         tehaiShanten[key] = shanten;
+        dec[key] = res;
         points.push([key, radviz(dimension, yaku, r)]);
       }
 
@@ -106,6 +108,7 @@ export const Radviz = () => {
           {}
         );
       }
+      setDecompositions(dec);
       setPoints(points);
       setShanten(tehaiShanten[tehai[tehai.length - 1]]);
       setYakuValue(diffAssessment);

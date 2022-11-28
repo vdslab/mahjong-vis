@@ -201,7 +201,7 @@ export const defineFeature = (tehai) => {
     }
   }
 
-  return { shanten, res, featureList, ryanmenRes };
+  return { shanten, res: sortDecomposition(res), featureList, ryanmenRes };
 };
 
 // 面子構成を列挙
@@ -513,6 +513,28 @@ const isshokuStructure = (data, counter, featureList) => {
       10
   );
   featureList["same_color_cnt"] = same_color_cnt;
+};
+
+// 分解のソート
+const sortDecomposition = (decompositions) => {
+  if (Object.keys(decompositions).length === 0) return {};
+
+  const sortedDecompositions = JSON.parse(JSON.stringify(decompositions));
+  for (const type of ["m", "p", "s"]) {
+    decompositions[type].map((pItem, id) => {
+      for (let idx = 0; idx < pItem.length; ++pItem)
+        sortedDecompositions[type][id][idx].sort((a, b) => a - b);
+      sortedDecompositions[type][id].sort((a, b) => {
+        if (a[0] - b[0] == 0 && a[1] - b[1] < 0) return -1;
+        else return a[0] - b[0];
+      });
+    });
+    sortedDecompositions[type].sort((a, b) => {
+      if (a[0][0] - b[0][0] == 0 && a[0][1] - b[0][1] < 0) return -1;
+      else return a[0][0] - b[0][0];
+    });
+  }
+  return sortedDecompositions;
 };
 
 // 配列の中身をkeyとしたobjectを返す

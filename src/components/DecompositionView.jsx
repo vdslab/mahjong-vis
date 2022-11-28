@@ -1,88 +1,84 @@
 import { memo } from "react";
 import { useRecoilValue } from "recoil";
+import Card from "@mui/material/Card";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Stack from "@mui/material/Stack";
 import { decompositionsState } from "../atoms/atoms";
 import { changeHaiName2Path } from "../functions/util";
-import Card from "@mui/material/Card";
-import Stack from "@mui/material/Stack";
 import Image from "next/image";
 
 export const DecompositionView = memo(() => {
   const decompositions = useRecoilValue(decompositionsState);
+  const imageWidth = 3;
+  const imageHeight = 4;
   const contentWidth = 900;
-  const decoArr = [];
-  const sortedDecompositions = JSON.parse(JSON.stringify(decompositions));
-  if (Object.keys(decompositions).length > 0) {
-    for (let i_m in decompositions.m) {
-      for (let i_p in decompositions.p) {
-        for (let i_s in decompositions.s) {
-          decoArr.push({ m: i_m, p: i_p, s: i_s });
-        }
-      }
-    }
-    Object.keys(decompositions).map((type) => {
-      decompositions[type].map((pItem, id) => {
-        if (pItem.length > 0) {
-          for (let idx in pItem) {
-            sortedDecompositions[type][id][idx].sort((a, b) => a - b);
-          }
-          sortedDecompositions[type][id].sort((a, b) => {
-            if (a[0] - b[0] == 0 && a[1] - b[1] < 0) {
-              return -1;
-            } else {
-              return a[0] - b[0];
-            }
-          });
-        }
-      });
-      if (decompositions[type].length > 0) {
-        sortedDecompositions[type].sort((a, b) => {
-          if (a[0][0] - b[0][0] == 0 && a[0][1] - b[0][1] < 0) {
-            return -1;
-          } else {
-            return a[0][0] - b[0][0];
-          }
-        });
-      }
-    });
-  }
 
   return (
     <Card sx={{ p: 2, width: contentWidth }}>
-      {Object.keys(sortedDecompositions).length && (
-        <Stack justifyContent="center" alignItems="center">
-          {decoArr.map((pt, id) => {
+      {Object.keys(decompositions).length && (
+        <List>
+          {Object.entries(decompositions).map(([tile, arr]) => {
+            const comb = [];
+            for (let m = 0; m < arr["m"].length; ++m) {
+              for (let p = 0; p < arr["p"].length; ++p) {
+                for (let s = 0; s < arr["s"].length; ++s) {
+                  comb.push({ m, p, s });
+                }
+              }
+            }
             return (
-              <Stack key={id} direction="row" sx={{ p: 1 }}>
-                {Object.keys(sortedDecompositions).map((type, idx) => {
-                  return (
-                    <Stack key={idx} direction="row">
-                      {sortedDecompositions[type][pt[type]].length > 0 &&
-                        sortedDecompositions[type][pt[type]].map(
-                          (itemGroup) => {
-                            return itemGroup.map((itemHai, id) => (
-                              <Stack
-                                sx={{
-                                  width: 8 * 5,
-                                  ml: id == 0 ? 1 : 0,
-                                }}
-                                key={id}
-                              >
-                                <Image
-                                  src={changeHaiName2Path(`${type}${itemHai}`)}
-                                  width={8 * 5}
-                                  height={11 * 5}
-                                />
-                              </Stack>
-                            ));
-                          }
-                        )}
+              <ListItem key={tile}>
+                <ListItemAvatar
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    mr: 5,
+                  }}
+                >
+                  <Image
+                    src={changeHaiName2Path(`${tile}`)}
+                    width={imageWidth * 10}
+                    height={imageHeight * 10}
+                  />
+                </ListItemAvatar>
+                <Stack>
+                  {comb.map((pt, id) => (
+                    <Stack
+                      key={id}
+                      direction="row"
+                      sx={{
+                        p: "5px",
+                        width: "100%",
+                      }}
+                    >
+                      {["m", "p", "s"].map((type) => (
+                        <Stack key={type} direction="row">
+                          {arr[type][pt[type]].length > 0 &&
+                            arr[type][pt[type]].map((itemGroup) =>
+                              itemGroup.map((itemHai, id) => (
+                                <Stack sx={{ ml: id === 0 }} key={id}>
+                                  <Image
+                                    src={changeHaiName2Path(
+                                      `${type}${itemHai}`
+                                    )}
+                                    width={imageWidth * 15}
+                                    height={imageHeight * 15}
+                                  />
+                                </Stack>
+                              ))
+                            )}
+                        </Stack>
+                      ))}
                     </Stack>
-                  );
-                })}
-              </Stack>
+                  ))}
+                </Stack>
+              </ListItem>
             );
           })}
-        </Stack>
+        </List>
       )}
     </Card>
   );
