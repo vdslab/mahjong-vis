@@ -160,35 +160,33 @@ export const Radviz = () => {
                 </g>
               );
             })}
-            {points.map(([tile, { x, y }], i) => {
-              return (
-                <g key={i} transform={`translate(${x},${y})`}>
-                  <Tooltip
-                    title={
-                      radvizCircle && (
-                        <img
-                          src={changeHaiName2Path(radvizCircle)}
-                          width="40"
-                          height="55"
-                        />
-                      )
+            {points.map(([tile, { x, y }], i) => (
+              <g key={i} transform={`translate(${x},${y})`}>
+                <Tooltip
+                  title={
+                    radvizCircle && (
+                      <img
+                        src={changeHaiName2Path(radvizCircle)}
+                        width="40"
+                        height="55"
+                      />
+                    )
+                  }
+                  arrow
+                  placement="top-start"
+                >
+                  <circle
+                    id={tile}
+                    r={pointSize}
+                    fill={tile !== tehai[tehai.length - 1] ? "green" : "red"}
+                    fillOpacity={
+                      !selectedTile || selectedTile === tile ? 1 : 0.1
                     }
-                    arrow
-                    placement="top-start"
-                  >
-                    <circle
-                      id={tile}
-                      r={pointSize}
-                      fill={i !== points.length - 1 ? "green" : "red"}
-                      fillOpacity={
-                        selectedTile === "" || selectedTile === tile ? 1 : 0.1
-                      }
-                      onMouseOver={() => handleMouseOver(tile)}
-                    />
-                  </Tooltip>
-                </g>
-              );
-            })}
+                    onMouseOver={() => handleMouseOver(tile)}
+                  />
+                </Tooltip>
+              </g>
+            ))}
           </g>
           <g
             transform={`translate(${contentWidth - 130}, ${
