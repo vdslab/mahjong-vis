@@ -206,7 +206,6 @@ export const defineYaku = (featureList, haiLen) => {
       yakuList[key] = 100;
     }
   }
-  if (haiLen === 14) console.log(yakuList);
   return yakuList;
 };
 
