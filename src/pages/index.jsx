@@ -23,11 +23,13 @@ const Home = () => {
   };
 
   const handleMouseMove = (event) => {
-    const dx = (x - Number(event.clientX)) / 8;
-    const dy = (y - Number(event.clientY)) / 8;
-    setDist((prev) => prev + Math.sqrt(dx * dx + dy * dy));
-    setX(Number(event.clientX));
-    setY(Number(event.clientY));
+    if (isRunning) {
+      const dx = (x - Number(event.clientX)) / 8;
+      const dy = (y - Number(event.clientY)) / 8;
+      setDist((prev) => prev + Math.sqrt(dx * dx + dy * dy));
+      setX(Number(event.clientX));
+      setY(Number(event.clientY));
+    }
   };
 
   useEffect(() => {
