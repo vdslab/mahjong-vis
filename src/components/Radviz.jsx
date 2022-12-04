@@ -10,6 +10,7 @@ import {
   ryanmenState,
   decompositionsState,
   dimensionState,
+  testState,
 } from "../atoms/atoms";
 import Card from "@mui/material/Card";
 import Tooltip from "@mui/material/Tooltip";
@@ -39,6 +40,7 @@ const radviz = (dim, data, r) => {
 
 export const Radviz = () => {
   const tehai = useRecoilValue(tehaiState);
+  const test = useRecoilValue(testState);
   const selectedTile = useRecoilValue(selectedTileState);
   const dimension = useRecoilValue(dimensionState);
   const setShanten = useSetRecoilState(shantenState);
@@ -124,7 +126,7 @@ export const Radviz = () => {
 
   return (
     <Card sx={{ p: 1, height: "368px", width: "100%" }}>
-      {tehai.length === 0 || !dimension ? (
+      {tehai.length === 0 || !dimension || test ? (
         <div>loading...</div>
       ) : (
         <svg

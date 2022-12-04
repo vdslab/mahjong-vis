@@ -5,7 +5,7 @@ import {
   yakuValueState,
   selectedTileState,
   allTileState,
-  dimensionState,
+  testState,
 } from "../atoms/atoms";
 import Card from "@mui/material/Card";
 import Tooltip from "@mui/material/Tooltip";
@@ -22,6 +22,7 @@ const legendWidth = 150;
 
 export const AssessmentView = () => {
   const yakuValue = useRecoilValue(yakuValueState);
+  const test = useRecoilValue(testState);
 
   const strokeColor = "#888";
   const colorList = ["#e6ab02", "#666666", "#a6761d"];
@@ -46,7 +47,7 @@ export const AssessmentView = () => {
 
   return (
     <Card sx={{ p: 1, height: "100%", width: "100%" }}>
-      {Object.keys(yakuValue).length === 0 ? (
+      {Object.keys(yakuValue).length === 0 || test ? (
         <div>loading...</div>
       ) : (
         <svg

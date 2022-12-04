@@ -9,6 +9,7 @@ import {
   selectedTileState,
   allTileState,
   haiModeState,
+  testState,
 } from "../atoms/atoms";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -25,6 +26,7 @@ import { changeHaiName2Path } from "../functions/util";
 import { HAI_ORDER } from "../const/HaiOrder";
 
 export const TehaiView = () => {
+  const test = useRecoilValue(testState);
   const HAITYPELIST = "mpswz";
   const MAX_PLAY_TIMES = 18;
   const [tehai, setTehai] = useRecoilState(tehaiState);
@@ -187,7 +189,7 @@ export const TehaiView = () => {
                       width="80"
                       height="110"
                     />
-                    {icon}
+                    {!test && icon}
                   </Stack>
                 );
               } else {

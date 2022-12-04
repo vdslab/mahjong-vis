@@ -9,10 +9,12 @@ import { ShantenView } from "../components/ShantenView";
 import Box from "@mui/material/Box";
 import { useState, useEffect } from "react";
 import { useInterval } from "../functions/useInterval";
+import { useRecoilState } from "recoil";
+import { testState } from "../atoms/atoms";
 
 const Home = () => {
   const [isRunning, setIsRunning] = useState(false);
-  const [test, setTest] = useState(false);
+  const [test, setTest] = useRecoilState(testState);
   const [count, setCount] = useState(0);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);

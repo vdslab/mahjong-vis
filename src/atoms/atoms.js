@@ -81,3 +81,8 @@ export const dimensionState = atom({
   key: "dimension",
   default: DIMENSIONS[0],
 });
+
+export const testState = atom({
+  key: "test",
+  default: false,
+});

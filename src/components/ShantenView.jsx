@@ -9,6 +9,7 @@ import {
   selectedTileState,
   shantenState,
   tehaiState,
+  testState,
 } from "../atoms/atoms";
 
 export const ShantenView = memo(() => {
@@ -21,60 +22,63 @@ export const ShantenView = memo(() => {
     chitoitu: "七対子",
     kokushi: "国士無双",
   };
+  const test = useRecoilValue(testState);
   return (
-    <Box
-      sx={{
-        display: "table",
-        height: "50%",
-        width: "100%",
-      }}
-    >
-      <Card
+    !test && (
+      <Box
         sx={{
-          display: "table-cell",
-          verticalAlign: "middle",
-          px: 1,
-          pt: 1,
+          display: "table",
+          height: "50%",
+          width: "100%",
         }}
       >
-        <Typography variant="h6" component="div">
-          向聴数
-        </Typography>
-        <List>
-          {Object.keys(displayName).map((name) => {
-            const tile = selectedTile || tehai.at(-1);
-            const diff = diffShanten[tile]?.[name];
-            return (
-              <ListItem
-                key={name}
-                sx={{
-                  py: 0,
-                  px: 1,
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  component="div"
-                  sx={{ fontSize: "100%" }}
+        <Card
+          sx={{
+            display: "table-cell",
+            verticalAlign: "middle",
+            px: 1,
+            pt: 1,
+          }}
+        >
+          <Typography variant="h6" component="div">
+            向聴数
+          </Typography>
+          <List>
+            {Object.keys(displayName).map((name) => {
+              const tile = selectedTile || tehai.at(-1);
+              const diff = diffShanten[tile]?.[name];
+              return (
+                <ListItem
+                  key={name}
+                  sx={{
+                    py: 0,
+                    px: 1,
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
                 >
-                  {`${displayName[name]}：${
-                    shanten[name] > 0 ? shanten[name] : "聴牌"
-                  }`}
-                </Typography>
-                {diff === -1 ? (
-                  <TrendingUpIcon color="error" />
-                ) : diff === 0 ? (
-                  <TrendingFlatIcon color="success" />
-                ) : (
-                  <TrendingDownIcon color="info" />
-                )}
-              </ListItem>
-            );
-          })}
-        </List>
-      </Card>
-    </Box>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ fontSize: "100%" }}
+                  >
+                    {`${displayName[name]}：${
+                      shanten[name] > 0 ? shanten[name] : "聴牌"
+                    }`}
+                  </Typography>
+                  {diff === -1 ? (
+                    <TrendingUpIcon color="error" />
+                  ) : diff === 0 ? (
+                    <TrendingFlatIcon color="success" />
+                  ) : (
+                    <TrendingDownIcon color="info" />
+                  )}
+                </ListItem>
+              );
+            })}
+          </List>
+        </Card>
+      </Box>
+    )
   );
 });
