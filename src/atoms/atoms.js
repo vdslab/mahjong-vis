@@ -86,3 +86,16 @@ export const testState = atom({
   key: "test",
   default: false,
 });
+
+export const tanyaoState = atom({
+  key: "tanyao",
+  default: false,
+});
+export const chitoituState = atom({
+  key: "chitoitu",
+  default: false,
+});
+export const honituState = atom({
+  key: "honitu",
+  default: false,
+});

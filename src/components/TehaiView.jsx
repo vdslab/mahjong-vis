@@ -10,6 +10,9 @@ import {
   allTileState,
   haiModeState,
   testState,
+  tanyaoState,
+  chitoituState,
+  honituState,
 } from "../atoms/atoms";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -27,6 +30,9 @@ import { HAI_ORDER } from "../const/HaiOrder";
 
 export const TehaiView = () => {
   const test = useRecoilValue(testState);
+  const tanyao = useRecoilValue(tanyaoState);
+  const honitu = useRecoilValue(honituState);
+  const chitoitu = useRecoilValue(chitoituState);
   const HAITYPELIST = "mpswz";
   const MAX_PLAY_TIMES = 18;
   const [tehai, setTehai] = useRecoilState(tehaiState);
@@ -40,10 +46,69 @@ export const TehaiView = () => {
   const shanten = useRecoilValue(shantenState);
   const diffShanten = useRecoilValue(diffShantenState);
   const allTile = useRecoilValue(allTileState);
+  const testTehai = {
+    tanyao: [
+      "m3",
+      "w1",
+      "m5",
+      "s6",
+      "m1",
+      "s8",
+      "s7",
+      "p3",
+      "m6",
+      "z1",
+      "m5",
+      "m3",
+      "p6",
+      "m5",
+      "m6",
+      "w2",
+      "s5",
+    ],
+    chitoitu: [
+      "p5",
+      "m2",
+      "m9",
+      "w1",
+      "s5",
+      "m6",
+      "m2",
+      "s8",
+      "s4",
+      "s5",
+      "w2",
+      "z3",
+      "p2",
+      "z3",
+      "m9",
+      "p5",
+      "w1",
+    ],
+    honitu: [
+      "m4",
+      "p2",
+      "s3",
+      "s4",
+      "m8",
+      "m6",
+      "w4",
+      "m7",
+      "m9",
+      "m9",
+      "p2",
+      "m5",
+      "m3",
+      "m7",
+      "m6",
+      "m2",
+      "m3",
+    ],
+  };
 
   useEffect(() => {
     initHai();
-  }, [haiMode]);
+  }, [haiMode, tanyao, chitoitu, honitu]);
 
   const handleTileClicked = async (tile, idx) => {
     const tmpTehai = JSON.parse(JSON.stringify(tehai));
@@ -58,6 +123,15 @@ export const TehaiView = () => {
         addedHai += hai;
         isAddedHai = 0;
       }
+    }
+    if (tanyao) {
+      addedHai = testTehai["tanyao"][suteHaiList.length];
+    }
+    if (honitu) {
+      addedHai = testTehai["honitu"][suteHaiList.length];
+    }
+    if (chitoitu) {
+      addedHai = testTehai["chitoitu"][suteHaiList.length];
     }
     setHaiCheckList(tehaiCheckedList);
     const newTehai = tmpTehai
@@ -117,6 +191,60 @@ export const TehaiView = () => {
           isAddedHai = false;
         }
       }
+    }
+    if (tanyao) {
+      haiList = [
+        "m1",
+        "m1",
+        "m2",
+        "m4",
+        "m7",
+        "p4",
+        "p5",
+        "s2",
+        "s4",
+        "s8",
+        "s8",
+        "w3",
+        "w3",
+        "w4",
+      ];
+    }
+    if (chitoitu) {
+      haiList = [
+        "m1",
+        "m1",
+        "m1",
+        "m4",
+        "m4",
+        "p2",
+        "p5",
+        "p9",
+        "s4",
+        "s8",
+        "s8",
+        "w3",
+        "w3",
+        "w4",
+      ];
+    }
+    if (honitu) {
+      haiList = [
+        "m1",
+        "m2",
+        "m3",
+        "m5",
+        "m6",
+        "m8",
+        "m9",
+        "s2",
+        "s4",
+        "s8",
+        "s8",
+        "w3",
+        "w3",
+        "w4",
+      ];
     }
     setHaiCheckList(tehaiCheckedList);
     setSuteHaiList([]);

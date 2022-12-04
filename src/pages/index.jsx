@@ -10,11 +10,19 @@ import Box from "@mui/material/Box";
 import { useState, useEffect } from "react";
 import { useInterval } from "../functions/useInterval";
 import { useRecoilState } from "recoil";
-import { testState } from "../atoms/atoms";
+import {
+  chitoituState,
+  honituState,
+  tanyaoState,
+  testState,
+} from "../atoms/atoms";
 
 const Home = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [test, setTest] = useRecoilState(testState);
+  const [tanyao, setTanyao] = useRecoilState(tanyaoState);
+  const [chitoitu, setChitoitu] = useRecoilState(chitoituState);
+  const [honitu, setHonitu] = useRecoilState(honituState);
   const [count, setCount] = useState(0);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
@@ -26,6 +34,15 @@ const Home = () => {
   };
   const handleTestChange = (event) => {
     setTest(event.target.checked);
+  };
+  const handleTanyaoChange = (event) => {
+    setTanyao(event.target.checked);
+  };
+  const handleChitoituChange = (event) => {
+    setChitoitu(event.target.checked);
+  };
+  const handleHonituChange = (event) => {
+    setHonitu(event.target.checked);
   };
 
   const handleMouseMove = (event) => {
@@ -65,6 +82,16 @@ const Home = () => {
       Running
       <input type="checkbox" checked={test} onChange={handleTestChange} />
       Test
+      <input type="checkbox" checked={tanyao} onChange={handleTanyaoChange} />
+      tanyao
+      <input
+        type="checkbox"
+        checked={chitoitu}
+        onChange={handleChitoituChange}
+      />
+      chitoitu
+      <input type="checkbox" checked={honitu} onChange={handleHonituChange} />
+      honitu
       <Box
         sx={{
           display: "flex",
