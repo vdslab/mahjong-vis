@@ -92,6 +92,7 @@ export const TehaiView = () => {
   };
   const handleClose = (mode) => {
     setOpen([false, mode === 0 ? 0 : 1]);
+    initHai();
   };
 
   const initHai = () => {
