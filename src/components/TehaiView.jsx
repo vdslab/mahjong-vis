@@ -10,11 +10,16 @@ import {
   allTileState,
   haiModeState,
 } from "../atoms/atoms";
-import Image from "next/image";
-import { Box, Button, Card, Dialog, Stack, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import Dialog from "@mui/material/Dialog";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
+import Image from "next/image";
 import { WinDialog } from "./WinDialog";
 import { changeHaiName2Path } from "../functions/util";
 import { HAI_ORDER } from "../const/HaiOrder";
@@ -124,7 +129,7 @@ export const TehaiView = () => {
 
   return (
     <Card sx={{ px: 3, pt: 3, pb: 1, width: "900px" }}>
-      {tehai.length < 1 ||
+      {tehai.length === 0 ||
       tehai.filter((tile) => diffShanten[tile]).length !== tehai.length ? (
         <div>loading...</div>
       ) : (
@@ -298,16 +303,10 @@ const generateNewHai = (mode) => {
   const intHai = haiList[mode][getRandomInt(0, haiList[mode].length)];
 
   let hai = "";
-  if (intHai <= 8) {
-    hai += "m" + (intHai + 1);
-  } else if (intHai <= 17) {
-    hai += "p" + ((intHai % 9) + 1);
-  } else if (intHai <= 26) {
-    hai += "s" + ((intHai % 9) + 1);
-  } else if (intHai <= 30) {
-    hai += "w" + ((intHai % 9) + 1);
-  } else {
-    hai += "z" + ((intHai % 9) - 3);
-  }
+  if (intHai <= 8) hai += "m" + (intHai + 1);
+  else if (intHai <= 17) hai += "p" + ((intHai % 9) + 1);
+  else if (intHai <= 26) hai += "s" + ((intHai % 9) + 1);
+  else if (intHai <= 30) hai += "w" + ((intHai % 9) + 1);
+  else hai += "z" + ((intHai % 9) - 3);
   return hai;
 };

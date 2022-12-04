@@ -1,15 +1,13 @@
 import { memo } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogContentText,
-  IconButton,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { useRecoilValue } from "recoil";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
-import { useRecoilValue } from "recoil";
 import { allTileState } from "../atoms/atoms";
 
 export const WinDialog = memo((props) => {
@@ -19,7 +17,7 @@ export const WinDialog = memo((props) => {
   const noDupYaku = {
     chanta: ["junchan", "honroto"],
     honitu: ["chinitu"],
-    ipeko: ["ryanpeko", "chitoitu"],
+    ipeko: ["ryanpeko", "chitoitu", "sananko"],
     chitoitu: ["ryanpeko"],
   };
 
