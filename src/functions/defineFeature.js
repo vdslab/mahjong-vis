@@ -124,6 +124,7 @@ export const defineFeature = (tehai) => {
     }
   }
   featureList["sanshoku_dojun_structure"] = sanshokuStructure(res);
+  featureList["sananko_structure"] = sanankoStructure(res);
   for (const type of ["m", "p", "s"]) {
     const tmpFeature = {
       ichikyu_kotu: 0,
@@ -514,6 +515,50 @@ const isshokuStructure = (data, counter, featureList) => {
   );
   featureList["same_color_cnt"] = same_color_cnt;
 };
+
+// 三暗刻の構造を持つかどうか(MAX:60)
+const sanankoStructure = (data) => {
+  let kotuCnt = 0;
+  let toituCnt = 0;
+  for (const i of Object.values(data)) {
+    let a = 0;
+    let b = 0;
+    for (const j of i) {
+      let tmpKotuCnt = 0;
+      let tmpToituCnt = 0;
+      for (const k of j) {
+        if (k[0] === k[1]) {
+          if (k.length === 3) tmpKotuCnt += 1;
+          else if (k.length === 2) tmpToituCnt += 1;
+        }
+      }
+      if (a < tmpKotuCnt) {
+        a = tmpKotuCnt;
+        b = tmpToituCnt;
+      }
+    }
+    kotuCnt += a;
+    toituCnt += b;
+  }
+  return kotuCnt * 20 + Math.min(3 - kotuCnt, toituCnt) * 15;
+};
+
+/*
+333
+
+332
+
+322
+
+222
+33
+
+32
+
+22
+3
+2
+*/
 
 // 分解のソート
 const sortDecomposition = (decompositions) => {

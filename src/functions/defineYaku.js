@@ -133,8 +133,7 @@ export const defineYaku = (featureList, haiLen) => {
       Math.min(3 - featureList["toitoi_sananko_cnt"], tmpChitoituCnt) * 15) /
     3;
   // 構造点付与(60点)
-  yakuList["sananko"] +=
-    tmpKotuCnt * 20 + Math.min(3 - tmpKotuCnt, tmpToituCnt) * 15;
+  yakuList["sananko"] += featureList["sananko_structure"];
 
   // 一通
   // 枚数点付与(40点)

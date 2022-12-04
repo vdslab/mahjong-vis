@@ -50,4 +50,5 @@ export const FEATURE_LIST = [
   "honitu_score",
   "chinitu_score",
   "is_pinfu",
+  "sananko_structure",
 ];

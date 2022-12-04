@@ -60,7 +60,6 @@ export const ChangeMode = memo(() => {
           <Button
             variant="contained"
             onClick={() => {
-              console.log(selected);
               setOpen(false);
               setHaiMode(selected);
               setDimension(DIMENSIONS[selected]);
