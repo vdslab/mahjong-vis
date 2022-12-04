@@ -201,7 +201,6 @@ export const defineFeature = (tehai) => {
       }
     }
   }
-
   return { shanten, res: sortDecomposition(res), featureList, ryanmenRes };
 };
 

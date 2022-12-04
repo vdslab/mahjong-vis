@@ -205,6 +205,11 @@ export const defineYaku = (featureList, haiLen) => {
       yakuList[key] = 100;
     }
   }
+  if (haiLen === 14) {
+    for (const name of ["tanyao", "honitu", "chitoitu"]) {
+      console.log(name, yakuList[name]);
+    }
+  }
   return yakuList;
 };
 

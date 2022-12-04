@@ -11,15 +11,19 @@ import { useState, useEffect } from "react";
 import { useInterval } from "../functions/useInterval";
 
 const Home = () => {
-  const [isRunning, setIsRunning] = useState(true);
+  const [isRunning, setIsRunning] = useState(false);
+  const [test, setTest] = useState(false);
   const [count, setCount] = useState(0);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
   const [dist, setDist] = useState(0);
-  useInterval(() => setCount((prev) => prev + 1), isRunning ? 10000 : null);
+  useInterval(() => setCount((prev) => prev + 1), isRunning ? 1000 : null);
 
   const handleIsRunningChange = (event) => {
     setIsRunning(event.target.checked);
+  };
+  const handleTestChange = (event) => {
+    setTest(event.target.checked);
   };
 
   const handleMouseMove = (event) => {
@@ -33,9 +37,16 @@ const Home = () => {
   };
 
   useEffect(() => {
-    console.log(`距離:${dist}`);
-    console.log(`計測時間:${count * 10}秒`);
-  }, [count]);
+    if (!isRunning) {
+      console.log(`距離:${dist}`);
+      console.log(`計測時間:${count}秒`);
+    } else {
+      setDist(0);
+      setX(0);
+      setY(0);
+      setCount(0);
+    }
+  }, [isRunning]);
 
   const viewHeight = 380 - 12;
   return (
@@ -50,6 +61,8 @@ const Home = () => {
         onChange={handleIsRunningChange}
       />
       Running
+      <input type="checkbox" checked={test} onChange={handleTestChange} />
+      Test
       <Box
         sx={{
           display: "flex",
