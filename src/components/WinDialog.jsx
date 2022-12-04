@@ -13,12 +13,13 @@ import { allTileState } from "../atoms/atoms";
 export const WinDialog = memo((props) => {
   const { onClose, open } = props;
   const { yaku } = useRecoilValue(allTileState);
+  const displayYaku = Object.keys(yaku).filter((key) => yaku[key] === 100);
 
   const noDupYaku = {
-    chanta: ["junchan", "honroto"],
-    honitu: ["chinitu"],
-    ipeko: ["ryanpeko", "chitoitu", "sananko"],
-    chitoitu: ["ryanpeko"],
+    chanta: new Set(["junchan", "honroto"]),
+    honitu: new Set(["chinitu"]),
+    ipeko: new Set(["ryanpeko", "chitoitu", "sananko"]),
+    chitoitu: new Set(["ryanpeko"]),
   };
 
   return (
@@ -31,26 +32,26 @@ export const WinDialog = memo((props) => {
       </Stack>
       <DialogContent>
         <Stack sx={{ p: 1, minWidth: 200 }}>
-          {Object.keys(yaku).length !== 0 &&
-            Object.keys(yaku)
-              .filter((key) => yaku[key] === 100)
-              .map((key, idx) => {
-                if (Object.keys(noDupYaku).includes(key)) {
-                  for (const dupYaku of noDupYaku[key]) {
-                    if (yaku[dupYaku] === 100) {
-                      return;
-                    }
+          {displayYaku.length ? (
+            displayYaku.map((key, idx) => {
+              if (Object.keys(noDupYaku).includes(key)) {
+                for (const dupYaku of noDupYaku[key]) {
+                  if (yaku[dupYaku] === 100) {
+                    return;
                   }
                 }
-                return (
-                  <DialogContentText
-                    key={idx}
-                    sx={{ p: 1, textAlign: "center" }}
-                  >
-                    {YAKU_DESCRIPTION[key]["name"]}
-                  </DialogContentText>
-                );
-              })}
+              }
+              return (
+                <DialogContentText key={idx} sx={{ p: 1, textAlign: "center" }}>
+                  {YAKU_DESCRIPTION[key]["name"]}
+                </DialogContentText>
+              );
+            })
+          ) : (
+            <DialogContentText sx={{ p: 1, textAlign: "center" }}>
+              ツモ
+            </DialogContentText>
+          )}
         </Stack>
       </DialogContent>
     </Dialog>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSetRecoilState, useRecoilValue } from "recoil";
+import { useSetRecoilState, useRecoilValue, useRecoilState } from "recoil";
 import {
   shantenState,
   tehaiState,
@@ -7,6 +7,7 @@ import {
   diffShantenState,
   selectedTileState,
   allTileState,
+  ryanmenState,
   decompositionsState,
   dimensionState,
 } from "../atoms/atoms";
@@ -45,6 +46,7 @@ export const Radviz = () => {
   const setDiffShanten = useSetRecoilState(diffShantenState);
   const setAllTile = useSetRecoilState(allTileState);
   const setDecompositions = useSetRecoilState(decompositionsState);
+  const [ryanmen, setRyanmen] = useRecoilState(ryanmenState);
 
   const [points, setPoints] = useState([]);
   const [radvizCircle, setRadvizCircle] = useState(null);
@@ -67,11 +69,11 @@ export const Radviz = () => {
     if (tehai.length !== 0) {
       // 14枚の手牌の特徴量と向聴数を計算
       const { featureList, shanten } = defineFeature(tehai);
-      const yaku = defineYaku(featureList, 14, 0);
+      featureList["is_pinfu"] = ryanmen.has(tehai[tehai.length - 1]) ? 10 : 0;
+      const yaku = defineYaku(featureList, 14);
       setAllTile({ shanten, yaku });
 
       // radviz上の点の座標
-      // 配列の末尾が現在の点の座標
       const points = [];
 
       // 現在持っている13枚の手牌の特徴量とツモ牌を含めて任意の牌を切ったときの手牌の特徴量と向聴数の差
@@ -82,9 +84,13 @@ export const Radviz = () => {
       const tehaiShanten = {};
       // 14枚のうち13枚を抜き出したときの手牌分解
       const dec = {};
+      const tehaiJson = JSON.stringify(tehai.slice(0, -1));
       for (const [key, value] of Object.entries(deleteElement(tehai))) {
-        const { featureList, shanten, res } = defineFeature(value);
-        const yaku = defineYaku(featureList, value.length, 0);
+        const { featureList, shanten, ryanmenRes, res } = defineFeature(value);
+        if (JSON.stringify(value) === tehaiJson) {
+          setRyanmen(ryanmenRes);
+        }
+        const yaku = defineYaku(featureList, value.length);
         tehaiFeature[key] = yaku;
         tehaiShanten[key] = shanten;
         dec[key] = res;
@@ -167,8 +173,8 @@ export const Radviz = () => {
                     radvizCircle && (
                       <img
                         src={changeHaiName2Path(radvizCircle)}
-                        width="40"
-                        height="55"
+                        width="30"
+                        height="40"
                       />
                     )
                   }
