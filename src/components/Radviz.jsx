@@ -11,6 +11,7 @@ import {
   decompositionsState,
   dimensionState,
 } from "../atoms/atoms";
+import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Tooltip from "@mui/material/Tooltip";
 import { defineFeature } from "../functions/defineFeature";
@@ -20,21 +21,19 @@ import { changeHaiName2Path } from "../functions/util";
 
 const radviz = (dim, data, r) => {
   const n = dim.length;
-  let a = 0;
-  let b = 0;
-  let c = 0;
+  let x = 0;
+  let y = 0;
+  let i = 0;
   const dt = (2 * Math.PI) / n;
   for (let j = 0; j < n; ++j) {
     const v = data[dim[j]];
-    a += v * Math.cos(dt * j);
-    b += v * Math.sin(dt * j);
-    c += v;
+    x += v * Math.cos(dt * j);
+    y += v * Math.sin(dt * j);
+    i += v;
   }
-  a *= r / c;
-  b *= r / c;
-  const d = Math.sqrt(a * a + b * b);
-  const t = Math.atan2(b, a);
-  return { x: d * Math.cos(t), y: d * Math.sin(t) };
+  x *= r / i;
+  y *= r / i;
+  return { x, y };
 };
 
 export const Radviz = () => {
@@ -52,8 +51,8 @@ export const Radviz = () => {
   const [radvizCircle, setRadvizCircle] = useState(null);
 
   // 図の大きさ
-  const contentWidth = 850;
-  const contentHeight = 876;
+  const contentWidth = 800;
+  const contentHeight = 800;
   const r = contentWidth / 2;
   const margin = 60;
   const lineColor = "#444";
@@ -123,15 +122,20 @@ export const Radviz = () => {
   }, [tehai]);
 
   return (
-    <Card sx={{ p: 1, height: "368px", width: "100%" }}>
+    <Card
+      sx={{
+        p: 1,
+        height: "100%",
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       {tehai.length === 0 || !dimension ? (
         <div>loading...</div>
       ) : (
-        <svg
-          viewBox={`0 0 ${contentWidth} ${contentHeight}`}
-          width="334"
-          height="344"
-        >
+        <svg viewBox={`0 0 ${contentWidth} ${contentHeight}`}>
           <g transform={`translate(${contentWidth / 2},${contentHeight / 2})`}>
             <circle r={r - margin} fill="none" stroke={lineColor} />
             {dimension.map((property, i) => {
@@ -194,35 +198,37 @@ export const Radviz = () => {
               </g>
             ))}
           </g>
-          <g
-            transform={`translate(${contentWidth - 130}, ${
-              contentHeight - 70
-            })`}
-          >
-            <circle cx="0" cy="0" r="10" fill="red" />
-            <text
-              x="20"
-              y="0"
-              fontSize="20"
-              dominantBaseline="middle"
-              style={{ userSelect: "none" }}
-            >
-              現在の位置
-            </text>
-            <circle cx="0" cy="30" r="10" fill="green" />
-            <text
-              x="20"
-              y="30"
-              fontSize="20"
-              dominantBaseline="middle"
-              style={{ userSelect: "none" }}
-            >
-              予測位置
-            </text>
-          </g>
+          <Legends x={contentWidth - 130} y={contentHeight - 50} />
         </svg>
       )}
     </Card>
+  );
+};
+
+const Legends = ({ x, y }) => {
+  return (
+    <g transform={`translate(${x}, ${y})`}>
+      <circle cx="0" cy="0" r="10" fill="red" />
+      <text
+        x="20"
+        y="0"
+        fontSize="20"
+        dominantBaseline="middle"
+        style={{ userSelect: "none" }}
+      >
+        現在の位置
+      </text>
+      <circle cx="0" cy="30" r="10" fill="green" />
+      <text
+        x="20"
+        y="30"
+        fontSize="20"
+        dominantBaseline="middle"
+        style={{ userSelect: "none" }}
+      >
+        予測位置
+      </text>
+    </g>
   );
 };
 
