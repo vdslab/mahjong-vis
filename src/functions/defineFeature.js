@@ -281,9 +281,7 @@ const cntFeature = (counter, featureList, rleList) => {
             featureList["kaze_cnt"] += cnt;
           }
         }
-        featureList[`zi_${name}`] += 1;
       }
-      featureList["zi_cnt"] += cnt;
     }
   }
 

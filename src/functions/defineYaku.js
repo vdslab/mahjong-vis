@@ -1,16 +1,23 @@
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 
 export const defineYaku = (featureList, haiLen) => {
+  if (haiLen === 14) console.log(featureList);
   const yakuList = makeObject(Object.keys(YAKU_DESCRIPTION));
 
+  const ziToituCnt =
+    featureList["zikaze_bakaze_toitu"] +
+    featureList["kaze_toitu"] +
+    featureList["sangen_toitu"];
+  const ziKotuCnt =
+    featureList["zikaze_bakaze_kotu"] +
+    featureList["kaze_kotu"] +
+    featureList["sangen_kotu"];
+  const ziCnt =
+    featureList["zikaze_bakaze_cnt"] +
+    featureList["kaze_cnt"] +
+    featureList["sangen_cnt"];
   const tmpKotuCnt =
-    featureList["zi_kotu"] +
-    featureList["ichikyu_kotu"] +
-    featureList["chunchan_kotu"];
-  const tmpToituCnt =
-    featureList["zi_toitu"] +
-    featureList["ichikyu_toitu"] +
-    featureList["chunchan_toitu"];
+    ziKotuCnt + featureList["ichikyu_kotu"] + featureList["chunchan_kotu"];
   const tmpShuntuCnt =
     featureList["ichikyu_shuntu"] + featureList["chunchan_shuntu"];
   const tmpRyanmenCnt =
@@ -42,9 +49,7 @@ export const defineYaku = (featureList, haiLen) => {
   // 枚数付与点(30点)
   yakuList["tanyao"] =
     (Math.max(
-      featureList["chunchan_cnt"] -
-        featureList["ichikyu_cnt"] -
-        featureList["zi_cnt"],
+      featureList["chunchan_cnt"] - featureList["ichikyu_cnt"] - ziCnt,
       0
     ) /
       haiLen) *
@@ -149,27 +154,23 @@ export const defineYaku = (featureList, haiLen) => {
   // 枚数付与点(30点)
   yakuList["honroto"] =
     (Math.max(
-      featureList["ichikyu_cnt"] +
-        featureList["zi_cnt"] -
-        featureList["chunchan_cnt"],
+      featureList["ichikyu_cnt"] + ziCnt - featureList["chunchan_cnt"],
       0
     ) /
       haiLen) *
     30;
   // 構造付与点(70点)
   yakuList["honroto"] += Math.max(
-    (featureList["zi_kotu"] + featureList["ichikyu_kotu"]) * 15 +
-      (featureList["zi_toitu"] + featureList["ichikyu_toitu"]) * 10,
+    (ziKotuCnt + featureList["ichikyu_kotu"]) * 15 +
+      (ziToituCnt + featureList["ichikyu_toitu"]) * 10,
     (featureList["chitoitu_ichikyu_cnt"] + featureList["chitoitu_zi_cnt"]) * 10
   );
 
   // チャンタ
   yakuList["chanta"] =
-    (featureList["ichikyu_kotu"] +
-      featureList["ichikyu_shuntu"] +
-      featureList["zi_kotu"]) *
+    (featureList["ichikyu_kotu"] + featureList["ichikyu_shuntu"] + ziKotuCnt) *
       22 +
-    (featureList["ichikyu_toitu"] + featureList["zi_toitu"]) * 12 +
+    (featureList["ichikyu_toitu"] + ziToituCnt) * 12 +
     (featureList["penchan"] + featureList["13_79_kanchan"]) * 8 +
     featureList["2-8_kanchan"] * 4 +
     featureList["23_78_ryanmen"] * 2;
@@ -184,8 +185,7 @@ export const defineYaku = (featureList, haiLen) => {
 
   // 混一色
   // 枚数付与点(30点)
-  yakuList["honitu"] =
-    ((featureList["same_color_cnt"] + featureList["zi_cnt"]) / haiLen) * 30;
+  yakuList["honitu"] = ((featureList["same_color_cnt"] + ziCnt) / haiLen) * 30;
   // 構造付与点(70点)
   yakuList["honitu"] += featureList["honitu_score"];
   // 清一色
