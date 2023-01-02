@@ -23,9 +23,7 @@ export const defineYaku = (featureList, haiLen) => {
   const tmpRyanmenCnt =
     featureList["3-7_ryanmen"] + featureList["23_78_ryanmen"];
   const tmpChitoituCnt =
-    featureList["chitoitu_chunchan_cnt"] +
-    featureList["chitoitu_ichikyu_cnt"] +
-    featureList["chitoitu_zi_cnt"];
+    featureList["chitoitu_chunchan_cnt"] + featureList["chitoitu_yaochu_cnt"];
 
   // 自風場風
   // TODO:浮き
@@ -55,6 +53,7 @@ export const defineYaku = (featureList, haiLen) => {
       haiLen) *
     30;
   // 構造付与点(70点)
+  // 七対子と複合するため別途計算している
   yakuList["tanyao"] += Math.max(
     (featureList["chunchan_shuntu"] + featureList["chunchan_kotu"]) * 15 +
       featureList["chunchan_toitu"] * 10 +
@@ -160,10 +159,11 @@ export const defineYaku = (featureList, haiLen) => {
       haiLen) *
     30;
   // 構造付与点(70点)
+  // 七対子と複合するため別途計算している
   yakuList["honroto"] += Math.max(
     (ziKotuCnt + featureList["ichikyu_kotu"]) * 15 +
       (ziToituCnt + featureList["ichikyu_toitu"]) * 10,
-    (featureList["chitoitu_ichikyu_cnt"] + featureList["chitoitu_zi_cnt"]) * 10
+    featureList["chitoitu_yaochu_cnt"] * 10
   );
 
   // チャンタ
@@ -187,12 +187,12 @@ export const defineYaku = (featureList, haiLen) => {
   // 枚数付与点(30点)
   yakuList["honitu"] = ((featureList["same_color_cnt"] + ziCnt) / haiLen) * 30;
   // 構造付与点(70点)
-  yakuList["honitu"] += featureList["honitu_score"];
+  yakuList["honitu"] += featureList["honitu_structure"];
   // 清一色
   // 枚数付与点(30点)
   yakuList["chinitu"] = (featureList["same_color_cnt"] / haiLen) * 30;
   // 構造付与点(70点)
-  yakuList["chinitu"] += featureList["chinitu_score"];
+  yakuList["chinitu"] += featureList["chinitu_structure"];
 
   // 範囲外を丸める関数(error検知用)
   for (const key of Object.keys(yakuList)) {

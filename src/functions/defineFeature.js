@@ -35,21 +35,6 @@ export const defineFeature = (tehai) => {
     if (tile[0] !== "w" && tile[0] !== "z") rleList[tile[0]][tile[1]] += 1;
   }
   cntFeature(counter, featureList, rleList);
-  // 七対子は面子分解に寄らない
-  // 七対子のときの対子量計算
-  for (const [tile, cnt] of Object.entries(counter)) {
-    const type = tile[0];
-    const num = tile[1];
-    if (cnt >= 2) {
-      if (ziSet.has(type)) featureList["chitoitu_zi_cnt"] += 1;
-      else {
-        if (num === "1" || num === "9")
-          featureList["chitoitu_ichikyu_cnt"] += 1;
-        else featureList["chitoitu_chunchan_cnt"] += 1;
-        featureList[`chitoitu_${type}_cnt`] += 1;
-      }
-    }
-  }
   // 暗刻になりえる枚数持っているかどうかのカウント
   featureList["toitoi_sananko_cnt"] = arrayFilterLength(
     Object.values(counter),
@@ -480,36 +465,48 @@ const sanshokuStructure = (data) => {
 
 // 一色手の特徴量計算
 const isshokuStructure = (data, counter, featureList) => {
-  let chinitu_score = 0;
+  let chinitu_structure = 0;
   let maxType = "m";
   for (const type of ["m", "p", "s"]) {
     let tmp =
       data[type]["mentu"] * 15 +
       data[type]["mentuCandidate"] * 7 +
       (data["head"]?.[0] === type ? 10 : 0);
-    if (chinitu_score < tmp) {
-      chinitu_score = tmp;
+    if (chinitu_structure < tmp) {
+      chinitu_structure = tmp;
       maxType = type;
     }
   }
-  let honitu_score = chinitu_score + (ziSet.has(data["head"]?.[0]) ? 10 : 0);
+  let honitu_structure =
+    chinitu_structure + (ziSet.has(data["head"]?.[0]) ? 10 : 0);
   let same_color_cnt = data["head"]?.[0] === maxType ? 2 : 0;
   for (const [tile, cnt] of Object.entries(counter)) {
     const type = tile[0];
     if (ziSet.has(type)) {
-      if (cnt === 2) honitu_score += 7;
-      else if (cnt >= 3) honitu_score += 15;
+      if (cnt === 2) honitu_structure += 7;
+      else if (cnt >= 3) honitu_structure += 15;
     } else if (type === maxType) same_color_cnt += cnt;
   }
 
-  featureList["chinitu_score"] = Math.max(
-    chinitu_score,
-    featureList[`chitoitu_${maxType}_cnt`] * 10
-  );
-  featureList["honitu_score"] = Math.max(
-    honitu_score,
-    (featureList[`chitoitu_${maxType}_cnt`] + featureList[`chitoitu_zi_cnt`]) *
-      10
+  // 七対子のときの対子量計算
+  let ziCnt = 0;
+  let typeCnt = 0;
+  for (const [tile, cnt] of Object.entries(counter)) {
+    if (cnt <= 1) continue;
+    const type = tile[0];
+    const num = tile[1];
+    const score = (6 - cnt) / 4;
+    if (num === "1" || num === "9" || ziSet.has(type))
+      featureList["chitoitu_yaochu_cnt"] += score;
+    else featureList["chitoitu_chunchan_cnt"] += score;
+    if (type === maxType) typeCnt += score;
+    else if (ziSet.has(type)) ziCnt += score;
+  }
+
+  featureList["chinitu_structure"] = Math.max(chinitu_structure, typeCnt * 10);
+  featureList["honitu_structure"] = Math.max(
+    honitu_structure,
+    (typeCnt + ziCnt) * 10
   );
   featureList["same_color_cnt"] = same_color_cnt;
 };
