@@ -1,5 +1,5 @@
 import { SuteHaiView } from "../components/SuteHaiView";
-import { AssessmentView } from "../components/AssessmentView";
+import { Heatmap } from "../components/Heatmap";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Radviz } from "../components/Radviz";
@@ -37,7 +37,7 @@ const Home = () => {
           <Radviz />
         </Box>
         <Box sx={{ width: "420px", height: viewHeight }}>
-          <AssessmentView />
+          <Heatmap />
         </Box>
       </Box>
       <Box

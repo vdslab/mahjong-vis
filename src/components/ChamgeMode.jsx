@@ -35,7 +35,7 @@ export const ChangeMode = memo(() => {
       <FormControl variant="outlined">
         <NativeSelect
           value={haiMode}
-          onChange={(e) => handleChange(e.target.value)}
+          onChange={(e) => handleChange(Number(e.target.value))}
         >
           <option value={0}>すべての牌</option>
           <option value={1}>混一色</option>

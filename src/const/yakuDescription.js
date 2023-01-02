@@ -22,8 +22,7 @@ export const YAKU_DESCRIPTION = {
   },
   pinfu: {
     name: "平和",
-    description:
-      "順子が4つ、頭が役牌以外、待ちが両面待ちであることを満たすと成立する",
+    description: "順子が4つ、頭が役牌以外、待ちが両面待ちで和了する",
     han: 1,
     kuiHan: 1,
     menzen: true,
@@ -37,7 +36,7 @@ export const YAKU_DESCRIPTION = {
   },
   sanshoku_doko: {
     name: "三色同刻",
-    description: "数牌の刻子を3種類とも同じ数字で揃える",
+    description: "萬子、筒子、索子それぞれ同じ数牌で刻子を作る",
     han: 2,
     kuiHan: 2,
     menzen: false,
@@ -51,7 +50,7 @@ export const YAKU_DESCRIPTION = {
   },
   chitoitu: {
     name: "七対子",
-    description: "対子を7種類揃える（但し、同じ牌4枚では成立しない）",
+    description: "7種類の対子を揃える",
     han: 2,
     kuiHan: 2,
     menzen: true,
@@ -115,8 +114,7 @@ export const YAKU_DESCRIPTION = {
   },
   ryanpeko: {
     name: "二盃口",
-    description:
-      "同じ種類且つ同じ数字の順子が二つ揃い、且つそれを2種類揃える",
+    description: "同じ種類且つ同じ数字の順子が二つ揃い、且つそれを2種類揃える",
     han: 3,
     kuiHan: 3,
     menzen: true,

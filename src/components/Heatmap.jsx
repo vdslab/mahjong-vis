@@ -5,6 +5,7 @@ import {
   yakuValueState,
   selectedTileState,
   allTileState,
+  haiModeState,
   dimensionState,
 } from "../atoms/atoms";
 import Card from "@mui/material/Card";
@@ -17,12 +18,14 @@ const dataWidth = 79;
 const contentX = 180;
 const contentY = 80;
 const contentWidth = 1500;
-const contentHeight = 1395;
+const contentHeight = 1310;
 const legendWidth = 150;
 
-export const AssessmentView = () => {
+export const Heatmap = () => {
   const yakuValue = useRecoilValue(yakuValueState);
-
+  const haiMode = useRecoilValue(haiModeState);
+  const dimension = useRecoilValue(dimensionState);
+  const displayDimension = haiMode ? dimension : Object.keys(YAKU_DESCRIPTION);
   const strokeColor = "#888";
   const colorList = ["#e6ab02", "#666666", "#a6761d"];
   const colorScale = useCallback(
@@ -32,32 +35,27 @@ export const AssessmentView = () => {
       .range(["orangered", "#dcdcdc", "dodgerblue"]),
     []
   );
+
   const xScale = d3
     .scaleLinear()
     .domain([0, Object.keys(yakuValue).length])
-    .range([0, contentWidth - contentX - legendWidth])
-    .nice();
-
+    .range([0, contentWidth - contentX - legendWidth]);
   const yScale = d3
     .scaleLinear()
-    .domain([0, Object.keys(YAKU_DESCRIPTION).length])
-    .range([contentY + 5, contentHeight - 20])
-    .nice();
+    .domain([0, displayDimension.length])
+    .range([contentY + 10, contentHeight]);
 
   return (
     <Card sx={{ p: 1, height: "100%", width: "100%" }}>
       {Object.keys(yakuValue).length === 0 ? (
         <div>loading...</div>
       ) : (
-        <svg
-          viewBox={`0 0 ${contentWidth} ${contentHeight}`}
-          width="400px"
-          height="390px"
-        >
+        <svg viewBox={`0 0 ${contentWidth} ${contentHeight}`}>
           <VerticalAxis
             strokeColor={strokeColor}
             scale={yScale}
             colorList={colorList}
+            dimension={displayDimension}
           />
           <HorizontalAxis
             tiles={Object.keys(yakuValue)}
@@ -78,7 +76,7 @@ export const AssessmentView = () => {
   );
 };
 
-const VerticalAxis = memo(({ strokeColor, scale, colorList }) => {
+const VerticalAxis = memo(({ strokeColor, scale, colorList, dimension }) => {
   const allTile = useRecoilValue(allTileState);
   const [yakuRank, setYakuRank] = useState([]);
 
@@ -110,41 +108,40 @@ const VerticalAxis = memo(({ strokeColor, scale, colorList }) => {
         x1={contentX - 10}
         y1={0}
         x2={contentX - 10}
-        y2={contentHeight - 100}
+        y2={contentHeight}
         stroke={strokeColor}
       />
-      {Object.keys(YAKU_DESCRIPTION).map((name, idx) => {
+      {dimension.map((name, idx) => {
         let rankIdx = yakuRank.filter((item) => item["name"] === name)[0];
 
         return (
-          <g key={idx} transform={`translate(${contentX}, ${scale(idx) + 30})`}>
-            <Tooltip
-              title={YAKU_DESCRIPTION[name]["description"]}
-              placement="top-start"
-              arrow
-              disableInteractive
-            >
-              <g>
-                {rankIdx && (
-                  <circle
-                    cx="-160"
-                    cy="0"
-                    r="10"
-                    fill={colorList[rankIdx["rank"]]}
-                  />
-                )}
-                <text
-                  x="-20"
-                  textAnchor="end"
-                  dominantBaseline="central"
-                  fontSize="30"
-                  style={{ userSelect: "none" }}
-                >
-                  {YAKU_DESCRIPTION[name]["name"]}
-                </text>
-              </g>
-            </Tooltip>
-          </g>
+          <Tooltip
+            title={YAKU_DESCRIPTION[name]["description"]}
+            placement="top-start"
+            arrow
+            disableInteractive
+            key={idx}
+          >
+            <g transform={`translate(${contentX}, ${scale(idx) + 30})`}>
+              {rankIdx && (
+                <circle
+                  cx="-160"
+                  cy="0"
+                  r="10"
+                  fill={colorList[rankIdx["rank"]]}
+                />
+              )}
+              <text
+                x="-20"
+                textAnchor="end"
+                dominantBaseline="central"
+                fontSize="30"
+                style={{ userSelect: "none" }}
+              >
+                {YAKU_DESCRIPTION[name]["name"]}
+              </text>
+            </g>
+          </Tooltip>
         );
       })}
     </g>
@@ -222,7 +219,7 @@ const RankLegends = memo(({ colorList }) => {
   return (
     <g
       transform={`translate(${contentWidth - legendWidth + 25}, ${
-        contentHeight - 350
+        contentHeight - 220
       })`}
       style={{ userSelect: "none" }}
     >
@@ -262,12 +259,12 @@ const GradationLegends = memo(({ colorScale }) => {
         <text y={455} fontSize="30" textAnchor="start">
           0
         </text>
-        <text y={835} fontSize="30" textAnchor="start">
+        <text y={915} fontSize="30" textAnchor="start">
           -100
         </text>
       </g>
       <g transform={`rotate(90) translate(10 , -50)`}>
-        <rect width={830} height="50" fill="url('#gradient')" />
+        <rect width={900} height="50" fill="url('#gradient')" />
       </g>
     </g>
   );

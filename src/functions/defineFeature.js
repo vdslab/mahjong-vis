@@ -502,7 +502,6 @@ const isshokuStructure = (data, counter, featureList) => {
     if (type === maxType) typeCnt += score;
     else if (ziSet.has(type)) ziCnt += score;
   }
-  console.log(featureList["chitoitu_chunchan_cnt"]);
 
   featureList["chinitu_structure"] = Math.max(chinitu_structure, typeCnt * 10);
   featureList["honitu_structure"] = Math.max(
