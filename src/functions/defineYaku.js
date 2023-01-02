@@ -1,3 +1,4 @@
+import { CHITOITU_GRAD, SANSHOKU_DOKO_GRAD } from "../const/score";
 import { YAKU_DESCRIPTION } from "../const/yakuDescription";
 
 export const defineYaku = (featureList, haiLen) => {
@@ -24,7 +25,6 @@ export const defineYaku = (featureList, haiLen) => {
     featureList["3-7_ryanmen"] + featureList["23_78_ryanmen"];
   const tmpChitoituCnt =
     featureList["chitoitu_chunchan_cnt"] + featureList["chitoitu_yaochu_cnt"];
-
   // 自風場風
   // TODO:浮き
   yakuList["zikaze_bakaze"] =
@@ -91,14 +91,7 @@ export const defineYaku = (featureList, haiLen) => {
   //     featureList["kaze_kotu"] * 20);
 
   // 七対子
-  yakuList["chitoitu"] = featureValue(tmpChitoituCnt, {
-    7: 100,
-    6: 95,
-    5: 80,
-    4: 50,
-    3: 20,
-    2: 10,
-  });
+  yakuList["chitoitu"] = featureValue(tmpChitoituCnt, CHITOITU_GRAD);
 
   // 一盃口
   // 枚数点付与(30点)
@@ -118,17 +111,10 @@ export const defineYaku = (featureList, haiLen) => {
   yakuList["sanshoku_dojun"] += featureList["sanshoku_dojun_structure"];
   // 三色同刻
   // 枚数点付与(40点)
-  yakuList["sanshoku_doko"] = featureValue(featureList["sanshoku_doko_score"], {
-    9: 100,
-    8: 90,
-    7: 80,
-    6: 60,
-    5: 40,
-    4: 20,
-    3: 10,
-    2: 5,
-    1: 2,
-  });
+  yakuList["sanshoku_doko"] = featureValue(
+    featureList["sanshoku_doko_score"],
+    SANSHOKU_DOKO_GRAD
+  );
 
   // 三暗刻
   // 枚数点付与(40点)
@@ -215,5 +201,8 @@ const makeObject = (array, init = 0) => {
 };
 
 const featureValue = (cnt, d) => {
-  return d[cnt] || 0;
+  for (const [key, value] of d) {
+    if (key <= cnt) return value;
+  }
+  return 0;
 };

@@ -495,13 +495,14 @@ const isshokuStructure = (data, counter, featureList) => {
     if (cnt <= 1) continue;
     const type = tile[0];
     const num = tile[1];
-    const score = (6 - cnt) / 4;
+    const score = (cnt === 2 ? 4 : cnt === 3 ? 2 : 1) / 4;
     if (num === "1" || num === "9" || ziSet.has(type))
       featureList["chitoitu_yaochu_cnt"] += score;
     else featureList["chitoitu_chunchan_cnt"] += score;
     if (type === maxType) typeCnt += score;
     else if (ziSet.has(type)) ziCnt += score;
   }
+  console.log(featureList["chitoitu_chunchan_cnt"]);
 
   featureList["chinitu_structure"] = Math.max(chinitu_structure, typeCnt * 10);
   featureList["honitu_structure"] = Math.max(
