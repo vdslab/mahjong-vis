@@ -119,7 +119,7 @@ export const defineYaku = (featureList, haiLen) => {
   yakuList["honroto"] += Math.max(
     (ziKotuCnt + featureList["ichikyu_kotu"]) * 15 +
       (ziToituCnt + featureList["ichikyu_toitu"]) * 10,
-    featureList["chitoitu_yaochu_cnt"] * 10
+    (featureValue(featureList["chitoitu_yaochu_cnt"], CHITOITU_GRAD) * 7) / 10
   );
 
   // チャンタ
