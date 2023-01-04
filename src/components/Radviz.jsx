@@ -68,7 +68,7 @@ export const Radviz = () => {
     if (tehai.length !== 0) {
       // 14枚の手牌の特徴量と向聴数を計算
       const { featureList, shanten } = defineFeature(tehai);
-      featureList["is_pinfu"] = ryanmen.has(tehai[tehai.length - 1]) ? 10 : 0;
+      featureList["is_pinfu"] = ryanmen.has(tehai[tehai.length - 1]) ? 1 : 0;
       const yaku = defineYaku(featureList, 14);
       setAllTile({ shanten, yaku });
 

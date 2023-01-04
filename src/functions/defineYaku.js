@@ -18,8 +18,6 @@ export const defineYaku = (featureList, haiLen) => {
     featureList["kaze_cnt"] +
     featureList["sangen_cnt"];
   const yaochuCnt = ziCnt + featureList["ichikyu_cnt"];
-  const tmpKotuCnt =
-    ziKotuCnt + featureList["ichikyu_kotu"] + featureList["chunchan_kotu"];
   const tmpShuntuCnt =
     featureList["ichikyu_shuntu"] + featureList["chunchan_shuntu"];
   const tmpRyanmenCnt =
@@ -64,29 +62,18 @@ export const defineYaku = (featureList, haiLen) => {
 
   // 平和
   yakuList["pinfu"] =
-    tmpShuntuCnt * 21 +
+    tmpShuntuCnt * 18 +
     tmpRyanmenCnt * 5 +
-    (featureList["ichikyu_toitu"] + featureList["chunchan_toitu"]) * 6 +
-    featureList["is_pinfu"] -
-    tmpKotuCnt * 21;
-  // yakuList["pinfu"] =
-  //   pinfu(
-  //     Math.round(
-  //       featureList["chitoitu_cnt"] - featureList["toitoi_sananko_cnt"]
-  //     ),
-  //     Math.round(
-  //       featureList["ichikyu_shuntu"] + featureList["chunchan_shuntu"]
-  //     ),
-  //     Math.round(featureList["3-7_ryanmen"] + featureList["23_78_ryanmen"]),
-  //     Math.round(featureList["13_79_kanchan"] + featureList["2-8_kanchan"]),
-  //     Math.round(featureList["penchan"]),
-  //     Math.round(featureList["sangen_cnt"] + featureList["zikaze_bakaze_cnt"]),
-  //     0
-  //   ) -
-  //   ((featureList["sangen_kotu"] + featureList["zikaze_bakaze_kotu"]) * 25 +
-  //     (featureList["sangen_toitu"] + featureList["zikaze_bakaze_toitu"]) * 15 +
-  //     (featureList["chunchan_kotu"] + featureList["ichikyu_kotu"]) +
-  //     featureList["kaze_kotu"] * 20);
+    (featureList["ichikyu_toitu"] +
+      featureList["chunchan_toitu"] +
+      featureList["kaze_toitu"]) *
+      8 +
+    featureList["is_pinfu"] * 20 -
+    (featureList["kaze_kotu"] +
+      featureList["ichikyu_kotu"] +
+      featureList["chunchan_kotu"]) *
+      18 -
+    (featureList["zikaze_bakaze_cnt"] + featureList["sangen_cnt"]) * 6;
 
   // 七対子
   yakuList["chitoitu"] = featureValue(tmpChitoituCnt, CHITOITU_GRAD);
