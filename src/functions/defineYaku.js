@@ -43,12 +43,10 @@ export const defineYaku = (featureList, haiLen) => {
     ? 10
     : 0;
 
-  // タンヤオ
+  // タンヤオ(枚数30+構造70)
   // TODO:max(,0)の処理いるかどうか
-  // 枚数付与点(30点)
   yakuList["tanyao"] =
     (Math.max(featureList["chunchan_cnt"] - yaochuCnt, 0) / haiLen) * 30;
-  // 構造付与点(70点)
   // 七対子と複合するため別途計算している
   yakuList["tanyao"] += Math.max(
     (featureList["chunchan_shuntu"] + featureList["chunchan_kotu"]) * 15 +
@@ -78,54 +76,46 @@ export const defineYaku = (featureList, haiLen) => {
   // 七対子
   yakuList["chitoitu"] = featureValue(tmpChitoituCnt, CHITOITU_GRAD);
 
-  // 一盃口
-  // 枚数点付与(30点)
+  // 一盃口(枚数30+構造70)
   yakuList["ipeko"] = featureList["ipeko_score"] * 5;
-  // 構造点付与(70点)
   yakuList["ipeko"] += featureList["ipeko_structure"];
-  // 二盃口
-  // 枚数点付与(30点)
+  // 二盃口(枚数30+構造70)
   yakuList["ryanpeko"] = featureList["ryanpeko_score"] * 5;
-  // 構造点付与(70点)
   yakuList["ryanpeko"] += featureList["ryanpeko_structure"];
 
-  // 三色同順
-  // 枚数点付与(40点)
+  // 三色同順(枚数40+構造60)
   yakuList["sanshoku_dojun"] = (featureList["sanshoku_dojun_score"] * 40) / 9;
-  // 構造点付与(60点)
   yakuList["sanshoku_dojun"] += featureList["sanshoku_dojun_structure"];
   // 三色同刻
-  // 枚数点付与(40点)
   yakuList["sanshoku_doko"] = featureValue(
     featureList["sanshoku_doko_score"],
     SANSHOKU_DOKO_GRAD
   );
 
-  // 三暗刻
-  // 枚数点付与(40点)
+  // 三暗刻(枚数40+構造60)
   yakuList["sananko"] =
     (Math.min(featureList["toitoi_sananko_cnt"], 3) * 40 +
       Math.min(3 - featureList["toitoi_sananko_cnt"], tmpChitoituCnt) * 15) /
     3;
-  // 構造点付与(60点)
   yakuList["sananko"] += featureList["sananko_structure"];
 
-  // 一通
-  // 枚数点付与(40点)
+  // 一通(枚数40+構造60)
   yakuList["ittu"] = (featureList["ittu_score"] / 9) * 40;
-  // 構造点付与(60点)
   yakuList["ittu"] += featureList["ittu_structure"];
 
   // 小三元
   yakuList["shosangen"] =
-    featureList["sangen_kotu"] * 40 + featureList["sangen_toitu"] * 20;
+    featureList["sangen_kotu"] * 40 +
+    featureList["sangen_toitu"] * 20 +
+    (featureList["sangen_cnt"] -
+      featureList["sangen_kotu"] * 3 -
+      featureList["sangen_toitu"] * 2) *
+      5;
 
-  // 混老頭
-  // 枚数付与点(30点)
+  // 混老頭(枚数30+構造70)
+  // 七対子と複合するため別途計算している
   yakuList["honroto"] =
     (Math.max(yaochuCnt - featureList["chunchan_cnt"], 0) / haiLen) * 30;
-  // 構造付与点(70点)
-  // 七対子と複合するため別途計算している
   yakuList["honroto"] += Math.max(
     (ziKotuCnt + featureList["ichikyu_kotu"]) * 15 +
       (ziToituCnt + featureList["ichikyu_toitu"]) * 10,
@@ -149,15 +139,11 @@ export const defineYaku = (featureList, haiLen) => {
     featureList["2-8_kanchan"] * 4 +
     featureList["23_78_ryanmen"] * 2;
 
-  // 混一色
-  // 枚数付与点(30点)
+  // 混一色(枚数30+構造70)
   yakuList["honitu"] = ((featureList["same_color_cnt"] + ziCnt) / haiLen) * 30;
-  // 構造付与点(70点)
   yakuList["honitu"] += featureList["honitu_structure"];
-  // 清一色
-  // 枚数付与点(30点)
+  // 清一色(枚数30+構造70)
   yakuList["chinitu"] = (featureList["same_color_cnt"] / haiLen) * 30;
-  // 構造付与点(70点)
   yakuList["chinitu"] += featureList["chinitu_structure"];
 
   // 範囲外を丸める関数(error検知用)
