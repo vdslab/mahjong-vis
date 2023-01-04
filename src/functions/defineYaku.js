@@ -128,16 +128,16 @@ export const defineYaku = (featureList, haiLen) => {
       22 +
     (featureList["ichikyu_toitu"] + ziToituCnt) * 12 +
     (featureList["penchan"] + featureList["13_79_kanchan"]) * 8 +
-    featureList["2-8_kanchan"] * 4 +
-    featureList["23_78_ryanmen"] * 2;
+    featureList["23_78_ryanmen"] * 3 +
+    featureList["2-8_kanchan"] * 2;
 
   // 純チャン
   yakuList["junchan"] =
     (featureList["ichikyu_kotu"] + featureList["ichikyu_shuntu"]) * 22 +
     featureList["ichikyu_toitu"] * 12 +
     (featureList["penchan"] + featureList["13_79_kanchan"]) * 8 +
-    featureList["2-8_kanchan"] * 4 +
-    featureList["23_78_ryanmen"] * 2;
+    featureList["23_78_ryanmen"] * 3 +
+    featureList["2-8_kanchan"] * 2;
 
   // 混一色(枚数30+構造70)
   yakuList["honitu"] = ((featureList["same_color_cnt"] + ziCnt) / haiLen) * 30;
