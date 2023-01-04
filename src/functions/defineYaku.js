@@ -46,6 +46,7 @@ export const defineYaku = (featureList, haiLen) => {
     : 0;
 
   // タンヤオ
+  // TODO:max(,0)の処理いるかどうか
   // 枚数付与点(30点)
   yakuList["tanyao"] =
     (Math.max(featureList["chunchan_cnt"] - yaochuCnt, 0) / haiLen) * 30;
@@ -58,7 +59,7 @@ export const defineYaku = (featureList, haiLen) => {
       featureList["23_78_ryanmen"] * 6 +
       featureList["13_79_kanchan"] * 3 +
       featureList["penchan"],
-    featureList["chitoitu_chunchan_cnt"] * 10
+    (featureValue(featureList["chitoitu_chunchan_cnt"], CHITOITU_GRAD) * 7) / 10
   );
 
   // 平和
