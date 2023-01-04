@@ -17,6 +17,7 @@ export const defineYaku = (featureList, haiLen) => {
     featureList["zikaze_bakaze_cnt"] +
     featureList["kaze_cnt"] +
     featureList["sangen_cnt"];
+  const yaochuCnt = ziCnt + featureList["ichikyu_cnt"];
   const tmpKotuCnt =
     ziKotuCnt + featureList["ichikyu_kotu"] + featureList["chunchan_kotu"];
   const tmpShuntuCnt =
@@ -25,33 +26,29 @@ export const defineYaku = (featureList, haiLen) => {
     featureList["3-7_ryanmen"] + featureList["23_78_ryanmen"];
   const tmpChitoituCnt =
     featureList["chitoitu_chunchan_cnt"] + featureList["chitoitu_yaochu_cnt"];
-  // 自風場風
-  // TODO:浮き
-  yakuList["zikaze_bakaze"] =
-    featureList["zikaze_bakaze_kotu"] || featureList["zikaze_bakaze_kantu"]
-      ? 100
-      : featureList["zikaze_bakaze_toitu"]
-      ? 70
-      : 0;
 
-  // 三元
-  // TODO:浮き
-  yakuList["sangenhai"] =
-    featureList["sangen_kotu"] || featureList["sangen_kantu"]
-      ? 100
-      : featureList["sangen_toitu"]
-      ? 70
-      : 0;
+  // 自風場風
+  yakuList["zikaze_bakaze"] = featureList["zikaze_bakaze_kotu"]
+    ? 100
+    : featureList["zikaze_bakaze_toitu"]
+    ? 70
+    : featureList["zikaze_bakaze_cnt"]
+    ? 10
+    : 0;
+
+  // 三元牌
+  yakuList["sangenhai"] = featureList["sangen_kotu"]
+    ? 100
+    : featureList["sangen_toitu"]
+    ? 70
+    : featureList["sangen_cnt"]
+    ? 10
+    : 0;
 
   // タンヤオ
   // 枚数付与点(30点)
   yakuList["tanyao"] =
-    (Math.max(
-      featureList["chunchan_cnt"] - featureList["ichikyu_cnt"] - ziCnt,
-      0
-    ) /
-      haiLen) *
-    30;
+    (Math.max(featureList["chunchan_cnt"] - yaochuCnt, 0) / haiLen) * 30;
   // 構造付与点(70点)
   // 七対子と複合するため別途計算している
   yakuList["tanyao"] += Math.max(
@@ -138,12 +135,7 @@ export const defineYaku = (featureList, haiLen) => {
   // 混老頭
   // 枚数付与点(30点)
   yakuList["honroto"] =
-    (Math.max(
-      featureList["ichikyu_cnt"] + ziCnt - featureList["chunchan_cnt"],
-      0
-    ) /
-      haiLen) *
-    30;
+    (Math.max(yaochuCnt - featureList["chunchan_cnt"], 0) / haiLen) * 30;
   // 構造付与点(70点)
   // 七対子と複合するため別途計算している
   yakuList["honroto"] += Math.max(
