@@ -1,6 +1,7 @@
 import { Fragment, memo } from "react";
 import Image from "next/image";
 import Images from "../../public/images/webImage/webImage.png";
+import Images2 from "../../public/images/webImage/webImage2.png";
 import {
   Box,
   Dialog,
@@ -69,22 +70,24 @@ const Contents = () => {
       "ツモ（アガれる場合のみ）→揃った役を確認後、手牌をリセットします。",
     ],
     [
-      "6.分解ビュー",
-      "左に表示されている牌を切ったときの、最小向聴数における分解の組み合わせを表示しています。",
-      "組み合わせが複数ある場合もあり、全て向聴数は同一です",
-    ],
-    [
-      "7.ツモモード",
+      "6.ツモモード",
       "出現させる牌の種類を選択することができます。",
       "・すべての牌:全種類の牌が出現",
       "・混一色:萬子と字牌のみの牌が出現",
       "・清一色:萬子のみの牌が出現",
       "・タンヤオ:19牌と字牌以外の牌が出現",
     ],
+    [
+      "7.分解ビュー",
+      "左に表示されている牌を切ったときの、最小向聴数における分解の組み合わせを表示しています。",
+      "組み合わせが複数ある場合もあり、全て向聴数は同一です",
+    ],
   ];
 
   return (
     <Box>
+      <Image src={Images} alt="Image" />
+      <Image src={Images2} alt="Image" />
       {text.map((tmp) => {
         const title = tmp[0];
         const buf = tmp.slice(1);
@@ -106,7 +109,6 @@ const Contents = () => {
           </Box>
         );
       })}
-      <Image src={Images} alt="Image" />
     </Box>
   );
 };
