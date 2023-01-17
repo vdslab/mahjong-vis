@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useSetRecoilState, useRecoilValue, useRecoilState } from "recoil";
 import {
   shantenState,
@@ -11,7 +11,6 @@ import {
   decompositionsState,
   dimensionState,
 } from "../atoms/atoms";
-import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Tooltip from "@mui/material/Tooltip";
 import { defineFeature } from "../functions/defineFeature";
@@ -59,10 +58,6 @@ export const Radviz = () => {
 
   // 点の大きさ
   const pointSize = 10;
-
-  const handleMouseOver = (id) => {
-    setRadvizCircle(id);
-  };
 
   useEffect(() => {
     if (tehai.length !== 0) {
@@ -186,13 +181,12 @@ export const Radviz = () => {
                   placement="top-start"
                 >
                   <circle
-                    id={tile}
                     r={pointSize}
                     fill={tile !== tehai[tehai.length - 1] ? "green" : "red"}
                     fillOpacity={
                       !selectedTile || selectedTile === tile ? 1 : 0.1
                     }
-                    onMouseOver={() => handleMouseOver(tile)}
+                    onMouseOver={() => setRadvizCircle(tile)}
                   />
                 </Tooltip>
               </g>
@@ -205,7 +199,7 @@ export const Radviz = () => {
   );
 };
 
-const Legends = ({ x, y }) => {
+const Legends = memo(({ x, y }) => {
   return (
     <g transform={`translate(${x}, ${y})`}>
       <circle cx="0" cy="0" r="10" fill="red" />
@@ -230,7 +224,7 @@ const Legends = ({ x, y }) => {
       </text>
     </g>
   );
-};
+});
 
 // 配列から取り除いた要素とそれ以外の要素のオブジェクトを返す
 const deleteElement = (array) => {
