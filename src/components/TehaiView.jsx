@@ -1,14 +1,13 @@
 import { Fragment, useEffect, useState, useCallback } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
-  tehaiState,
-  suteHaiListState,
-  haiCheckListState,
-  shantenState,
-  diffShantenState,
-  selectedTileState,
   allTileState,
+  diffShantenState,
   haiModeState,
+  suteHaiListState,
+  shantenState,
+  selectedTileState,
+  tehaiState,
 } from "../atoms/atoms";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -23,13 +22,13 @@ import Image from "next/image";
 import { WinDialog } from "./WinDialog";
 import { changeHaiName2Path } from "../functions/util";
 import { HAI_ORDER } from "../const/HaiOrder";
+import { GENERATE_HAI_SET } from "../const/generateHaiSet";
 
 export const TehaiView = () => {
-  const HAITYPELIST = "mpswz";
   const MAX_PLAY_TIMES = 18;
   const [tehai, setTehai] = useRecoilState(tehaiState);
+  const [tehaiStack, setTehaiStack] = useState([]);
   const [suteHaiList, setSuteHaiList] = useRecoilState(suteHaiListState);
-  const [haiCheckList, setHaiCheckList] = useRecoilState(haiCheckListState);
   const [selectedTile, setSelectedTile] = useRecoilState(selectedTileState);
   const [open, setOpen] = useState([false, 0]);
   const [winDialogOpen, setWinDialogOpen] = useState(false);
@@ -45,29 +44,18 @@ export const TehaiView = () => {
 
   const handleTileClicked = async (tile, idx) => {
     const tmpTehai = JSON.parse(JSON.stringify(tehai));
-    const addedHai = "";
-    const tehaiCheckedList = haiCheckList.map((item) => item.slice());
-    let isAddedHai = 1;
-    while (isAddedHai) {
-      const hai = generateNewHai(haiMode);
-      const haiType = HAITYPELIST.indexOf(hai[0]);
-      if (tehaiCheckedList[haiType][parseInt(hai[1]) - 1] < 4) {
-        tehaiCheckedList[haiType][parseInt(hai[1]) - 1] += 1;
-        addedHai += hai;
-        isAddedHai = 0;
-      }
-    }
-    setHaiCheckList(tehaiCheckedList);
+    const hai = generateNewHai(tehaiStack, haiMode);
     const newTehai = tmpTehai
       .filter((_, id) => id !== idx)
       .sort((x, y) => HAI_ORDER.indexOf(x) - HAI_ORDER.indexOf(y));
     setSuteHaiList([...suteHaiList, tile]);
     setSelectedTile("");
     if (suteHaiList.length + 1 < MAX_PLAY_TIMES && open[0] === false)
-      newTehai.push(addedHai);
+      newTehai.push(hai);
     setTehai(newTehai);
     if (suteHaiList.length + 1 >= MAX_PLAY_TIMES && open[0] === false)
       setOpen([true, 1]);
+    setTehaiStack([...tehaiStack]);
   };
 
   const handleMouseOver = (tile, idx) => {
@@ -97,27 +85,13 @@ export const TehaiView = () => {
 
   const initHai = () => {
     const haiList = [];
-    const tehaiCheckedList = [
-      Array(9).fill(0),
-      Array(9).fill(0),
-      Array(9).fill(0),
-      Array(4).fill(0),
-      Array(3).fill(0),
-    ];
-
-    for (let i = 0; i < 14; i++) {
-      const isAddedHai = true;
-      while (isAddedHai) {
-        const hai = generateNewHai(haiMode);
-        const haiType = HAITYPELIST.indexOf(hai[0]);
-        if (tehaiCheckedList[haiType][parseInt(hai[1]) - 1] < 4) {
-          tehaiCheckedList[haiType][parseInt(hai[1]) - 1] += 1;
-          haiList.push(hai);
-          isAddedHai = false;
-        }
-      }
+    const haiStack = shuffle(
+      [...Array(34)].map((_, idx) => Array(4).fill(idx)).flatMap((i) => i)
+    );
+    while (haiStack.length > 0 && haiList.length < 14) {
+      haiList.push(generateNewHai(haiStack, haiMode));
     }
-    setHaiCheckList(tehaiCheckedList);
+    setTehaiStack([...haiStack]);
     setSuteHaiList([]);
     setSelectedTile("");
     setTehai([
@@ -285,29 +259,24 @@ export const TehaiView = () => {
   );
 };
 
-const getRandomInt = (min = 0, max = 34) => {
-  return Math.floor(Math.random() * (max - min) + min);
-};
-
-const generateNewHai = (mode) => {
-  const haiList = [
-    [...Array(34)].map((_, i) => i),
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 27, 28, 29, 30, 31, 32, 33],
-    [...Array(9)].map((_, i) => i),
-    [
-      1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24,
-      25,
-    ],
-    [0, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33],
-    [...Array(34)].map((_, i) => i),
-  ];
-  const intHai = haiList[mode][getRandomInt(0, haiList[mode].length)];
+const generateNewHai = (stack, mode) => {
+  let num = -1;
+  while (stack.length > 0 && !GENERATE_HAI_SET[mode].has(num))
+    num = stack.pop();
 
   let hai = "";
-  if (intHai <= 8) hai += "m" + (intHai + 1);
-  else if (intHai <= 17) hai += "p" + ((intHai % 9) + 1);
-  else if (intHai <= 26) hai += "s" + ((intHai % 9) + 1);
-  else if (intHai <= 30) hai += "w" + ((intHai % 9) + 1);
-  else hai += "z" + ((intHai % 9) - 3);
+  if (num <= 8) hai += "m" + (num + 1);
+  else if (num <= 17) hai += "p" + ((num % 9) + 1);
+  else if (num <= 26) hai += "s" + ((num % 9) + 1);
+  else if (num <= 30) hai += "w" + ((num % 9) + 1);
+  else hai += "z" + ((num % 9) - 3);
   return hai;
+};
+
+const shuffle = ([...array]) => {
+  for (let i = array.length - 1; i >= 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 };

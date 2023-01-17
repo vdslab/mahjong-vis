@@ -12,17 +12,6 @@ export const suteHaiListState = atom({
   default: [],
 });
 
-export const haiCheckListState = atom({
-  key: "haiCheckList",
-  default: [
-    Array(9).fill(0),
-    Array(9).fill(0),
-    Array(9).fill(0),
-    Array(4).fill(0),
-    Array(3).fill(0),
-  ],
-});
-
 export const shantenState = atom({
   key: "shanten",
   default: {
