@@ -5,20 +5,20 @@ const ziSet = new Set(["w", "z"]);
 
 export const defineFeature = (tehai) => {
   // const tehai = [
-  //   "m1",
-  //   "m1",
   //   "m4",
   //   "m5",
-  //   "m8",
-  //   "m8",
+  //   "p3",
   //   "p3",
   //   "p4",
+  //   "p4",
+  //   "p5",
   //   "s3",
-  //   "s5",
-  //   "s7",
-  //   "s8",
-  //   "s9",
   //   "s4",
+  //   "s5",
+  //   "s6",
+  //   "s8",
+  //   "s8",
+  //   "m6",
   // ];
   // 特徴量の初期化されたobject
   const featureList = makeObject(FEATURE_LIST);
