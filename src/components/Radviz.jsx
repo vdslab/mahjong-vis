@@ -148,7 +148,14 @@ export const Radviz = () => {
                     opacity={0.3}
                   />
                   <Tooltip
-                    title={YAKU_DESCRIPTION[property]["description"]}
+                    title={
+                      YAKU_DESCRIPTION[property]["name"] +
+                      (YAKU_DESCRIPTION[property]["ruby"] != ""
+                        ? "（" + YAKU_DESCRIPTION[property]["ruby"] + "）"
+                        : "") +
+                      ":" +
+                      YAKU_DESCRIPTION[property]["description"]
+                    }
                     arrow
                     disableInteractive
                   >

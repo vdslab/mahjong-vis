@@ -21,6 +21,11 @@ export const ShantenView = memo(() => {
     chitoitu: "七対子",
     kokushi: "国士無双",
   };
+  const displayRuby = {
+    other: "つうじょうて",
+    chitoitu: "ちーといつ",
+    kokushi: "こくしむそう",
+  };
   return (
     <Box
       sx={{
@@ -38,7 +43,10 @@ export const ShantenView = memo(() => {
         }}
       >
         <Typography variant="h6" component="div">
-          向聴数
+          <ruby>
+            向聴数
+            <rt style={{ fontSize: "10px" }}>しゃんてんすう </rt>
+          </ruby>
         </Typography>
         <List>
           {Object.keys(displayName).map((name) => {
@@ -59,9 +67,11 @@ export const ShantenView = memo(() => {
                   component="div"
                   sx={{ fontSize: "100%" }}
                 >
-                  {`${displayName[name]}：${
-                    shanten[name] > 0 ? shanten[name] : "聴牌"
-                  }`}
+                  <ruby>
+                    {displayName[name]}
+                    <rt style={{ fontSize: "10px" }}>{displayRuby[name]}</rt>
+                  </ruby>
+                  {`：${shanten[name] > 0 ? shanten[name] : "聴牌"}`}
                 </Typography>
                 {diff === -1 ? (
                   <TrendingUpIcon color="error" />

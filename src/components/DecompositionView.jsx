@@ -5,7 +5,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Stack from "@mui/material/Stack";
-import { decompositionsState } from "../atoms/atoms";
+import { decompositionsState, selectedTileState } from "../atoms/atoms";
 import { changeHaiName2Path } from "../functions/util";
 import Image from "next/image";
 
@@ -14,7 +14,7 @@ export const DecompositionView = memo(() => {
   const imageWidth = 3;
   const imageHeight = 4;
   const contentWidth = 900;
-
+  const selectedTile = useRecoilValue(selectedTileState);
   return (
     <Card sx={{ p: 2, width: contentWidth }}>
       {Object.keys(decompositions).length && (
@@ -29,53 +29,59 @@ export const DecompositionView = memo(() => {
               }
             }
             return (
-              <ListItem key={tile}>
-                <ListItemAvatar
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    mr: 5,
-                  }}
-                >
-                  <Image
-                    src={changeHaiName2Path(`${tile}`)}
-                    width={imageWidth * 10}
-                    height={imageHeight * 10}
-                  />
-                </ListItemAvatar>
-                <Stack>
-                  {comb.map((pt, id) => (
-                    <Stack
-                      key={id}
-                      direction="row"
+              <>
+                {tile == selectedTile ? (
+                  <ListItem key={tile}>
+                    <ListItemAvatar
                       sx={{
-                        p: "5px",
-                        width: "100%",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        mr: 5,
                       }}
                     >
-                      {["m", "p", "s"].map((type) => (
-                        <Stack key={type} direction="row">
-                          {arr[type][pt[type]].length > 0 &&
-                            arr[type][pt[type]].map((itemGroup) =>
-                              itemGroup.map((itemHai, id) => (
-                                <Stack sx={{ ml: id === 0 }} key={id}>
-                                  <Image
-                                    src={changeHaiName2Path(
-                                      `${type}${itemHai}`
-                                    )}
-                                    width={imageWidth * 15}
-                                    height={imageHeight * 15}
-                                  />
-                                </Stack>
-                              ))
-                            )}
+                      <Image
+                        src={changeHaiName2Path(`${tile}`)}
+                        width={imageWidth * 10}
+                        height={imageHeight * 10}
+                      />
+                    </ListItemAvatar>
+                    <Stack>
+                      {comb.map((pt, id) => (
+                        <Stack
+                          key={id}
+                          direction="row"
+                          sx={{
+                            p: "5px",
+                            width: "100%",
+                          }}
+                        >
+                          {["m", "p", "s"].map((type) => (
+                            <Stack key={type} direction="row">
+                              {arr[type][pt[type]].length > 0 &&
+                                arr[type][pt[type]].map((itemGroup) =>
+                                  itemGroup.map((itemHai, id) => (
+                                    <Stack sx={{ ml: id === 0 }} key={id}>
+                                      <Image
+                                        src={changeHaiName2Path(
+                                          `${type}${itemHai}`
+                                        )}
+                                        width={imageWidth * 15}
+                                        height={imageHeight * 15}
+                                      />
+                                    </Stack>
+                                  ))
+                                )}
+                            </Stack>
+                          ))}
                         </Stack>
                       ))}
                     </Stack>
-                  ))}
-                </Stack>
-              </ListItem>
+                  </ListItem>
+                ) : (
+                  ""
+                )}
+              </>
             );
           })}
         </List>

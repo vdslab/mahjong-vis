@@ -5,6 +5,7 @@ export const YAKU_DESCRIPTION = {
     han: 1,
     kuiHan: 1,
     menzen: false,
+    ruby: "じかぜばかぜ",
   },
   sangenhai: {
     name: "三元牌",
@@ -12,6 +13,7 @@ export const YAKU_DESCRIPTION = {
     han: 1,
     kuiHan: 1,
     menzen: false,
+    ruby: "さんげんはい",
   },
   tanyao: {
     name: "タンヤオ",
@@ -19,6 +21,7 @@ export const YAKU_DESCRIPTION = {
     han: 1,
     kuiHan: 1,
     menzen: false,
+    ruby: "",
   },
   pinfu: {
     name: "平和",
@@ -26,6 +29,7 @@ export const YAKU_DESCRIPTION = {
     han: 1,
     kuiHan: 1,
     menzen: true,
+    ruby: "ぴんふ",
   },
   sanshoku_dojun: {
     name: "三色同順",
@@ -33,6 +37,7 @@ export const YAKU_DESCRIPTION = {
     han: 2,
     kuiHan: 1,
     menzen: false,
+    ruby: "さんしょくどうじゅん",
   },
   sanshoku_doko: {
     name: "三色同刻",
@@ -40,6 +45,7 @@ export const YAKU_DESCRIPTION = {
     han: 2,
     kuiHan: 2,
     menzen: false,
+    ruby: "さんしょくどうこう",
   },
   ittu: {
     name: "一気通貫",
@@ -47,6 +53,7 @@ export const YAKU_DESCRIPTION = {
     han: 2,
     kuiHan: 1,
     menzen: false,
+    ruby: "いっきつうかん",
   },
   chitoitu: {
     name: "七対子",
@@ -54,6 +61,7 @@ export const YAKU_DESCRIPTION = {
     han: 2,
     kuiHan: 2,
     menzen: true,
+    ruby: "ちーといつ",
   },
   // toitoiho: {
   //   name: "対々和",
@@ -61,6 +69,7 @@ export const YAKU_DESCRIPTION = {
   //   han: 2,
   //   kuiHan: 2,
   //   menzen: false,
+  //  ruby:"といとい",
   // },
   sananko: {
     name: "三暗刻",
@@ -68,6 +77,7 @@ export const YAKU_DESCRIPTION = {
     han: 2,
     kuiHan: 2,
     menzen: true,
+    ruby: "さんあんこう",
   },
   chanta: {
     name: "チャンタ",
@@ -75,6 +85,7 @@ export const YAKU_DESCRIPTION = {
     han: 2,
     kuiHan: 1,
     menzen: false,
+    ruby: "",
   },
   junchan: {
     name: "純チャン",
@@ -82,6 +93,7 @@ export const YAKU_DESCRIPTION = {
     han: 3,
     kuiHan: 2,
     menzen: false,
+    ruby: "",
   },
   honroto: {
     name: "混老頭",
@@ -89,6 +101,7 @@ export const YAKU_DESCRIPTION = {
     han: 2,
     kuiHan: 2,
     menzen: false,
+    ruby: "ほんろうとう",
   },
   // sankantu: {
   //   name: "三槓子",
@@ -96,6 +109,7 @@ export const YAKU_DESCRIPTION = {
   //   han: 2,
   //   kuiHan: 2,
   //   menzen: false,
+  // ruby:"さんかんつ"
   // },
   shosangen: {
     name: "小三元",
@@ -104,6 +118,7 @@ export const YAKU_DESCRIPTION = {
     han: 2,
     kuiHan: 2,
     menzen: false,
+    ruby: "しょうさんげん",
   },
   ipeko: {
     name: "一盃口",
@@ -111,6 +126,7 @@ export const YAKU_DESCRIPTION = {
     han: 1,
     kuiHan: 1,
     menzen: true,
+    ruby: "いーぺーこー",
   },
   ryanpeko: {
     name: "二盃口",
@@ -118,6 +134,7 @@ export const YAKU_DESCRIPTION = {
     han: 3,
     kuiHan: 3,
     menzen: true,
+    ruby: "りゃんぺーこー",
   },
   honitu: {
     name: "混一色",
@@ -125,6 +142,7 @@ export const YAKU_DESCRIPTION = {
     han: 3,
     kuiHan: 2,
     menzen: false,
+    ruby: "ほんいつ",
   },
   chinitu: {
     name: "清一色",
@@ -132,5 +150,6 @@ export const YAKU_DESCRIPTION = {
     han: 6,
     kuiHan: 5,
     menzen: false,
+    ruby: "ちんいつ",
   },
 };
