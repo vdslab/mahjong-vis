@@ -36,10 +36,13 @@ export const WordDescriptionDialog = memo((props) => {
               <ListItem key={key}>
                 <Card sx={{ width: "100%", p: 2 }}>
                   <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
-                    {key}
+                    <ruby>
+                      {key}
+                      <rt style={{ fontSize: "10px" }}>{value[0]}</rt>
+                    </ruby>
                   </Typography>
                   <Typography variant="body1" color="text.secondary">
-                    {value}
+                    {value[1]}
                   </Typography>
                 </Card>
               </ListItem>

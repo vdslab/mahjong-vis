@@ -46,14 +46,24 @@ export const YakuDescriptionDialog = memo((props) => {
 });
 
 const Contents = ({ item }) => {
-  const { name, description, han, kuiHan, menzen } = YAKU_DESCRIPTION[item];
+  const {
+    name,
+    description,
+    han,
+    kuiHan,
+    menzen,
+    ruby = "",
+  } = YAKU_DESCRIPTION[item];
 
   return (
     <Card sx={{ width: "100%" }}>
       <CardContent>
         <Box sx={{ display: "flex", alignItems: "center", pb: 2 }}>
           <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
-            {name}
+            <ruby>
+              {name}
+              <rt style={{ fontSize: "10px" }}>{ruby}</rt>
+            </ruby>{" "}
           </Typography>
           <Typography variant="h6" component="div" sx={{ pr: 2 }}>
             {`${han}翻`}

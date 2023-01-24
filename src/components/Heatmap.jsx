@@ -116,7 +116,14 @@ const VerticalAxis = memo(({ strokeColor, scale, colorList, dimension }) => {
 
         return (
           <Tooltip
-            title={YAKU_DESCRIPTION[name]["description"]}
+            title={
+              YAKU_DESCRIPTION[name]["name"] +
+              (YAKU_DESCRIPTION[name]["ruby"] != ""
+                ? "（" + YAKU_DESCRIPTION[name]["ruby"] + "）"
+                : "") +
+              ":" +
+              YAKU_DESCRIPTION[name]["description"]
+            }
             placement="top-start"
             arrow
             disableInteractive
