@@ -5,19 +5,29 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Stack from "@mui/material/Stack";
-import { decompositionsState, selectedTileState } from "../atoms/atoms";
+import {
+  decompositionsState,
+  selectedTileState,
+  tehaiState,
+} from "../atoms/atoms";
 import { changeHaiName2Path } from "../functions/util";
 import Image from "next/image";
 
 export const DecompositionView = memo(() => {
   const decompositions = useRecoilValue(decompositionsState);
+  const selectedTile = useRecoilValue(selectedTileState);
+  const tehai = useRecoilValue(tehaiState);
   const imageWidth = 3;
   const imageHeight = 4;
   const contentWidth = 900;
-  const selectedTile = useRecoilValue(selectedTileState);
+  const targetTile = selectedTile
+    ? selectedTile
+    : tehai.length && tehai[13]
+    ? tehai[13]
+    : "";
   return (
     <Card sx={{ p: 2, width: contentWidth }}>
-      {Object.keys(decompositions).length && (
+      {Object.keys(decompositions).length && tehai.length && (
         <List>
           {Object.entries(decompositions).map(([tile, arr]) => {
             const comb = [];
@@ -30,7 +40,7 @@ export const DecompositionView = memo(() => {
             }
             return (
               <>
-                {tile == selectedTile ? (
+                {tile == targetTile ? (
                   <ListItem key={tile}>
                     <ListItemAvatar
                       sx={{
