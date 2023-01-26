@@ -1,18 +1,15 @@
-import { Fragment, useState } from "react";
-import {
-  AppBar,
-  Box,
-  Button,
-  Toolbar,
-  Typography,
-  Divider,
-} from "@mui/material";
+import { Fragment, useState, useCallback } from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Toolbar from "@mui/material/ToolBar";
 import { YakuDescriptionDialog } from "./YakuDescriptionDialog";
 import { WordDescriptionDialog } from "./WordDescriptionDialog";
 import { WebInfoDialog } from "./WebInfoDialog";
 import { OperationDialog } from "./OperationDialog";
 import { ChangeMode } from "./ChamgeMode";
-import { useCallback } from "react";
+import Image from "next/image";
 
 export const Header = () => {
   const [yakuDialogOpen, setYakuDialogOpen] = useState(false);
@@ -39,11 +36,9 @@ export const Header = () => {
   );
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" style={{ backgroundColor: "#38B6FF" }}>
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ pl: 1 }}>
-            mahjong-vis
-          </Typography>
+          <Image src="/images/logo.png" width={220} height={60} />
           <Divider orientation="vertical" flexItem sx={{ p: 1 }} />
           <Box sx={{ display: "flex" }}>
             {pages.map((page, idx) => (

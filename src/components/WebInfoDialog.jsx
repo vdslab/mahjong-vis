@@ -1,4 +1,4 @@
-import { Fragment, memo } from "react";
+import { memo } from "react";
 import Image from "next/image";
 import Images from "../../public/images/webImage/webImage.png";
 import Images2 from "../../public/images/webImage/webImage2.png";
