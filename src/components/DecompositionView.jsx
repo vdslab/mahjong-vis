@@ -78,6 +78,7 @@ export const DecompositionView = memo(() => {
                                         )}
                                         width={imageWidth * 15}
                                         height={imageHeight * 15}
+                                        key={id}
                                       />
                                     </Stack>
                                   ))
