@@ -3,7 +3,7 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
-import Toolbar from "@mui/material/ToolBar";
+import Toolbar from "@mui/material/Toolbar";
 import { YakuDescriptionDialog } from "./YakuDescriptionDialog";
 import { WordDescriptionDialog } from "./WordDescriptionDialog";
 import { WebInfoDialog } from "./WebInfoDialog";
