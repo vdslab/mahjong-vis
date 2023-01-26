@@ -70,3 +70,8 @@ export const dimensionState = atom({
   key: "dimension",
   default: DIMENSIONS[0],
 });
+
+export const machiHaiState = atom({
+  key: "machiHai",
+  default: {},
+});

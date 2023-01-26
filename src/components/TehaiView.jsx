@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState, useCallback } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
+import { getMachiHai } from "../functions/getmachiHai";
 import {
   allTileState,
   diffShantenState,
@@ -18,11 +19,13 @@ import Typography from "@mui/material/Typography";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
+import Tooltip from "@mui/material/Tooltip";
 import Image from "next/image";
 import { WinDialog } from "./WinDialog";
 import { changeHaiName2Path } from "../functions/util";
 import { HAI_ORDER } from "../const/HaiOrder";
 import { GENERATE_HAI_SET } from "../const/generateHaiSet";
+import { Mp } from "@mui/icons-material";
 
 export const TehaiView = () => {
   const MAX_PLAY_TIMES = 18;
@@ -100,6 +103,7 @@ export const TehaiView = () => {
       haiList[13],
     ]);
   };
+  const machiList = getMachiHai(tehai);
 
   return (
     <Card sx={{ px: 3, pt: 3, pb: 1, width: "900px" }}>
@@ -146,21 +150,41 @@ export const TehaiView = () => {
               if (idx !== 13) {
                 return (
                   <Stack key={idx}>
-                    <Image
-                      style={{
-                        cursor: "pointer",
-                        opacity:
-                          item === selectedTile && idx === mouseOveredTile
-                            ? 0.5
-                            : 1,
-                      }}
-                      onClick={() => handleTileClicked(item, idx)}
-                      onMouseOver={() => handleMouseOver(item, idx)}
-                      onMouseOut={handleMouseOut}
-                      src={changeHaiName2Path(item)}
-                      width="80"
-                      height="110"
-                    />
+                    <Tooltip
+                      title={
+                        Object.keys(machiList).length && machiList[item].length
+                          ? machiList[item].map((machi) => {
+                              return (
+                                <img
+                                  src={changeHaiName2Path(machi[0])}
+                                  width="30"
+                                  height="40"
+                                />
+                              );
+                            })
+                          : ""
+                      }
+                      arrow
+                      placement="top-start"
+                    >
+                      <div>
+                        <Image
+                          style={{
+                            cursor: "pointer",
+                            opacity:
+                              item === selectedTile && idx === mouseOveredTile
+                                ? 0.5
+                                : 1,
+                          }}
+                          onClick={() => handleTileClicked(item, idx)}
+                          onMouseOver={() => handleMouseOver(item, idx)}
+                          onMouseOut={handleMouseOut}
+                          src={changeHaiName2Path(item)}
+                          width="80"
+                          height="110"
+                        />
+                      </div>
+                    </Tooltip>
                     {icon}
                   </Stack>
                 );
@@ -169,21 +193,42 @@ export const TehaiView = () => {
                   <Fragment key={idx}>
                     <Box sx={{ p: 1 }} />
                     <Stack key={idx}>
-                      <Image
-                        style={{
-                          cursor: "pointer",
-                          opacity:
-                            item === selectedTile && idx === mouseOveredTile
-                              ? 0.5
-                              : 1,
-                        }}
-                        onClick={() => handleTileClicked(item, idx)}
-                        onMouseOver={() => handleMouseOver(item, idx)}
-                        onMouseOut={handleMouseOut}
-                        src={changeHaiName2Path(item)}
-                        width="80"
-                        height="110"
-                      />
+                      <Tooltip
+                        title={
+                          Object.keys(machiList).length &&
+                          machiList[item].length
+                            ? machiList[item].map((machi) => {
+                                return (
+                                  <img
+                                    src={changeHaiName2Path(machi[0])}
+                                    width="30"
+                                    height="40"
+                                  />
+                                );
+                              })
+                            : ""
+                        }
+                        arrow
+                        placement="top-start"
+                      >
+                        <div>
+                          <Image
+                            style={{
+                              cursor: "pointer",
+                              opacity:
+                                item === selectedTile && idx === mouseOveredTile
+                                  ? 0.5
+                                  : 1,
+                            }}
+                            onClick={() => handleTileClicked(item, idx)}
+                            onMouseOver={() => handleMouseOver(item, idx)}
+                            onMouseOut={handleMouseOut}
+                            src={changeHaiName2Path(item)}
+                            width="80"
+                            height="110"
+                          />
+                        </div>
+                      </Tooltip>
                     </Stack>
                   </Fragment>
                 );
