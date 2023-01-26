@@ -17,12 +17,12 @@ export const SEO = {
     type: "website",
     locale: "ja_JP",
     site_name: "mahjong-vis",
-    // images: [
-    //   {
-    //     url: "./images/sample.png",
-    //     width: 800,
-    //     height: 600,
-    //   },
-    // ],
+    images: [
+      {
+        url: "./public/images/logo.png",
+        width: 800,
+        height: 600,
+      },
+    ],
   },
 };
