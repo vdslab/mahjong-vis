@@ -35,7 +35,7 @@ const makeObject = (array, init = 0) => {
   return array.reduce((obj, x) => Object.assign(obj, { [x]: init }), {});
 };
 
-export const getMachiHai = (tehai) => {
+const getMachiHai = (tehai) => {
   const agariHaiList = {};
   const HAITYPE_LENGTH = { m: 9, p: 9, s: 9, w: 4, z: 3 };
 
@@ -60,3 +60,4 @@ export const getMachiHai = (tehai) => {
     return {};
   }
 };
+export default getMachiHai;
