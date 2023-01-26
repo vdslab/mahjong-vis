@@ -25,7 +25,7 @@ import { WinDialog } from "./WinDialog";
 import { changeHaiName2Path } from "../functions/util";
 import { HAI_ORDER } from "../const/HaiOrder";
 import { GENERATE_HAI_SET } from "../const/generateHaiSet";
-import { Mp } from "@mui/icons-material";
+// import { Mp } from "@mui/icons-material";
 
 export const TehaiView = () => {
   const MAX_PLAY_TIMES = 18;
@@ -151,6 +151,7 @@ export const TehaiView = () => {
                 return (
                   <Stack key={idx}>
                     <Tooltip
+                      key={idx}
                       title={
                         Object.keys(machiList).length && machiList[item].length
                           ? machiList[item].map((machi) => {
@@ -159,6 +160,7 @@ export const TehaiView = () => {
                                   src={changeHaiName2Path(machi[0])}
                                   width="30"
                                   height="40"
+                                  key={machi[0]}
                                 />
                               );
                             })
@@ -203,6 +205,7 @@ export const TehaiView = () => {
                                     src={changeHaiName2Path(machi[0])}
                                     width="30"
                                     height="40"
+                                    key={machi[0]}
                                   />
                                 );
                               })
