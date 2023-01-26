@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { useRecoilValue } from "recoil";
 import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
@@ -10,6 +10,7 @@ import {
 } from "../atoms/atoms";
 import { changeHaiName2Path } from "../functions/util";
 import Image from "next/image";
+import { getMachiHai } from "../functions/getMachiHai";
 
 export const DecompositionView = memo(() => {
   const decompositions = useRecoilValue(decompositionsState);
@@ -21,6 +22,8 @@ export const DecompositionView = memo(() => {
   // 牌が選択されていないときデフォルトで現在の手牌の分解を表示
   const targetTile =
     selectedTile || (tehai.length && tehai[tehai.length - 1]) || "";
+
+  const agariHaiList = getMachiHai(tehai);
 
   return (
     <Card sx={{ p: 2, width: contentWidth }}>
@@ -34,6 +37,7 @@ export const DecompositionView = memo(() => {
         >
           {["m", "p", "s"].map((type) => (
             <Stack key={type} spacing={1}>
+              {type === "m" ? "萬子" : type === "p" ? "筒子" : "索子"}
               {decompositions[targetTile][type].map((group, i) => (
                 <Stack
                   direction="row"
@@ -63,31 +67,52 @@ export const DecompositionView = memo(() => {
               ))}
             </Stack>
           ))}
-          <Stack direction="row" spacing={1}>
-            {decompositions[targetTile]["z"].length ? (
-              decompositions[targetTile]["z"].map((mentu, i) => (
-                <Stack
-                  direction="row"
-                  spacing={1}
-                  key={`z${JSON.stringify(mentu)}-${i}`}
-                >
-                  {mentu.map((n, idx) => {
-                    const type = n <= 4 ? "w" : "z";
-                    const num = n <= 4 ? n : n - 4;
-                    return (
-                      <Image
-                        key={idx}
-                        src={changeHaiName2Path(`${type}${num}`)}
-                        width={imageWidth * 15}
-                        height={imageHeight * 15}
-                      />
-                    );
-                  })}
-                </Stack>
-              ))
-            ) : (
-              <div>ﾅｲﾖｰ</div>
-            )}
+          <Stack spacing={1}>
+            字牌
+            <Stack direction="row" spacing={1}>
+              {decompositions[targetTile]["z"].length ? (
+                decompositions[targetTile]["z"].map((mentu, i) => (
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    key={`z${JSON.stringify(mentu)}-${i}`}
+                  >
+                    {mentu.map((n, idx) => {
+                      const type = n <= 4 ? "w" : "z";
+                      const num = n <= 4 ? n : n - 4;
+                      return (
+                        <Image
+                          key={idx}
+                          src={changeHaiName2Path(`${type}${num}`)}
+                          width={imageWidth * 15}
+                          height={imageHeight * 15}
+                        />
+                      );
+                    })}
+                  </Stack>
+                ))
+              ) : (
+                <div>ﾅｲﾖｰ</div>
+              )}
+            </Stack>
+          </Stack>
+
+          <Stack spacing={1}>
+            待ち牌
+            <Stack direction="row" spacing={1}>
+              {agariHaiList[targetTile] && agariHaiList[targetTile].length ? (
+                agariHaiList[targetTile].map((tile) => (
+                  <Image
+                    key={tile}
+                    src={changeHaiName2Path(tile)}
+                    width={imageWidth * 15}
+                    height={imageHeight * 15}
+                  />
+                ))
+              ) : (
+                <div>ﾅｲﾖｰ</div>
+              )}
+            </Stack>
           </Stack>
         </Stack>
       ) : (
