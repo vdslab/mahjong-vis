@@ -1,9 +1,7 @@
 import { memo } from "react";
 import { useRecoilValue } from "recoil";
 import Card from "@mui/material/Card";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import {
   decompositionsState,
@@ -20,81 +18,80 @@ export const DecompositionView = memo(() => {
   const imageWidth = 3;
   const imageHeight = 4;
   const contentWidth = 900;
-  const targetTile = selectedTile
-    ? selectedTile
-    : tehai.length && tehai[13]
-    ? tehai[13]
-    : "";
+  // 牌が選択されていないときデフォルトで現在の手牌の分解を表示
+  const targetTile =
+    selectedTile || (tehai.length && tehai[tehai.length - 1]) || "";
+
   return (
     <Card sx={{ p: 2, width: contentWidth }}>
-      {Object.keys(decompositions).length && tehai.length && (
-        <List>
-          {Object.entries(decompositions).map(([tile, arr]) => {
-            const comb = [];
-            for (let m = 0; m < arr["m"].length; ++m) {
-              for (let p = 0; p < arr["p"].length; ++p) {
-                for (let s = 0; s < arr["s"].length; ++s) {
-                  comb.push({ m, p, s });
-                }
-              }
-            }
-            return (
-              <>
-                {tile == targetTile ? (
-                  <ListItem key={tile}>
-                    <ListItemAvatar
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        mr: 5,
-                      }}
-                    >
+      {decompositions[targetTile] ? (
+        <Stack
+          direction="row"
+          spacing={2}
+          alignItems="center"
+          justifyContent="center"
+          divider={<Divider orientation="vertical" flexItem />}
+        >
+          {["m", "p", "s"].map((type) => (
+            <Stack key={type} spacing={1}>
+              {decompositions[targetTile][type].map((group, i) => (
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  key={`${type}${JSON.stringify(group)}-${i}`}
+                >
+                  {group.length ? (
+                    group.map((mentu, j) => (
+                      <Stack
+                        direction="row"
+                        key={`${type}${JSON.stringify(mentu)}-${j}`}
+                      >
+                        {mentu.map((num, idx) => (
+                          <Image
+                            key={idx}
+                            src={changeHaiName2Path(`${type}${num}`)}
+                            width={imageWidth * 15}
+                            height={imageHeight * 15}
+                          />
+                        ))}
+                      </Stack>
+                    ))
+                  ) : (
+                    <div>ﾅｲﾖｰ</div>
+                  )}
+                </Stack>
+              ))}
+            </Stack>
+          ))}
+          <Stack direction="row" spacing={1}>
+            {decompositions[targetTile]["z"].length ? (
+              decompositions[targetTile]["z"].map((mentu, i) => (
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  key={`z${JSON.stringify(mentu)}-${i}`}
+                >
+                  {mentu.map((n, idx) => {
+                    const type = n <= 4 ? "w" : "z";
+                    const num = n <= 4 ? n : n - 4;
+                    return (
                       <Image
-                        src={changeHaiName2Path(`${tile}`)}
-                        width={imageWidth * 10}
-                        height={imageHeight * 10}
+                        key={idx}
+                        src={changeHaiName2Path(`${type}${num}`)}
+                        width={imageWidth * 15}
+                        height={imageHeight * 15}
                       />
-                    </ListItemAvatar>
-                    <Stack>
-                      {comb.map((pt, id) => (
-                        <Stack
-                          key={id}
-                          direction="row"
-                          sx={{
-                            p: "5px",
-                            width: "100%",
-                          }}
-                        >
-                          {["m", "p", "s"].map((type) => (
-                            <Stack key={type} direction="row">
-                              {arr[type][pt[type]].length > 0 &&
-                                arr[type][pt[type]].map((itemGroup) =>
-                                  itemGroup.map((itemHai, id) => (
-                                    <Stack sx={{ ml: id === 0 }} key={id}>
-                                      <Image
-                                        src={changeHaiName2Path(
-                                          `${type}${itemHai}`
-                                        )}
-                                        width={imageWidth * 15}
-                                        height={imageHeight * 15}
-                                      />
-                                    </Stack>
-                                  ))
-                                )}
-                            </Stack>
-                          ))}
-                        </Stack>
-                      ))}
-                    </Stack>
-                  </ListItem>
-                ) : (
-                  ""
-                )}
-              </>
-            );
-          })}
-        </List>
+                    );
+                  })}
+                </Stack>
+              ))
+            ) : (
+              <div>ﾅｲﾖｰ</div>
+            )}
+          </Stack>
+        </Stack>
+      ) : (
+        <div>loading...</div>
       )}
     </Card>
   );

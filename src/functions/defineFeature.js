@@ -186,6 +186,18 @@ export const defineFeature = (tehai) => {
       }
     }
   }
+  res["w"] = [];
+  res["z"] = [];
+  for (let i = 1; i <= 4; ++i) {
+    const len = tehai.filter((item) => item === `w${i}`).length;
+    if (len === 3 || len === 4) res["z"].push(Array(3).fill(i));
+    else if (len === 2) res["z"].push(Array(2).fill(i));
+  }
+  for (let i = 1; i <= 3; ++i) {
+    const len = tehai.filter((item) => item === `z${i}`).length;
+    if (len === 3 || len === 4) res["z"].push(Array(3).fill(i + 4));
+    else if (len === 2) res["z"].push(Array(2).fill(i + 4));
+  }
 
   return { shanten, res: sortDecomposition(res), featureList, ryanmenRes };
 };
