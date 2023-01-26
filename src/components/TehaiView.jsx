@@ -37,7 +37,6 @@ export const TehaiView = () => {
   const shanten = useRecoilValue(shantenState);
   const diffShanten = useRecoilValue(diffShantenState);
   const allTile = useRecoilValue(allTileState);
-
   useEffect(() => {
     initHai();
   }, [haiMode]);
