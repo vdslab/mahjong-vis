@@ -28,6 +28,7 @@ const checkTenpai = (tehai) => {
   const counter = {};
   for (const tile of tehai) {
     counter[tile] = (counter[tile] || 0) + 1;
+    if (counter[tile] > 4) return false;
     if (tile[0] !== "w" && tile[0] !== "z") rleList[tile[0]][tile[1]] += 1;
   }
 
