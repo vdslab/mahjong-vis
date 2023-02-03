@@ -38,7 +38,7 @@ export const Header = () => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" style={{ backgroundColor: "#38B6FF" }}>
         <Toolbar>
-          <Image src="/images/ogp.png" width={240} height={60} />
+          <Image src="/images/logo.png" width={200} height={50} />
           <Divider orientation="vertical" flexItem sx={{ p: 1 }} />
           <Box sx={{ display: "flex" }}>
             {pages.map((page, idx) => (
