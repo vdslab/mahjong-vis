@@ -16,7 +16,7 @@ export const Header = () => {
   const [webInfoDialogOpen, setWebInfoDialogOpen] = useState(false);
   const [wordDialogOpen, setWordDialogOpen] = useState(false);
   const [operationDialogOpen, setOperationDialogOpen] = useState(false);
-  const pages = ["このサイトについて", "操作説明", "役説明", "用語集"];
+  const pages = ["操作説明", "役説明", "用語集"];
 
   const handleClick = (btnId) => {
     if (btnId === "役説明") setYakuDialogOpen(true);
@@ -38,7 +38,7 @@ export const Header = () => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" style={{ backgroundColor: "#38B6FF" }}>
         <Toolbar>
-          <Image src="/images/logo.png" width={220} height={60} />
+          <Image src="/images/ogp.png" width={240} height={60} />
           <Divider orientation="vertical" flexItem sx={{ p: 1 }} />
           <Box sx={{ display: "flex" }}>
             {pages.map((page, idx) => (
