@@ -61,7 +61,7 @@ export const DecompositionView = memo(() => {
                       </Stack>
                     ))
                   ) : (
-                    <div>ﾅｲﾖｰ</div>
+                    <div>分解はありません</div>
                   )}
                 </Stack>
               ))}
@@ -92,7 +92,7 @@ export const DecompositionView = memo(() => {
                   </Stack>
                 ))
               ) : (
-                <div>ﾅｲﾖｰ</div>
+                <div>分解はありません</div>
               )}
             </Stack>
           </Stack>
@@ -110,7 +110,7 @@ export const DecompositionView = memo(() => {
                   />
                 ))
               ) : (
-                <div>ﾅｲﾖｰ</div>
+                <div>聴牌ではありません</div>
               )}
             </Stack>
           </Stack>
