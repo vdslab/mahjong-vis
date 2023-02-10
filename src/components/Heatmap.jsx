@@ -31,7 +31,7 @@ export const Heatmap = () => {
   const colorScale = useCallback(
     d3
       .scaleLinear()
-      .domain([100, 0, -100])
+      .domain([50, 0, -50])
       .range(["orangered", "#dcdcdc", "dodgerblue"]),
     []
   );
@@ -112,7 +112,7 @@ const VerticalAxis = memo(({ strokeColor, scale, colorList, dimension }) => {
         stroke={strokeColor}
       />
       {dimension.map((name, idx) => {
-        let rankIdx = yakuRank.filter((item) => item["name"] === name)[0];
+        const rankIdx = yakuRank.filter((item) => item["name"] === name)[0];
 
         return (
           <Tooltip
@@ -212,7 +212,7 @@ const Contents = ({ data, xScale, yScale, colorScale }) => {
                 y={yScale(i)}
                 width={dataWidth}
                 height={68}
-                fill={colorScale(item)}
+                fill={colorScale(item > 50 ? 50 : item < -50 ? -50 : item)}
               />
             </Tooltip>
           );
@@ -254,20 +254,20 @@ const GradationLegends = memo(({ colorScale }) => {
             <stop
               key={idx}
               offset={`${(idx * 5) / 2}%`}
-              stopColor={colorScale(100 - idx * 5)}
+              stopColor={colorScale(50 - (idx * 5) / 2)}
             />
           );
         })}
       </linearGradient>
       <g transform={`translate(60, 0)`} style={{ userSelect: "none" }}>
         <text y={30} fontSize="30" textAnchor="start">
-          100
+          50
         </text>
         <text y={455} fontSize="30" textAnchor="start">
           0
         </text>
         <text y={915} fontSize="30" textAnchor="start">
-          -100
+          -50
         </text>
       </g>
       <g transform={`rotate(90) translate(10 , -50)`}>
